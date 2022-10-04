@@ -1,0 +1,10 @@
+part of 'resource.dart';
+
+class IconResources {
+  final namePrefixInLogin = Icons.person;
+  final emailPrefixInLogin = Icons.mail;
+  final passPrefixInLogin = Icons.lock;
+  final passSuffixShow = Icons.remove_red_eye;
+  final passSuffixUnShow = Icons.remove_red_eye_outlined;
+  final signUpSignInSubmitIcon = Icons.navigate_next_rounded;
+}
