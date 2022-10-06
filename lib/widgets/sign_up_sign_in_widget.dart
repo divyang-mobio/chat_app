@@ -1,5 +1,4 @@
-import 'package:chat_app/resources/resource.dart';
-import 'package:chat_app/screens/main_screen.dart';
+import '../resources/resource.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../controllers/login_Bloc/login_bloc.dart';
@@ -56,9 +55,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
           suffixIcon: widget.isPassword
               ? IconButton(
                   onPressed: () => showPassword(),
-                  icon: Icon(isVisible
-                      ? IconResources().passSuffixShow
-                      : IconResources().passSuffixUnShow))
+                  icon: Icon(
+                      isVisible
+                          ? IconResources().passSuffixShow
+                          : IconResources().passSuffixUnShow,
+                      color: ColorResources().textFieldSignInSignUpIconColor))
               : null),
     );
   }
@@ -85,10 +86,7 @@ Row commonSubmitButton(context,
       onPressed: onPressed,
       child: BlocConsumer<LoginBloc, LoginState>(
         listener: (context, state) {
-          if (state is LoginSuccess) {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const MainScreen()));
-          } else if (state is LoginError) {
+          if (state is LoginError) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.error)));
           }

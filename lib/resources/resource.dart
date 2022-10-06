@@ -1,4 +1,4 @@
-import 'package:chat_app/models/popup_menu_item_model.dart';
+import '../models/popup_menu_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

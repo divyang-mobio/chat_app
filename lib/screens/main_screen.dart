@@ -1,6 +1,6 @@
 import 'package:chat_app/controllers/login_Bloc/login_bloc.dart';
 import 'package:chat_app/resources/resource.dart';
-import 'package:chat_app/screens/registration_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,12 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
-        if (state is LogOutSuccess) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const RegistrationScreen()));
-        } else if (state is LoginError) {
+        if (state is LoginError) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(state.error)));
         }
@@ -29,7 +24,10 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
         appBar: AppBar(
             title: Text(AppTitle().mainScreen), actions: [popupMenuButton()]),
-        body: Container(),
+        body: Text((RepositoryProvider.of<FirebaseAuth>(context)
+                .currentUser
+                ?.displayName)
+            .toString()),
       ),
     );
   }
