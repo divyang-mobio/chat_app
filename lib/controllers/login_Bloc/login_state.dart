@@ -15,4 +15,3 @@ class LoginError extends LoginState {
 
   LoginError({required this.error});
 }
-

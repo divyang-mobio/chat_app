@@ -1,9 +1,9 @@
 import 'package:email_validator/email_validator.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../controllers/login_Bloc/login_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../widgets/login_screens_widget.dart';
+import 'package:flutter/material.dart';
 import '../resources/resource.dart';
-import '../widgets/sign_up_sign_in_widget.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -29,17 +29,15 @@ class _SignInScreenState extends State<SignInScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
           child: Form(
             key: formKey,
             child: SingleChildScrollView(
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 20),
-                    Text(TextResources().signInTile,
-                        style: Theme.of(context).textTheme.headline3?.copyWith(
-                            color: ColorResources().loginScreenTitle)),
+                    image(context, link: 'assets/signIn.png'),
+                    loginTitle(context, title: TextResources().signInTile),
                     const SizedBox(height: 50),
                     CustomTextField(
                         controller: _emailController,
@@ -74,12 +72,14 @@ class _SignInScreenState extends State<SignInScreen> {
                           }
                         }),
                     const SizedBox(height: 40),
-                    commonSubmitButton(context, onPressed: () {
-                      final isValidForm = formKey.currentState!.validate();
-                      if (isValidForm) {
-                        BlocProvider.of<LoginBloc>(context).add(SignIn(
-                            email: _emailController.text,
-                            password: _passwordController.text));
+                    submitButtonRow(context, onPressed: () {
+                      final isValidForm = formKey.currentState?.validate();
+                      if (isValidForm != null) {
+                        if (isValidForm) {
+                          BlocProvider.of<LoginBloc>(context).add(SignIn(
+                              email: _emailController.text.trim(),
+                              password: _passwordController.text.trim()));
+                        }
                       }
                     }, title: TextResources().signInString),
                     const SizedBox(height: 30),

@@ -1,8 +1,9 @@
-import '../screens/main_screen.dart';
-import '../screens/signIn_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../screens/signIn_screen.dart';
+import 'package:flutter/material.dart';
+import '../screens/main_screen.dart';
+import '../resources/resource.dart';
 
 class RedirectClass extends StatefulWidget {
   const RedirectClass({Key? key}) : super(key: key);
@@ -12,7 +13,6 @@ class RedirectClass extends StatefulWidget {
 }
 
 class _RedirectClassState extends State<RedirectClass> {
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -24,8 +24,8 @@ class _RedirectClassState extends State<RedirectClass> {
             return const Scaffold(
                 body: Center(child: CircularProgressIndicator()));
           } else if (snapshot.hasError) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text("Error")));
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(TextResources().redirectScreenError)));
             return const SignInScreen();
           } else {
             return const SignInScreen();

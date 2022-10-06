@@ -1,5 +1,5 @@
-import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bloc/bloc.dart';
 
 part 'login_event.dart';
 
@@ -49,6 +49,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginInitial());
     } catch (e) {
       emit(LoginError(error: e.toString()));
+      emit(LoginInitial());
     }
   }
 }

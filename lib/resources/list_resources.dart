@@ -1,14 +1,13 @@
 part of 'resource.dart';
 
 class ListResources {
-  List<PopupMenuItemModel> getPopUpData(context) {
-    List<PopupMenuItemModel> data = [
+  List<PopupMenuItemModel> getPopUpData(BuildContext context) {
+    List<PopupMenuItemModel> popupMenuList = [
       PopupMenuItemModel(
           title: TextResources().logout,
           iconData: IconResources().logout,
           onPressed: () => BlocProvider.of<LoginBloc>(context).add(LogOut()))
     ];
-
-    return data;
+    return popupMenuList;
   }
 }

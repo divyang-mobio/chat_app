@@ -11,10 +11,8 @@ class RoutesName {
 }
 
 class TextResources {
-  final String signUpTile = '''Sign up &
-start chatting''';
-  final String signInTile = '''Welcome
-Back''';
+  final String signUpTile = 'Sign up.';
+  final String signInTile = 'Login';
   final String passHintText = 'Password';
   final String nameHintText = 'Name';
   final String emailHintText = 'Email address';
@@ -28,5 +26,6 @@ Back''';
   final String passInValidValidation = 'Enter min 3 characters';
   final String nameInValidValidation = 'Enter min 8 characters';
   final String emailInValidValidation = 'Enter a valid email address';
+  final String redirectScreenError = 'Error';
   final String logout = 'Logout';
 }

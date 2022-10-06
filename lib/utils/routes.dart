@@ -1,7 +1,7 @@
+import '../screens/registration_screen.dart';
+import 'package:flutter/material.dart';
 import '../screens/signIn_screen.dart';
 import 'redirect_class.dart';
-import 'package:flutter/material.dart';
-import '../screens/registration_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
