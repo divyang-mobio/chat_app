@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../controllers/login_Bloc/login_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +31,8 @@ class _MainScreenState extends State<MainScreen> {
               popupMenuButton()
             ]),
         body: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('users').snapshots(),
+            stream: FirebaseFirestore.instance.collection('users').where(
+                'persons', arrayContains: 'divyang').snapshots(),
             builder: (context, snapshot) {
               return ListView.builder(
                   itemCount: snapshot.data?.docs.length,
