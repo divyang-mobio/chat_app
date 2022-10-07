@@ -1,3 +1,4 @@
+import 'firebase_auth.dart';
 import '../controllers/login_Bloc/login_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,8 +24,9 @@ class BlocClass extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(providers: [
       BlocProvider<LoginBloc>(
-          create: (context) =>
-              LoginBloc(auth: RepositoryProvider.of<FirebaseAuth>(context)))
+          create: (context) => LoginBloc(
+              firebaseAuthService: FirebaseAuthService(
+                  firebaseAuth: RepositoryProvider.of<FirebaseAuth>(context))))
     ], child: const MaterialClass());
   }
 }

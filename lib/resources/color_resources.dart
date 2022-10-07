@@ -10,7 +10,7 @@ class ColorResources {
   final Color loginScreenSubmitButtonText = Colors.white;
   final Color loginScreenCircularIndicator = Colors.white;
   final Color selectionHandleColor = Colors.black;
-  final Color appBar = Colors.black;
+  final Color appBar = const Color.fromARGB(255, 0, 101, 255);
   final Color appBarIconTextColor = Colors.white;
   final Color popUpMenuIconColor = Colors.black;
 }
