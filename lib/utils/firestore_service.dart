@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:chat_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
@@ -19,8 +22,27 @@ class DatabaseService {
       'groups': [],
       'persons': [],
       'uid': uid,
-      'profilePic':
-          'https://firebasestorage.googleapis.com/v0/b/chat-app-78ff6.appspot.com/o/profile_image%2Fblank-profile-picture-g9792c8f6e_640.png?alt=media&token=80a52613-84da-4181-8bf3-33c302de5071'
+      'profilePic': ''
     });
+  }
+
+  Future getUserData({required String email}) async {
+    QuerySnapshot data =
+        await userCollection.where('email', isEqualTo: email).get();
+    return data.docs
+        .map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future getAllUserData({required String email}) async {
+    try {
+      QuerySnapshot data =
+          await userCollection.where('email', isNotEqualTo: email).get();
+      return data.docs
+          .map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      throw 'error';
+    }
   }
 }

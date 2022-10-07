@@ -1,13 +1,16 @@
 part of 'resource.dart';
 
 class AppTitle {
-  final String mainScreen = 'Chat';
+  final String mainScreen = 'Chats';
+  final String newContactScreen = 'New Contact';
+
 }
 
 class RoutesName {
   final String redirectRoute = '/';
   final String registrationRoute = '/signUp';
   final String signInRoute = '/signIn';
+  final String newContact = '/newContact';
 }
 
 class TextResources {
@@ -29,5 +32,7 @@ class TextResources {
   final String nameInValidValidation = 'Enter min 8 characters';
   final String emailInValidValidation = 'Enter a valid email address';
   final String redirectScreenError = 'Error';
+  final String error = 'Error';
+  final String blocError = 'bloc Error';
   final String logout = 'Logout';
 }

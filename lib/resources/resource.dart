@@ -10,3 +10,5 @@ part 'icons_resources.dart';
 part 'color_resources.dart';
 
 part 'list_resources.dart';
+
+part 'image_resources.dart';

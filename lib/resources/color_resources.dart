@@ -11,6 +11,9 @@ class ColorResources {
   final Color loginScreenCircularIndicator = Colors.white;
   final Color selectionHandleColor = Colors.black;
   final Color appBar = const Color.fromARGB(255, 0, 101, 255);
+  final Color bgFloatingActionButton = const Color.fromARGB(255, 0, 101, 255);
   final Color appBarIconTextColor = Colors.white;
   final Color popUpMenuIconColor = Colors.black;
+  final Color shimmerBase = Colors.grey.shade400;
+  final Color shimmerHighlight = Colors.grey.shade100;
 }

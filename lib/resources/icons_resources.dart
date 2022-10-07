@@ -8,4 +8,6 @@ class IconResources {
   final passSuffixUnShow = Icons.remove_red_eye_outlined;
   final signUpSignInSubmitIcon = Icons.navigate_next_rounded;
   final logout = Icons.logout;
+  final search = Icons.search_rounded;
+  final floatingActionButtonIcon = Icons.message;
 }

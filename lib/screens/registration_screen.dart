@@ -44,7 +44,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      image(context, link: 'assets/signup.png'),
+                      image(context, link: ImagePath().signUpImagePath),
                       loginTitle(context, title: TextResources().signUpTile),
                       const SizedBox(height: 20),
                       CustomTextField(

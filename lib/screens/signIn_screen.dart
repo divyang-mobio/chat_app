@@ -36,7 +36,7 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    image(context, link: 'assets/signIn.png'),
+                    image(context, link: ImagePath().signInImagePath),
                     loginTitle(context, title: TextResources().signInTile),
                     const SizedBox(height: 50),
                     CustomTextField(

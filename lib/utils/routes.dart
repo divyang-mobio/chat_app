@@ -1,3 +1,4 @@
+import '../screens/new_chat_screen.dart';
 import '../screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import '../screens/signIn_screen.dart';
@@ -13,6 +14,9 @@ class RouteGenerator {
             builder: (context) => const RegistrationScreen());
       case '/signIn':
         return MaterialPageRoute(builder: (context) => const SignInScreen());
+      case '/newContact':
+        return MaterialPageRoute(
+            builder: (context) => const SelectContactScreen());
       default:
         return MaterialPageRoute(
             builder: (context) => const RegistrationScreen());

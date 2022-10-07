@@ -7,7 +7,6 @@ class MyTheme {
       textSelectionTheme: TextSelectionThemeData(
           selectionHandleColor: ColorResources().selectionHandleColor),
       appBarTheme: AppBarTheme(
-          centerTitle: true,
           backgroundColor: ColorResources().appBar,
           foregroundColor: ColorResources().appBarIconTextColor));
 }
