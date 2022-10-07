@@ -32,10 +32,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       UserCredential result = await auth.createUserWithEmailAndPassword(
           email: event.email, password: event.password);
-
-      await result.user?.updateDisplayName(event.name);
-      emit(LoginSuccess());
-      emit(LoginInitial());
+      if (result.user != null) {
+        await result.user?.updateDisplayName(event.name);
+        emit(LoginSuccess());
+        emit(LoginInitial());
+      }
     } catch (e) {
       emit(LoginError(error: e.toString()));
       emit(LoginInitial());
