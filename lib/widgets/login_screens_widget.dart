@@ -66,8 +66,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
 Center image(context, {required String link}) {
   return Center(
-    child: Image.asset(link, height: MediaQuery.of(context).size.height * .4),
-  );
+      child:
+          Image.asset(link, height: MediaQuery.of(context).size.height * .4));
 }
 
 Text loginTitle(context, {required String title}) {
@@ -77,15 +77,24 @@ Text loginTitle(context, {required String title}) {
           fontWeight: FontWeight.bold));
 }
 
-Align textButton({required VoidCallback onPressed, required String title}) {
+Align textButton(
+    {required VoidCallback onPressed,
+    required String name,
+    required String title}) {
   return Align(
     alignment: Alignment.bottomCenter,
-    child: TextButton(
-        onPressed: onPressed,
-        child: Text(title,
-            style: TextStyle(
-                color:  const Color.fromARGB(255, 0, 101, 255),
-                fontWeight: FontWeight.bold))),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(name),
+        TextButton(
+            onPressed: onPressed,
+            child: Text(title,
+                style: TextStyle(
+                    color: ColorResources().loginScreenTextButton,
+                    fontWeight: FontWeight.bold))),
+      ],
+    ),
   );
 }
 
@@ -122,6 +131,6 @@ SizedBox floatingActionButton(context,
         width: MediaQuery.of(context).size.width,
         child: MaterialButton(
             onPressed: onPressed,
-            color: const Color.fromARGB(255, 0, 101, 255),
-            textColor: Colors.white,
+            color: ColorResources().loginScreenSubmitButton,
+            textColor: ColorResources().loginScreenSubmitButtonText,
             child: widget));

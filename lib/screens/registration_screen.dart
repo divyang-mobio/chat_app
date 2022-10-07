@@ -108,9 +108,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       }, title: TextResources().signUpString),
                       const SizedBox(height: 10),
                       textButton(
-                          onPressed: () => Navigator.pushNamed(
-                              context, RoutesName().signInRoute),
-                          title: TextResources().signInTextButton),
+                          onPressed: () => Navigator.pop(context),
+                          title: TextResources().signInTextButton,
+                          name: TextResources().signUpTextButtonPrefix),
                     ]),
               ),
             ),

@@ -19,7 +19,9 @@ class TextResources {
   final String signUpString = 'Sign Up';
   final String signInString = 'Sign In';
   final String signInTextButton = 'Sign In';
+  final String signInTextButtonPrefix = 'New to app?';
   final String signUpTextButton = 'Sign Up';
+  final String signUpTextButtonPrefix = 'Joined us before?';
   final String nameEmptyValidation = 'Enter name';
   final String emailEmptyValidation = 'Enter email address';
   final String passEmptyValidation = 'Enter password';

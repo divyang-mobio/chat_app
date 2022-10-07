@@ -34,7 +34,7 @@ class _SignInScreenState extends State<SignInScreen> {
             key: formKey,
             child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     image(context, link: 'assets/signIn.png'),
                     loginTitle(context, title: TextResources().signInTile),
@@ -86,7 +86,8 @@ class _SignInScreenState extends State<SignInScreen> {
                     textButton(
                         onPressed: () => Navigator.pushNamed(
                             context, RoutesName().registrationRoute),
-                        title: TextResources().signUpTextButton),
+                        title: TextResources().signUpTextButton,
+                        name: TextResources().signInTextButtonPrefix),
                   ]),
             ),
           ),
