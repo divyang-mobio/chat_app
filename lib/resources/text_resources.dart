@@ -11,6 +11,7 @@ class RoutesName {
   final String registrationRoute = '/signUp';
   final String signInRoute = '/signIn';
   final String newContact = '/newContact';
+  final String chat = '/chat';
 }
 
 class TextResources {
@@ -35,4 +36,5 @@ class TextResources {
   final String error = 'Error';
   final String blocError = 'bloc Error';
   final String logout = 'Logout';
+  final String sendMessageTextFieldHintText = 'Type your message';
 }

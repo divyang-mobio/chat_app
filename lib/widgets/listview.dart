@@ -8,12 +8,16 @@ ListView listView(
     itemCount: isLoading ? 20 : userData.length,
     itemBuilder: (context, index) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ListTile(
-          leading: CircleAvatar(
-              radius: 40,
-              child:
-                  ClipOval(child: Image.asset(ImagePath().noImageImagePath))),
-          title: isLoading ? Container() : Text(userData[index].name)),
+      child: GestureDetector(
+        onTap: () => Navigator.pushNamed(context, RoutesName().chat,
+            arguments: userData[index]),
+        child: ListTile(
+            leading: CircleAvatar(
+                radius: 40,
+                child:
+                    ClipOval(child: Image.asset(ImagePath().noImageImagePath))),
+            title: isLoading ? Container() : Text(userData[index].name)),
+      ),
     ),
   );
 }

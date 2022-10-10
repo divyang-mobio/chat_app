@@ -10,4 +10,5 @@ class IconResources {
   final logout = Icons.logout;
   final search = Icons.search_rounded;
   final floatingActionButtonIcon = Icons.message;
+  final sendMessage = Icons.send;
 }

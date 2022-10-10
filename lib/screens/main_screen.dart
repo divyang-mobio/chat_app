@@ -1,8 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shimmer/shimmer.dart';
 import '../controllers/login_Bloc/login_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import '../controllers/user_bloc/new_contact_bloc.dart';
 import '../resources/resource.dart';
+import '../widgets/listview.dart';
 import '../widgets/pop_up_menu.dart';
 
 class MainScreen extends StatefulWidget {
@@ -13,6 +16,20 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  void callUserData() {
+    String email =
+        (RepositoryProvider.of<FirebaseAuth>(context).currentUser?.email)
+            .toString();
+    BlocProvider.of<NewContactBloc>(context)
+        .add(GetNewContactData(email: email));
+  }
+
+  @override
+  void initState() {
+    callUserData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
@@ -30,19 +47,22 @@ class _MainScreenState extends State<MainScreen> {
               IconButton(onPressed: () {}, icon: Icon(IconResources().search)),
               popupMenuButton()
             ]),
-        body: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('users').where(
-                'persons', arrayContains: 'divyang').snapshots(),
-            builder: (context, snapshot) {
-              return ListView.builder(
-                  itemCount: snapshot.data?.docs.length,
-                  itemBuilder: (_, index) => const Text('hello'));
-            }),
-        floatingActionButton: FloatingActionButton(
-            backgroundColor: ColorResources().bgFloatingActionButton,
-            onPressed: () =>
-                Navigator.pushNamed(context, RoutesName().newContact),
-            child: Icon(IconResources().floatingActionButtonIcon)),
+        body: BlocBuilder<NewContactBloc, NewContactState>(
+          builder: (context, state) {
+            if (state is NewContactInitial) {
+              return Shimmer.fromColors(
+                  baseColor: ColorResources().shimmerBase,
+                  highlightColor: ColorResources().shimmerHighlight,
+                  child: listView(userData: [], isLoading: true));
+            } else if (state is NewContactLoaded) {
+              return listView(userData: state.newContactData, isLoading: false);
+            } else if (state is NewContactError) {
+              return Center(child: Text(TextResources().error));
+            } else {
+              return Center(child: Text(TextResources().blocError));
+            }
+          },
+        ),
       ),
     );
   }

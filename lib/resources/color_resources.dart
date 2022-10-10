@@ -16,4 +16,6 @@ class ColorResources {
   final Color popUpMenuIconColor = Colors.black;
   final Color shimmerBase = Colors.grey.shade400;
   final Color shimmerHighlight = Colors.grey.shade100;
+  final Color sendMessageIcon = Colors.white;
+  final Color sendMessageTextField = Colors.grey.shade100;
 }
