@@ -57,30 +57,37 @@ class DatabaseService {
   }
 
   sendMessage(
-      {required String yourName,
-      required String otherName,
+      {required String yourId,
+      required String yourName,
+      required String otherId,
+      String? ids,
       required String message}) async {
-    final data = await chatsCollection
-        .where('persons.$yourName', isEqualTo: true)
-        .where('persons.$otherName', isEqualTo: true)
-        .get();
-    if (data.docs.isEmpty) {
-      final id = await createChatRoom(yourName: yourName, otherName: otherName);
-      chatsCollection.doc(id).collection('message').doc().set({
-        'name': yourName,
-        'message': message,
-        'time': DateTime.now(),
-      });
+    if (ids == null) {
+      final data = await chatsCollection
+          .where('persons.$yourId', isEqualTo: true)
+          .where('persons.$otherId', isEqualTo: true)
+          .get();
+      if (data.docs.isEmpty) {
+        final id = await createChatRoom(yourName: yourId, otherName: otherId);
+        setMassage(id: id, name: yourName, message: message);
+      } else {
+        List<ChatRoom> id = data.docs
+            .map((e) => ChatRoom.fromJson(e.data() as Map<String, dynamic>))
+            .toList();
+        setMassage(id: id[0].id, name: yourName, message: message);
+      }
     } else {
-      List<ChatRoom> id = data.docs
-          .map((e) => ChatRoom.fromJson(e.data() as Map<String, dynamic>))
-          .toList();
-      chatsCollection.doc(id[0].id).collection('message').doc().set({
-        'name': yourName,
-        'message': message,
-        'time': DateTime.now(),
-      });
+      setMassage(id: ids, name: yourName, message: message);
     }
+  }
+
+  setMassage(
+      {required String id, required String name, required String message}) {
+    chatsCollection.doc(id).collection('message').doc().set({
+      'name': name,
+      'message': message,
+      'time': DateTime.now(),
+    });
   }
 
   Stream<QuerySnapshot> getAllChatData({required String name}) {
@@ -91,23 +98,28 @@ class DatabaseService {
     }
   }
 
-  getId({required String yourName,
-    required String otherName}) async {
+  getId({required String yourName, required String otherName}) async {
     final data = await chatsCollection
         .where('persons.$yourName', isEqualTo: true)
         .where('persons.$otherName', isEqualTo: true)
         .get();
-    List<ChatRoom> id = data.docs
-        .map((e) => ChatRoom.fromJson(e.data() as Map<String, dynamic>))
-        .toList();
-    return id[0].id;
+    if (data.docs.isEmpty) {
+      final id = await createChatRoom(yourName: yourName, otherName: otherName);
+      return id;
+    } else {
+      List<ChatRoom> ids = data.docs
+          .map((e) => ChatRoom.fromJson(e.data() as Map<String, dynamic>))
+          .toList();
+
+      return ids[0].id;
+    }
   }
 
-  Stream<List<MessageModel>> getMessages(
-      {required String id})  {
+  Stream<List<MessageModel>> getMessages({required String id}) {
     return chatsCollection
         .doc(id)
-        .collection('message').orderBy('time', descending: true)
+        .collection('message')
+        .orderBy('time', descending: true)
         .snapshots()
         .transform(Utils.transformer(MessageModel.fromJson));
   }

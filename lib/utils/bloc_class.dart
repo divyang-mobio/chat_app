@@ -1,3 +1,5 @@
+import 'package:chat_app/controllers/chat_bloc/chat_bloc.dart';
+
 import '../controllers/user_bloc/new_contact_bloc.dart';
 import 'firebase_auth.dart';
 import '../controllers/login_Bloc/login_bloc.dart';
@@ -30,6 +32,7 @@ class BlocClass extends StatelessWidget {
                 firebaseAuth: RepositoryProvider.of<FirebaseAuth>(context))),
       ),
       BlocProvider<NewContactBloc>(create: (context) => NewContactBloc()),
+      BlocProvider<ChatBloc>(create: (context) => ChatBloc())
     ], child: const MaterialClass());
   }
 }
