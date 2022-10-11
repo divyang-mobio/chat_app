@@ -9,28 +9,33 @@ import '../utils/firestore_service.dart';
 showMessage({String? id}) {
   return (id == null)
       ? Container()
-      : StreamBuilder<List<MessageModel>>(
-          stream: DatabaseService().getMessages(id: id),
-          builder: (context, snapshot) {
-            final message = snapshot.data;
-            return message == null
-                ? Container()
-                : ListView.builder(
-                    reverse: true,
-                    itemCount: message.length,
-                    itemBuilder: (context, index) {
-                      return (message[index].name ==
-                              (RepositoryProvider.of<FirebaseAuth>(context)
-                                      .currentUser
-                                      ?.displayName)
-                                  .toString())
-                          ? showMessageWidget(context,
-                              message: message[index], isMe: true)
-                          : showMessageWidget(context,
-                              message: message[index], isMe: false);
-                    },
-                  );
-          });
+      : BlocBuilder<ChatBloc, ChatState>(
+          builder: (context, state) {
+            return StreamBuilder<List<MessageModel>>(
+                stream: DatabaseService().getMessages(id: id),
+                builder: (context, snapshot) {
+                  final message = snapshot.data;
+                  return message == null
+                      ? Container()
+                      : ListView.builder(
+                          reverse: true,
+                          itemCount: message.length,
+                          itemBuilder: (context, index) {
+                            return (message[index].name ==
+                                    (RepositoryProvider.of<FirebaseAuth>(
+                                                context)
+                                            .currentUser
+                                            ?.displayName)
+                                        .toString())
+                                ? showMessageWidget(context,
+                                    message: message[index], isMe: true)
+                                : showMessageWidget(context,
+                                    message: message[index], isMe: false);
+                          },
+                        );
+                });
+          },
+        );
 }
 
 showMessageWidget(context,

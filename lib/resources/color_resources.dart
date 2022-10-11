@@ -22,4 +22,7 @@ class ColorResources {
   final Color chatBubbleBorder = Colors.black;
   final Color chatBubbleYourSideText = Colors.black;
   final Color chatBubbleOtherSideText = Colors.white;
+  final Color statusOnlineColor = Colors.green;
+  final Color statusOfflineColor = Colors.grey.shade400;
+  final Color dividerColor = Colors.grey.shade400;
 }

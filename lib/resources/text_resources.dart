@@ -37,4 +37,6 @@ class TextResources {
   final String blocError = 'bloc Error';
   final String logout = 'Logout';
   final String sendMessageTextFieldHintText = 'Type your message';
+  final String onlineStatue = 'Online';
+  final String offlineStatue = 'Offline';
 }

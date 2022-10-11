@@ -11,12 +11,35 @@ ListView listView(
       child: GestureDetector(
         onTap: () => Navigator.pushNamed(context, RoutesName().chat,
             arguments: userData[index]),
-        child: ListTile(
-            leading: CircleAvatar(
-                radius: 40,
-                child:
-                    ClipOval(child: Image.asset(ImagePath().noImageImagePath))),
-            title: isLoading ? Container() : Text(userData[index].name)),
+        child: Column(
+          children: [
+            ListTile(
+                leading: CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    radius: 40,
+                    child: Stack(
+                      children: [
+                        ClipOval(
+                            child: Image.asset(ImagePath().noImageImagePath)),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: CircleAvatar(
+                                backgroundColor: userData[index].status
+                                    ? ColorResources().statusOnlineColor
+                                    : ColorResources().statusOfflineColor,
+                                radius: 7),
+                          ),
+                        ),
+                      ],
+                    )),
+                title: isLoading
+                    ? Container()
+                    : Text(userData[index].name)),
+            Divider(color: ColorResources().dividerColor)
+          ],
+        ),
       ),
     ),
   );

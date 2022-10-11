@@ -18,11 +18,21 @@ class DatabaseService {
     return userCollection.doc(uid).set({
       'name': name,
       'email': email,
-      'groups': [],
-      'persons': [],
+      'status': false,
       'uid': uid,
       'profilePic': ''
     });
+  }
+
+  changeStatus({required bool status}) {
+    userCollection.doc(uid).update({'status': status});
+  }
+
+  checkIndividualStatus() {
+    return userCollection
+        .where('uid', isEqualTo: uid)
+        .snapshots()
+        .transform(Utils.transformer(UserModel.fromJson));
   }
 
   Future createChatRoom(
@@ -44,13 +54,12 @@ class DatabaseService {
         .toList();
   }
 
-  Future getAllUserData({required String email}) async {
+  Stream<List<UserModel>> getAllUserData({required String email}) {
     try {
-      QuerySnapshot data =
-          await userCollection.where('email', isNotEqualTo: email).get();
-      return data.docs
-          .map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>))
-          .toList();
+      return userCollection
+          .where('email', isNotEqualTo: email)
+          .snapshots()
+          .transform(Utils.transformer(UserModel.fromJson));
     } catch (e) {
       throw 'error';
     }

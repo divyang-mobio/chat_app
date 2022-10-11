@@ -5,7 +5,7 @@ abstract class NewContactState {}
 class NewContactInitial extends NewContactState {}
 
 class NewContactLoaded extends NewContactState {
-  List<UserModel> newContactData;
+  Stream<List<UserModel>> newContactData;
 
   NewContactLoaded({required this.newContactData});
 }

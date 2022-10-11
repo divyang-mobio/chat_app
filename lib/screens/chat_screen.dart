@@ -3,6 +3,7 @@ import 'package:chat_app/resources/resource.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../controllers/show_Status_bloc/show_status_bloc.dart';
 import '../models/user_model.dart';
 import '../widgets/chat_screen_widgets.dart';
 
@@ -26,35 +27,60 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     getChatId();
+    BlocProvider.of<ShowStatusBloc>(context)
+        .add(ShowStatus(id: widget.userModel.uid));
     super.initState();
+  }
+
+  BlocBuilder checkStatus() {
+    return BlocBuilder<ShowStatusBloc, ShowStatusState>(
+      builder: (context, state) {
+        if (state is ShowStatusLoaded) {
+          return StreamBuilder<List<UserModel>>(
+              stream: state.status,
+              builder: (context, snapshot) {
+                if (snapshot.data != null) {
+                  return Text(snapshot.data![0].status
+                      ? TextResources().onlineStatue
+                      : TextResources().offlineStatue);
+                } else {
+                  return const Text('');
+                }
+              });
+        } else {
+          return const Text('');
+        }
+      },
+    );
+  }
+
+  Column showBody({String? id}) {
+    return Column(
+      children: [
+        Expanded(
+            child: Container(
+          child: showMessage(id: id),
+        )),
+        NewMessageSend(otherId: widget.userModel.uid, id: id)
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(widget.userModel.name)),
+        appBar: AppBar(
+            title: ListTile(
+          title: Text(widget.userModel.name),
+          subtitle: checkStatus(),
+          textColor: ColorResources().appBarIconTextColor,
+        )),
         body: BlocBuilder<ChatBloc, ChatState>(
           builder: (context, state) {
             if (state is ChatInitial) {
-              return Column(
-                children: [
-                  Expanded(
-                      child: Container(
-                    child: showMessage(),
-                  )),
-                  NewMessageSend(otherId: widget.userModel.uid)
-                ],
-              );
+              return showBody();
             } else if (state is HaveID) {
-              return Column(
-                children: [
-                  Expanded(
-                      child: Container(
-                    child: showMessage(id: state.id),
-                  )),
-                  NewMessageSend(otherId: widget.userModel.uid, id: state.id)
-                ],
-              );
+              return showBody(id: state.id);
             } else {
               return Center(child: Text(TextResources().blocError));
             }

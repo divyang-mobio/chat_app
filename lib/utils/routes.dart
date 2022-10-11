@@ -18,9 +18,9 @@ class RouteGenerator {
             builder: (context) => const RegistrationScreen());
       case '/signIn':
         return MaterialPageRoute(builder: (context) => const SignInScreen());
-      case '/newContact':
-        return MaterialPageRoute(
-            builder: (context) => const SelectContactScreen());
+      // case '/newContact':
+      //   return MaterialPageRoute(
+      //       builder: (context) => const SelectContactScreen());
       case '/chat':
         final args = settings.arguments as UserModel;
         return MaterialPageRoute(builder: (context) => ChatScreen(userModel: args));

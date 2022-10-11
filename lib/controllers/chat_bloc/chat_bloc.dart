@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-
 import '../../utils/firestore_service.dart';
 
 part 'chat_event.dart';
@@ -28,5 +27,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           .getId(yourName: event.yourUid, otherName: event.otherUid);
       emit(HaveID(id: id));
     });
+
   }
 }
