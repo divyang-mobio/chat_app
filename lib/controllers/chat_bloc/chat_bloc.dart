@@ -25,8 +25,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       emit(ChatInitial());
       String id = await DatabaseService()
           .getId(yourName: event.yourUid, otherName: event.otherUid);
-      emit(HaveID(id: id));
+      if (id.isNotEmpty) {
+        emit(HaveID(id: id));
+      }
     });
-
   }
 }
