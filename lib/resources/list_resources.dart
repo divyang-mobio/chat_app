@@ -11,3 +11,29 @@ class ListResources {
     return popupMenuList;
   }
 }
+
+class BottomSheetList {
+  List<BottomSheetModel> getBottomSheetData() {
+    return [
+      BottomSheetModel(
+          title: 'Open Camera',
+          type: SendDataType.image,
+          imageSource: ImageSource.camera),
+      BottomSheetModel(
+          title: 'Upload Video',
+          type: SendDataType.file,
+          imageSource: ImageSource.gallery),
+      BottomSheetModel(
+          title: 'Upload Image',
+          type: SendDataType.image,
+          imageSource: ImageSource.gallery),
+    ];
+  }
+}
+
+enum SendDataType {
+  image,
+  text,
+  file,
+  video,
+}

@@ -39,4 +39,8 @@ class TextResources {
   final String sendMessageTextFieldHintText = 'Type your message';
   final String onlineStatue = 'Online';
   final String offlineStatue = 'Offline';
+  final String errorAtMessageSendTime = 'message not send';
+  final String imageStoreInStoragePath = 'chat_file/';
+  final String alertBoxButton = 'OK';
+  final String permissionIsNotGiven = 'Pls allow permission';
 }

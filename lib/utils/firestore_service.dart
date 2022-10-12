@@ -4,6 +4,9 @@ import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../resources/resource.dart';
+import '../widgets/json_model_stream_converter.dart';
+
 class DatabaseService {
   final String? uid;
 
@@ -69,6 +72,7 @@ class DatabaseService {
       {required String yourId,
       required String yourName,
       required String otherId,
+      required SendDataType type,
       String? ids,
       required String message}) async {
     if (ids == null) {
@@ -78,23 +82,31 @@ class DatabaseService {
           .get();
       if (data.docs.isEmpty) {
         final id = await createChatRoom(yourName: yourId, otherName: otherId);
-        setMassage(id: id, name: yourName, message: message);
+        setMassage(id: id, name: yourName, message: message, type: type);
       } else {
         List<ChatRoom> id = data.docs
             .map((e) => ChatRoom.fromJson(e.data() as Map<String, dynamic>))
             .toList();
-        setMassage(id: id[0].id, name: yourName, message: message);
+        setMassage(id: id[0].id, name: yourName, message: message, type: type);
       }
     } else {
-      setMassage(id: ids, name: yourName, message: message);
+      setMassage(id: ids, name: yourName, message: message, type: type);
     }
   }
 
   setMassage(
-      {required String id, required String name, required String message}) {
+      {required String id,
+      required String name,
+      required String message,
+      required SendDataType type}) {
     chatsCollection.doc(id).collection('message').doc().set({
       'name': name,
       'message': message,
+      'type': (type == SendDataType.text)
+          ? 'text'
+          : (type == SendDataType.image)
+              ? 'image'
+              : 'video',
       'time': DateTime.now(),
     });
   }
@@ -132,19 +144,4 @@ class DatabaseService {
         .snapshots()
         .transform(Utils.transformer(MessageModel.fromJson));
   }
-}
-
-class Utils {
-  static StreamTransformer<QuerySnapshot<Map<String, dynamic>>, List<T>>
-      transformer<T>(T Function(Map<String, dynamic> json) fromJson) =>
-          StreamTransformer<QuerySnapshot<Map<String, dynamic>>,
-              List<T>>.fromHandlers(
-            handleData: (QuerySnapshot<Map<String, dynamic>> data,
-                EventSink<List<T>> sink) {
-              final snaps = data.docs.map((doc) => doc.data()).toList();
-              final users = snaps.map((json) => fromJson(json)).toList();
-
-              sink.add(users);
-            },
-          );
 }

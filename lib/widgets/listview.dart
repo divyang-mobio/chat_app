@@ -25,7 +25,7 @@ ListView listView(
                           padding: const EdgeInsets.only(left: 10),
                           child: Align(
                             alignment: Alignment.bottomCenter,
-                            child: CircleAvatar(
+                            child: isLoading  ? const SizedBox() :CircleAvatar(
                                 backgroundColor: userData[index].status
                                     ? ColorResources().statusOnlineColor
                                     : ColorResources().statusOfflineColor,

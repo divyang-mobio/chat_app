@@ -11,4 +11,5 @@ class IconResources {
   final search = Icons.search_rounded;
   final floatingActionButtonIcon = Icons.message;
   final sendMessage = Icons.send;
+  final addOtherTypeOfMessage = Icons.add;
 }

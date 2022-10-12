@@ -1,6 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:chat_app/resources/resource.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../utils/firestore_service.dart';
+import '../../widgets/upload_image.dart';
 
 part 'chat_event.dart';
 
@@ -15,11 +18,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             yourName: event.name,
             yourId: event.yourUid,
             ids: event.id,
+            type: event.type,
             otherId: event.otherUid);
       } catch (e) {
-        ScaffoldMessenger.of(event.context)
-            .showSnackBar(const SnackBar(content: Text('message not send')));
+        ScaffoldMessenger.of(event.context).showSnackBar(
+            SnackBar(content: Text(TextResources().errorAtMessageSendTime)));
       }
+    });
+
+    on<SendTypeMessage>((event, emit) async {
+      uploadImage(event.context,
+          imageSource: event.imageSource, otherUid: event.otherUid);
     });
     on<GetId>((event, emit) async {
       emit(ChatInitial());
