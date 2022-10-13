@@ -6,7 +6,11 @@ class BottomSheetModel {
   String title;
   SendDataType type;
   ImageSource imageSource;
+  bool isVideo;
 
   BottomSheetModel(
-      {required this.title, required this.type, required this.imageSource});
+      {required this.title,
+      required this.type,
+      required this.imageSource,
+      required this.isVideo});
 }

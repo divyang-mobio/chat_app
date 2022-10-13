@@ -28,7 +28,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     on<SendTypeMessage>((event, emit) async {
       uploadImage(event.context,
-          imageSource: event.imageSource, otherUid: event.otherUid);
+          imageSource: event.imageSource,
+          otherUid: event.otherUid,
+          isVideo: event.isVideo,
+          type: event.type);
     });
     on<GetId>((event, emit) async {
       emit(ChatInitial());

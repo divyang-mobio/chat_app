@@ -19,21 +19,18 @@ class SendMessage extends ChatEvent {
 }
 
 class SendTypeMessage extends ChatEvent {
-  String? id;
   BuildContext context;
-  String message, name, yourUid, otherUid;
+  String otherUid;
   SendDataType type;
+  bool isVideo;
   ImageSource imageSource;
 
   SendTypeMessage(
-      {required this.name,
-        this.id,
+      {required this.isVideo,
         required this.context,
-        required this.message,
         required this.otherUid,
         required this.imageSource,
-        required this.type,
-        required this.yourUid});
+        required this.type});
 }
 
 class GetId extends ChatEvent {

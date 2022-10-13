@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/resources/resource.dart';
@@ -21,21 +20,11 @@ bottomSheet(contexts, {required String otherUid}) {
                         onPressed: () {
                           BlocProvider.of<ChatBloc>(context).add(
                               SendTypeMessage(
-                                  name: (RepositoryProvider.of<FirebaseAuth>(
-                                              context)
-                                          .currentUser
-                                          ?.displayName)
-                                      .toString(),
                                   context: contexts,
-                                  message: '',
                                   otherUid: otherUid,
                                   type: data.type,
-                                  yourUid: (RepositoryProvider.of<FirebaseAuth>(
-                                              context)
-                                          .currentUser
-                                          ?.uid)
-                                      .toString(),
-                                  imageSource: data.imageSource));
+                                  imageSource: data.imageSource,
+                                  isVideo: data.isVideo));
                           Navigator.pop(context);
                         },
                         child: Text(data.title),
@@ -61,23 +50,12 @@ bottomSheet(contexts, {required String otherUid}) {
                           onPressed: () {
                             BlocProvider.of<ChatBloc>(context).add(
                                 SendTypeMessage(
-                                    name: (RepositoryProvider.of<FirebaseAuth>(
-                                                context)
-                                            .currentUser
-                                            ?.displayName)
-                                        .toString(),
                                     context: contexts,
-                                    message: '',
                                     otherUid: otherUid,
                                     type: e.type,
-                                    yourUid:
-                                        (RepositoryProvider.of<FirebaseAuth>(
-                                                    context)
-                                                .currentUser
-                                                ?.uid)
-                                            .toString(),
-                                    imageSource: e.imageSource));
-                            Navigator.of(context);
+                                    imageSource: e.imageSource,
+                                    isVideo: e.isVideo));
+                            Navigator.pop(context);
                           },
                           child: Text(e.title)))
                       .toList()),

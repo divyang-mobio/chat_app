@@ -9,15 +9,22 @@ import '../resources/resource.dart';
 import 'alert_box.dart';
 
 void uploadImage(context,
-    {required ImageSource imageSource, required String otherUid}) async {
+    {required ImageSource imageSource,
+    required String otherUid,
+    required SendDataType type,
+    required bool isVideo}) async {
   final imagePicker = ImagePicker();
   XFile? image;
   await Permission.photos.request();
   var permissionStatus = await Permission.photos.status;
   if (permissionStatus.isGranted) {
-    image = await imagePicker.pickVideo(source: imageSource);
+    if (isVideo) {
+      image = await imagePicker.pickVideo(source: imageSource);
+    } else {
+      image = await imagePicker.pickImage(source: imageSource);
+    }
     if (image != null) {
-      uploadToFireStore(context, file: image, otherUid: otherUid);
+      uploadToFireStore(context, file: image, otherUid: otherUid, type: type);
     }
   } else {
     await alertDialog(context, TextResources().permissionIsNotGiven);
@@ -25,7 +32,7 @@ void uploadImage(context,
 }
 
 void uploadToFireStore(context,
-    {required XFile file, required String otherUid}) async {
+    {required XFile file, required String otherUid, required SendDataType type}) async {
   final firebaseStorage = FirebaseStorage.instance;
   try {
     var snapshot = await firebaseStorage
@@ -43,7 +50,7 @@ void uploadToFireStore(context,
         otherUid: otherUid,
         yourUid: (RepositoryProvider.of<FirebaseAuth>(context).currentUser?.uid)
             .toString(),
-        type: SendDataType.image));
+        type: type));
   } catch (e) {
     await alertDialog(context, 'error');
   }

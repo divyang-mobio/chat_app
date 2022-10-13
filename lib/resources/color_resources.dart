@@ -25,4 +25,6 @@ class ColorResources {
   final Color statusOnlineColor = Colors.green;
   final Color statusOfflineColor = Colors.grey.shade400;
   final Color dividerColor = Colors.grey.shade400;
+  final Color videoPlayIconText = Colors.white;
+  final Color videoPlayContainer = const Color.fromRGBO(0, 0, 0, 0.5);
 }

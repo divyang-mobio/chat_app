@@ -1,3 +1,4 @@
+import 'package:chat_app/controllers/video_thumbnail_bloc/video_thumbnail_bloc.dart';
 import 'package:chat_app/widgets/bottom_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,74 +14,78 @@ showMessage({String? id}) {
   return (id == null)
       ? Container()
       : BlocBuilder<ChatBloc, ChatState>(
-    builder: (context, state) {
-      return StreamBuilder<List<MessageModel>>(
-          stream: DatabaseService().getMessages(id: id),
-          builder: (context, snapshot) {
-            final message = snapshot.data;
-            return message == null
-                ? Container()
-                : ListView.builder(
-              reverse: true,
-              itemCount: message.length,
-              itemBuilder: (context, index) {
-                return (message[index].name ==
-                    (RepositoryProvider
-                        .of<FirebaseAuth>(
-                        context)
-                        .currentUser
-                        ?.displayName)
-                        .toString())
-                    ? showMessageWidget(context,
-                    message: message[index], isMe: true)
-                    : showMessageWidget(context,
-                    message: message[index], isMe: false);
-              },
-            );
-          });
-    },
-  );
+          builder: (context, state) {
+            return StreamBuilder<List<MessageModel>>(
+                stream: DatabaseService().getMessages(id: id),
+                builder: (context, snapshot) {
+                  final message = snapshot.data;
+                  return message == null
+                      ? Container()
+                      : ListView.builder(
+                          reverse: true,
+                          itemCount: message.length,
+                          itemBuilder: (context, index) {
+                            return (message[index].name ==
+                                    (RepositoryProvider.of<FirebaseAuth>(
+                                                context)
+                                            .currentUser
+                                            ?.displayName)
+                                        .toString())
+                                ? showMessageWidget(context,
+                                    message: message[index], isMe: true)
+                                : showMessageWidget(context,
+                                    message: message[index], isMe: false);
+                          },
+                        );
+                });
+          },
+        );
 }
 
-SwipeTo showMessageWidget(context,
+Row showMessageWidget(context,
     {required MessageModel message, required bool isMe}) {
-  return SwipeTo(
-    onRightSwipe: isMe ? null : () {},
-    rightSwipeWidget: Text(message.data.toString()),
-    onLeftSwipe: isMe ? () {} : null,
-    leftSwipeWidget: Text(message.data.toString()),
-    child: Row(
-      mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        if (isMe) Flexible(flex: 1, child: Container()),
-        Flexible(
-          flex: 2,
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                color: isMe
-                    ? ColorResources().chatBubbleYourSideBG
-                    : Theme
-                    .of(context)
-                    .primaryColor,
-                borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(10),
-                    topRight: const Radius.circular(10),
-                    bottomLeft: Radius.circular(isMe ? 10 : 0),
-                    bottomRight: Radius.circular(isMe ? 0 : 10)),
-                border: Border.all(color: ColorResources().chatBubbleBorder)),
-            child:
+  return Row(
+    mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+    children: [
+      if (isMe) const Flexible(flex: 1, child: SizedBox()),
+      Flexible(
+        flex: 2,
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          margin: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              color: isMe
+                  ? ColorResources().chatBubbleYourSideBG
+                  : Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(10),
+                  topRight: const Radius.circular(10),
+                  bottomLeft: Radius.circular(isMe ? 10 : 0),
+                  bottomRight: Radius.circular(isMe ? 0 : 10)),
+              border: Border.all(color: ColorResources().chatBubbleBorder)),
+          child: Wrap(alignment:isMe ? WrapAlignment.start : WrapAlignment.end,children: [
             (message.type == SendDataType.text)
                 ? textMessage(isMe: isMe, text: message.message)
-                : (message.type == SendDataType.image) ?
-            networkImages(link: message.message) : Text(message.type.toString()),
-            // : videoThumbNail(link: message.message),
-          ),
+                : (message.type == SendDataType.image)
+                    ? networkImages(
+                        link: message
+                            .message) // : Text(message.type.toString()),
+                    : BlocProvider<VideoThumbnailBloc>(
+                        create: (context) => VideoThumbnailBloc(),
+                        child: VideoThumbNail(link: message.message),
+                      ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, top: 8, right: 8),
+              child: Text(message.data, style: TextStyle(
+                  color: isMe
+                      ? ColorResources().chatBubbleYourSideText
+                      : ColorResources().chatBubbleOtherSideText)),
+            ),
+          ]),
         ),
-        if (!isMe) Flexible(flex: 1, child: Container()),
-      ],
-    ),
+      ),
+      if (!isMe) const Flexible(flex: 1, child: SizedBox()),
+    ],
   );
 }
 
@@ -108,18 +113,14 @@ class _NewMessageSendState extends State<NewMessageSend> {
   void sendMessage() async {
     FocusScope.of(context).unfocus();
     BlocProvider.of<ChatBloc>(context).add(SendMessage(
-        name: (RepositoryProvider
-            .of<FirebaseAuth>(context)
-            .currentUser
-            ?.displayName)
+        name: (RepositoryProvider.of<FirebaseAuth>(context)
+                .currentUser
+                ?.displayName)
             .toString(),
         context: context,
         message: _controller.text.trim(),
         otherUid: widget.otherId,
-        yourUid: (RepositoryProvider
-            .of<FirebaseAuth>(context)
-            .currentUser
-            ?.uid)
+        yourUid: (RepositoryProvider.of<FirebaseAuth>(context).currentUser?.uid)
             .toString(),
         type: SendDataType.text));
     _controller.clear();
@@ -166,9 +167,7 @@ class _NewMessageSendState extends State<NewMessageSend> {
           child: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-                shape: BoxShape.circle, color: Theme
-                .of(context)
-                .primaryColor),
+                shape: BoxShape.circle, color: Theme.of(context).primaryColor),
             child: Icon(IconResources().sendMessage,
                 color: ColorResources().sendMessageIcon),
           ),

@@ -12,4 +12,7 @@ class IconResources {
   final floatingActionButtonIcon = Icons.message;
   final sendMessage = Icons.send;
   final addOtherTypeOfMessage = Icons.add;
+  final videoPlay = Icons.play_arrow;
+  final videoPause = Icons.pause;
+  final navigationBack = Icons.navigate_before_outlined;
 }

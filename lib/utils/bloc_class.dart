@@ -2,6 +2,7 @@ import 'package:chat_app/controllers/chat_bloc/chat_bloc.dart';
 
 import '../controllers/show_Status_bloc/show_status_bloc.dart';
 import '../controllers/user_bloc/new_contact_bloc.dart';
+import '../controllers/video_player_bloc/visible_container_bloc.dart';
 import 'firebase_auth.dart';
 import '../controllers/login_Bloc/login_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,7 +35,10 @@ class BlocClass extends StatelessWidget {
       ),
       BlocProvider<NewContactBloc>(create: (context) => NewContactBloc()),
       BlocProvider<ShowStatusBloc>(create: (context) => ShowStatusBloc()),
-      BlocProvider<ChatBloc>(create: (context) => ChatBloc())
+      BlocProvider<ChatBloc>(create: (context) => ChatBloc()),
+      BlocProvider<VisibleContainerBloc>(
+          create: (context) =>
+              VisibleContainerBloc()..add(ShowContainer(isVis: true)))
     ], child: const MaterialClass());
   }
 }

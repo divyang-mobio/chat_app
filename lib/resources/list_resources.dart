@@ -18,15 +18,23 @@ class BottomSheetList {
       BottomSheetModel(
           title: 'Open Camera',
           type: SendDataType.image,
-          imageSource: ImageSource.camera),
+          imageSource: ImageSource.camera,
+          isVideo: false),
       BottomSheetModel(
           title: 'Upload Video',
-          type: SendDataType.file,
-          imageSource: ImageSource.gallery),
+          type: SendDataType.video,
+          imageSource: ImageSource.gallery,
+          isVideo: true),
+      BottomSheetModel(
+          title: 'Open Video',
+          type: SendDataType.video,
+          imageSource: ImageSource.camera,
+          isVideo: true),
       BottomSheetModel(
           title: 'Upload Image',
           type: SendDataType.image,
-          imageSource: ImageSource.gallery),
+          imageSource: ImageSource.gallery,
+          isVideo: false),
     ];
   }
 }

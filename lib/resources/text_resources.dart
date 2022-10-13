@@ -12,6 +12,7 @@ class RoutesName {
   final String signInRoute = '/signIn';
   final String newContact = '/newContact';
   final String chat = '/chat';
+  final String videoPlay = '/videoPlay';
 }
 
 class TextResources {
