@@ -3,32 +3,39 @@ import 'firestore_service.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth firebaseAuth;
+  String verificationIDString = '';
 
   FirebaseAuthService({required this.firebaseAuth});
 
-  Future signInUser({required String email, required String password}) async {
+  Future enterOtp({required String otp}) async {
     try {
-      await firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationIDString, smsCode: otp);
+      await firebaseAuth.signInWithCredential(credential).then((value) async {
+        await DatabaseService(uid: value.user?.uid)
+            .addUserData(phone: (value.user?.phoneNumber).toString());
+      });
       return true;
     } catch (e) {
       throw e.toString();
     }
   }
 
-  Future signUpUser(
-      {required String name,
-      required String email,
-      required String password}) async {
+  Future enterPhone({required String phone}) async {
     try {
-      UserCredential result = await firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      if (result.user != null) {
-        await result.user?.updateDisplayName(name);
-        await DatabaseService(uid: result.user?.uid)
-            .addUserData(name: name, email: email);
-        return true;
-      }
+      firebaseAuth.verifyPhoneNumber(
+          phoneNumber: '+91 $phone',
+          codeSent: (verificationID, token) {
+            verificationIDString = verificationID;
+          },
+          codeAutoRetrievalTimeout: (verificationID) {},
+          verificationCompleted: (credential) async => await firebaseAuth
+              .signInWithCredential(credential)
+              .then((value) => print('complete')),
+          verificationFailed: (exception) {
+            throw exception.toString();
+          });
+      return true;
     } catch (e) {
       throw e.toString();
     }

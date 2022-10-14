@@ -1,9 +1,10 @@
-import 'package:email_validator/email_validator.dart';
-import '../controllers/login_Bloc/login_bloc.dart';
+import 'package:chat_app/controllers/update_profile_bloc/update_profile_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../controllers/upload_user_image_bloc/image_bloc.dart';
 import '../widgets/login_screens_widget.dart';
 import 'package:flutter/material.dart';
 import '../resources/resource.dart';
+import '../widgets/network_image.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -14,105 +15,148 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
+  String url = '';
 
   @override
   void dispose() {
     _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
     super.dispose();
+  }
+
+  GestureDetector showProfilePic(
+      {required GestureTapCallback onTap, required Widget child}) {
+    return GestureDetector(
+      onTap: onTap,
+      child:
+      CircleAvatar(backgroundColor: Colors.grey, radius: 60, child: child),
+    );
+  }
+
+  void navigator() {
+    Navigator.pushNamedAndRemoveUntil(
+        context, RoutesName().mainScreenRoute, (route) => false);
+  }
+
+  void showError() {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(TextResources().error)));
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
-      listener: (context, state) {
-        if (state is LoginSuccess) {
-          Navigator.pop(context);
-        }
-      },
-      child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Form(
-              key: formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      image(context, link: ImagePath().signUpImagePath),
-                      loginTitle(context, title: TextResources().signUpTile),
-                      const SizedBox(height: 20),
-                      CustomTextField(
-                          controller: _nameController,
-                          hintName: TextResources().nameHintText,
-                          isPassword: false,
-                          iconData: IconResources().namePrefixInLogin,
-                          textInputAction: TextInputAction.next,
-                          validator: (value) {
-                            if (value == '') {
-                              return TextResources().nameEmptyValidation;
-                            } else if (value != null && value.length < 3) {
-                              return TextResources().nameInValidValidation;
-                            }
-                            return null;
-                          }),
-                      const SizedBox(height: 20),
-                      CustomTextField(
-                          controller: _emailController,
-                          hintName: TextResources().emailHintText,
-                          isPassword: false,
-                          iconData: IconResources().emailPrefixInLogin,
-                          textInputAction: TextInputAction.next,
-                          validator: (value) {
-                            if (value == '') {
-                              return TextResources().emailEmptyValidation;
-                            } else if (value != null &&
-                                !EmailValidator.validate(value)) {
-                              return TextResources().emailInValidValidation;
-                            } else {
-                              return null;
-                            }
-                          }),
-                      const SizedBox(height: 20),
-                      CustomTextField(
-                          controller: _passwordController,
-                          hintName: TextResources().passHintText,
-                          isPassword: true,
-                          iconData: IconResources().passPrefixInLogin,
-                          textInputAction: TextInputAction.go,
-                          validator: (value) {
-                            if (value == '') {
-                              return TextResources().passEmptyValidation;
-                            } else if (value != null && value.length < 8) {
-                              return TextResources().passInValidValidation;
-                            } else {
-                              return null;
-                            }
-                          }),
-                      const SizedBox(height: 20),
-                      submitButtonRow(context, onPressed: () {
-                        final isValidForm = formKey.currentState?.validate();
-                        if (isValidForm != null) {
-                          if (isValidForm) {
-                            BlocProvider.of<LoginBloc>(context).add(SignUp(
-                                name: _nameController.text.trim(),
-                                email: _emailController.text.trim(),
-                                password: _passwordController.text.trim()));
-                          }
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: SingleChildScrollView(
+            child: Stack(
+              children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Center(
+                    child: BlocConsumer<ImageBloc, ImageState>(
+                      listener: (context, state) {
+                        if (state is ImageError) {
+                          showError();
                         }
-                      }, title: TextResources().signUpString),
-                      const SizedBox(height: 10),
-                      textButton(
-                          onPressed: () => Navigator.pop(context),
-                          title: TextResources().signInTextButton,
-                          name: TextResources().signUpTextButtonPrefix),
-                    ]),
-              ),
+                      },
+                      builder: (context, state) {
+                        if (state is ImageInitial) {
+                          url = '';
+                          return showProfilePic(
+                              onTap: () {
+                                BlocProvider.of<ImageBloc>(context)
+                                    .add(UploadImage());
+                              },
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(45),
+                                  child: Image.asset(
+                                      ImagePath().noImageImagePath)));
+                        } else if (state is ImageLoading) {
+                          return showProfilePic(
+                              onTap: () {},
+                              child: const Center(
+                                  child: CircularProgressIndicator.adaptive()));
+                        } else if (state is ImageLoaded) {
+                          url = state.url;
+                          return Stack(children: [
+                            showProfilePic(
+                              onTap: () {},
+                              child: ClipOval(
+                                child: SizedBox.fromSize(
+                                  size: const Size.fromRadius(60),
+                                  child: networkImages(link: state.url),
+                                ),
+                              ),
+                            ),
+                            Positioned.fill(
+                                child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: IconButton(
+                                        onPressed: () {
+                                          BlocProvider.of<ImageBloc>(context)
+                                              .add(DeleteImage(url: state.url));
+                                        },
+                                        icon: const Icon(Icons.cancel,
+                                            color: Colors.red))))
+                          ]);
+                        } else {
+                          return Text(TextResources().error);
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  CustomTextField(
+                      controller: _nameController,
+                      hintName: TextResources().nameHintText,
+                      iconData: IconResources().namePrefixInLogin,
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        return null;
+                      },
+                      keyBoard: TextInputType.text,
+                      isLogin: false),
+                  const SizedBox(height: 20),
+                  BlocConsumer<UpdateProfileBloc, UpdateProfileState>(
+                    listener: (context, state) {
+                      if (state is UpdateProfileLoaded) {
+                        navigator();
+                      } else if (state is UpdateProfileError) {
+                        showError();
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is UpdateProfileInitial) {
+                        return floatingActionButton(context, onPressed: () {
+                          BlocProvider.of<UpdateProfileBloc>(context).add(
+                              UpdateProfile(
+                                  url: url, name: _nameController.text.trim()));
+                        }, widget: Text(TextResources().updateProfileString));
+                      } else if (state is UpdateProfileLoading) {
+                        return floatingActionButton(context,
+                            onPressed: () {},
+                            widget: CircularProgressIndicator.adaptive(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    ColorResources()
+                                        .loginScreenCircularIndicator)));
+                      } else if (state is UpdateProfileLoaded) {
+                        return floatingActionButton(context,
+                            onPressed: () {},
+                            color: Colors.green,
+                            widget: const Text('success'));
+                      } else {
+                        return floatingActionButton(context,
+                            onPressed: () {},
+                            widget: Text(TextResources().error));
+                      }
+                    },
+                  ),
+                ]),
+                Positioned.fill(child: Align(alignment: Alignment.topRight,
+                  child: TextButton(child: Text('skip'), onPressed: () {
+                    navigator();
+                  },),))
+              ],
             ),
           ),
         ),

@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../resources/shared_data.dart';
 import '../screens/signIn_screen.dart';
 import 'package:flutter/material.dart';
 import '../screens/main_screen.dart';
@@ -15,20 +17,19 @@ class RedirectClass extends StatefulWidget {
 class _RedirectClassState extends State<RedirectClass> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: RepositoryProvider.of<FirebaseAuth>(context).authStateChanges(),
+    return FutureBuilder(
+        future: PreferenceServices().getUid(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return const MainScreen();
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-                body: Center(child: CircularProgressIndicator()));
-          } else if (snapshot.hasError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(TextResources().redirectScreenError)));
-            return const SignInScreen();
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data == '') {
+              return const SignInScreen();
+            } else {
+              return const MainScreen();
+            }
           } else {
-            return const SignInScreen();
+            return const Scaffold(
+                body: Center(
+                    child: SizedBox(child: CircularProgressIndicator())));
           }
         });
   }

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:chat_app/models/chat_room_model.dart';
 import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/models/user_model.dart';
+import 'package:chat_app/resources/shared_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../resources/resource.dart';
@@ -17,14 +19,20 @@ class DatabaseService {
   final CollectionReference chatsCollection =
       FirebaseFirestore.instance.collection('chats');
 
-  Future addUserData({required String name, required String email}) async {
+  Future addUserData({required String phone}) async {
+    PreferenceServices().setNo(number: phone, uid: uid.toString());
     return userCollection.doc(uid).set({
-      'name': name,
-      'email': email,
+      'name': '',
+      'phone': phone,
       'status': false,
       'uid': uid,
       'profilePic': ''
     });
+  }
+
+  Future<bool> updateProfile({String name = '', String pic = ''}) async {
+    await userCollection.doc(uid).update({'name': name, 'profilePic': pic});
+    return true;
   }
 
   changeStatus({required bool status}) {
@@ -49,18 +57,18 @@ class DatabaseService {
     return getId.id;
   }
 
-  Future getUserData({required String email}) async {
-    QuerySnapshot data =
-        await userCollection.where('email', isEqualTo: email).get();
-    return data.docs
-        .map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>))
-        .toList();
-  }
+  // Future getUserData({required String email}) async {
+  //   QuerySnapshot data =
+  //       await userCollection.where('email', isEqualTo: email).get();
+  //   return data.docs
+  //       .map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>))
+  //       .toList();
+  // }
 
-  Stream<List<UserModel>> getAllUserData({required String email}) {
+  Stream<List<UserModel>> getAllUserData() {
     try {
       return userCollection
-          .where('email', isNotEqualTo: email)
+          .where('uid', isNotEqualTo: uid)
           .snapshots()
           .transform(Utils.transformer(UserModel.fromJson));
     } catch (e) {

@@ -1,25 +1,26 @@
 import 'package:bloc/bloc.dart';
-import '../../utils/firebase_auth.dart';
+import 'package:chat_app/resources/shared_data.dart';
+import 'package:chat_app/utils/firebase_auth.dart';
+import 'package:chat_app/utils/firestore_service.dart';
 
 part 'login_event.dart';
 
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  FirebaseAuthService firebaseAuthService;
+  FirebaseAuthService firebaseAuth;
+  String verificationIDString = '';
 
-  LoginBloc({required this.firebaseAuthService}) : super(LoginInitial()) {
-    on<SignIn>(_signIn);
+  LoginBloc({required this.firebaseAuth}) : super(LoginInitial()) {
+    on<GetOtp>(_getOTP);
     on<SignUp>(_signUp);
     on<LogOut>(_logout);
   }
 
-  void _signIn(SignIn event, Emitter<LoginState> emit) async {
-    emit(LoginLoading());
+  void _getOTP(GetOtp event, Emitter<LoginState> emit) async {
     try {
-      await firebaseAuthService.signInUser(
-          email: event.email, password: event.password);
-      emit(LoginSuccess());
+      firebaseAuth.enterPhone(phone: event.phone);
+      emit(OtpSuccess());
       emit(LoginInitial());
     } catch (e) {
       emit(LoginError(error: e.toString()));
@@ -30,8 +31,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   void _signUp(SignUp event, Emitter<LoginState> emit) async {
     emit(LoginLoading());
     try {
-      await firebaseAuthService.signUpUser(
-          name: event.name, email: event.email, password: event.password);
+      firebaseAuth.enterOtp(otp: event.otp);
       emit(LoginSuccess());
       emit(LoginInitial());
     } catch (e) {
@@ -42,7 +42,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   void _logout(LogOut event, Emitter<LoginState> emit) async {
     try {
-      await firebaseAuthService.logOut();
+      await firebaseAuth.logOut();
+      DatabaseService(uid: await PreferenceServices().getUid())
+          .changeStatus(status: false);
+      await PreferenceServices().reset();
       emit(LogOutSuccess());
       emit(LoginInitial());
     } catch (e) {

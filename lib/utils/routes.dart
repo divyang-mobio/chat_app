@@ -1,11 +1,11 @@
 import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/screens/chat_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chat_app/screens/main_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../controllers/update_profile_bloc/update_profile_bloc.dart';
+import '../controllers/upload_user_image_bloc/image_bloc.dart';
 import '../controllers/video_player_bloc/play_pause_bloc.dart';
 import '../controllers/video_player_bloc/refresh_bloc.dart';
-import '../screens/new_contact_screen.dart';
 import '../screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import '../screens/signIn_screen.dart';
@@ -19,14 +19,22 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => const RedirectClass());
       case '/signUp':
         return MaterialPageRoute(
-            builder: (context) => const RegistrationScreen());
+            builder: (context) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider<UpdateProfileBloc>(
+                        create: (context) => UpdateProfileBloc()),
+                    BlocProvider<ImageBloc>(create: (context) => ImageBloc()),
+                  ],
+                  child: const RegistrationScreen(),
+                ));
+      case '/mainScreen':
+        return MaterialPageRoute(builder: (context) => const MainScreen());
       case '/signIn':
         return MaterialPageRoute(builder: (context) => const SignInScreen());
       case '/videoPlay':
         final args = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (context) =>
-                MultiBlocProvider(
+            builder: (context) => MultiBlocProvider(
                   providers: [
                     BlocProvider<PlayPauseBloc>(
                       create: (context) => PlayPauseBloc(),
@@ -44,8 +52,7 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (context) => ChatScreen(userModel: args));
       default:
-        return MaterialPageRoute(
-            builder: (context) => const RegistrationScreen());
+        return MaterialPageRoute(builder: (context) => const RedirectClass());
     }
   }
 }

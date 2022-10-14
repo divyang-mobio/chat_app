@@ -8,6 +8,8 @@ class LoginLoading extends LoginState {}
 
 class LoginSuccess extends LoginState {}
 
+class OtpSuccess extends LoginState {}
+
 class LogOutSuccess extends LoginState {}
 
 class LoginError extends LoginState {

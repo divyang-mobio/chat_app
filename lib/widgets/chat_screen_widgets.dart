@@ -142,45 +142,52 @@ class _NewMessageSendState extends State<NewMessageSend> {
         icon: Icon(IconResources().addOtherTypeOfMessage));
   }
 
+  TextField textField() {
+    return TextField(
+      controller: _controller,
+      minLines: 1,
+      maxLines: 500,
+      textCapitalization: TextCapitalization.sentences,
+      autocorrect: true,
+      enableSuggestions: true,
+      decoration: InputDecoration(
+        prefixIcon: addFilePrefix(),
+        suffixIcon: IconButton(
+            onPressed: () {}, icon: Icon(IconResources().micFromSpeechToText)),
+        filled: true,
+        fillColor: ColorResources().sendMessageTextField,
+        hintText: TextResources().sendMessageTextFieldHintText,
+        border: OutlineInputBorder(
+            borderSide: const BorderSide(width: 0),
+            gapPadding: 10,
+            borderRadius: BorderRadius.circular(25)),
+      ),
+    );
+  }
+
+  GestureDetector sendButton() {
+    return GestureDetector(
+      onTap: () => _controller.text.trim() == '' ? null : sendMessage(),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle, color: Theme.of(context).primaryColor),
+        child: Icon(IconResources().sendMessage,
+            color: ColorResources().sendMessageIcon),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(children: [
         Expanded(
-          child: TextField(
-            controller: _controller,
-            minLines: 1,
-            maxLines: 500,
-            textCapitalization: TextCapitalization.sentences,
-            autocorrect: true,
-            enableSuggestions: true,
-            decoration: InputDecoration(
-              prefixIcon: addFilePrefix(),
-              suffixIcon: IconButton(
-                  onPressed: () {},
-                  icon: Icon(IconResources().micFromSpeechToText)),
-              filled: true,
-              fillColor: ColorResources().sendMessageTextField,
-              hintText: TextResources().sendMessageTextFieldHintText,
-              border: OutlineInputBorder(
-                  borderSide: const BorderSide(width: 0),
-                  gapPadding: 10,
-                  borderRadius: BorderRadius.circular(25)),
-            ),
-          ),
+          child: textField(),
         ),
         const SizedBox(width: 10),
-        GestureDetector(
-          onTap: () => _controller.text.trim() == '' ? null : sendMessage(),
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-                shape: BoxShape.circle, color: Theme.of(context).primaryColor),
-            child: Icon(IconResources().sendMessage,
-                color: ColorResources().sendMessageIcon),
-          ),
-        )
+        sendButton()
       ]),
     );
   }

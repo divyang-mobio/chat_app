@@ -8,17 +8,19 @@ class CustomTextField extends StatefulWidget {
       {Key? key,
       required this.controller,
       required this.hintName,
-      required this.isPassword,
       required this.iconData,
       required this.validator,
+      required this.keyBoard,
+      required this.isLogin,
       required this.textInputAction})
       : super(key: key);
 
   final TextEditingController controller;
   final String hintName;
-  final bool isPassword;
   final IconData iconData;
+  final TextInputType keyBoard;
   final FormFieldValidator validator;
+  final bool isLogin;
   final TextInputAction textInputAction;
 
   @override
@@ -26,40 +28,40 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  bool _isVisible = true;
-
-  void _showPassword() => setState(() {
-        _isVisible = !_isVisible;
-      });
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      validator: widget.validator,
-      cursorColor: ColorResources().textFieldSignInSignUpColor,
-      textInputAction: widget.textInputAction,
-      obscureText: widget.isPassword
-          ? _isVisible
-              ? true
-              : false
-          : false,
-      controller: widget.controller,
-      decoration: InputDecoration(
-          focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-                  color: ColorResources().textFieldSignInSignUpColor)),
-          prefixIcon: Icon(widget.iconData,
-              color: ColorResources().textFieldSignInSignUpIconColor),
-          hintText: widget.hintName,
-          suffixIcon: widget.isPassword
-              ? IconButton(
-                  onPressed: () => _showPassword(),
-                  icon: Icon(
-                      _isVisible
-                          ? IconResources().passSuffixShow
-                          : IconResources().passSuffixUnShow,
-                      color: ColorResources().textFieldSignInSignUpIconColor))
-              : null),
+    return Form(
+      key: formKey,
+      child: TextFormField(
+        validator: widget.validator,
+        cursorColor: ColorResources().textFieldSignInSignUpColor,
+        textInputAction: widget.textInputAction,
+        keyboardType: widget.keyBoard,
+        controller: widget.controller,
+        decoration: InputDecoration(
+            focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                    color: ColorResources().textFieldSignInSignUpColor)),
+            prefixIcon: Icon(widget.iconData,
+                color: ColorResources().textFieldSignInSignUpIconColor),
+            hintText: widget.hintName,
+            suffixIcon: widget.isLogin
+                ? IconButton(
+                    onPressed: () {
+                      final isValidForm = formKey.currentState?.validate();
+                      if (isValidForm != null) {
+                        if (isValidForm) {
+                          BlocProvider.of<LoginBloc>(context).add(
+                              GetOtp(phone: widget.controller.text.trim()));
+                        }
+                      }
+                    },
+                    icon: Icon(IconResources().sendOtp,
+                        color: ColorResources().textFieldSignInSignUpIconColor))
+                : null),
+      ),
     );
   }
 }
@@ -71,7 +73,7 @@ Center image(context, {required String link}) {
 }
 
 Text loginTitle(context, {required String title}) {
-  return Text(TextResources().signInTile,
+  return Text(title,
       style: Theme.of(context).textTheme.headline3?.copyWith(
           color: ColorResources().loginScreenTitle,
           fontWeight: FontWeight.bold));
@@ -102,6 +104,10 @@ BlocConsumer submitButtonRow(BuildContext context,
     {required VoidCallback onPressed, required String title}) {
   return BlocConsumer<LoginBloc, LoginState>(
     listener: (context, state) {
+      if (state is LoginSuccess) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, RoutesName().registrationRoute, (route) => false);
+      }
       if (state is LoginError) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(state.error)));
@@ -126,11 +132,11 @@ BlocConsumer submitButtonRow(BuildContext context,
 }
 
 SizedBox floatingActionButton(context,
-        {required VoidCallback onPressed, required Widget widget}) =>
+        {required VoidCallback onPressed, required Widget widget, Color? color}) =>
     SizedBox(
         width: MediaQuery.of(context).size.width,
         child: MaterialButton(
             onPressed: onPressed,
-            color: ColorResources().loginScreenSubmitButton,
+            color: color ?? ColorResources().loginScreenSubmitButton,
             textColor: ColorResources().loginScreenSubmitButtonText,
             child: widget));

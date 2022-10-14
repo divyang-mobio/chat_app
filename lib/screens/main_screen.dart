@@ -1,4 +1,5 @@
 import 'package:chat_app/models/user_model.dart';
+import 'package:chat_app/resources/shared_data.dart';
 import 'package:chat_app/utils/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shimmer/shimmer.dart';
@@ -19,11 +20,9 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void callUserData() {
-    String email =
-        (RepositoryProvider.of<FirebaseAuth>(context).currentUser?.email)
-            .toString();
-    BlocProvider.of<NewContactBloc>(context)
-        .add(GetNewContactData(email: email));
+    String uid = (RepositoryProvider.of<FirebaseAuth>(context).currentUser?.uid)
+        .toString();
+    BlocProvider.of<NewContactBloc>(context).add(GetNewContactData(uid: uid));
   }
 
   Shimmer shimmerLoading() {
@@ -67,6 +66,10 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
+        if (state is LogOutSuccess) {
+          Navigator.pushNamedAndRemoveUntil(
+              context, RoutesName().redirectRoute, (route) => false);
+        }
         if (state is LoginError) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(state.error)));

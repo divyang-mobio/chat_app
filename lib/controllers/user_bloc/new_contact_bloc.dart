@@ -8,9 +8,10 @@ part 'new_contact_state.dart';
 
 class NewContactBloc extends Bloc<NewContactEvent, NewContactState> {
   NewContactBloc() : super(NewContactInitial()) {
-    on<GetNewContactData>((event, emit)  {
+    on<GetNewContactData>((event, emit) {
       try {
-        emit(NewContactLoaded(newContactData: DatabaseService().getAllUserData(email: event.email)));
+        emit(NewContactLoaded(
+            newContactData: DatabaseService(uid: event.uid).getAllUserData()));
       } catch (e) {
         emit(NewContactError());
       }

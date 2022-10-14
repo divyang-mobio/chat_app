@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:chat_app/resources/shared_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +23,7 @@ void uploadImage(context,
       image = await imagePicker.pickVideo(source: imageSource);
     } else {
       image =
-          await imagePicker.pickImage(source: imageSource, imageQuality: 30);
+          await getImage(imageSource: imageSource, imagePicker: imagePicker);
     }
     if (image != null) {
       uploadToFireStore(context, file: image, otherUid: otherUid, type: type);
@@ -32,29 +33,42 @@ void uploadImage(context,
   }
 }
 
+Future<XFile?> getImage(
+    {required ImagePicker imagePicker,
+    required ImageSource imageSource}) async {
+  return await imagePicker.pickImage(source: imageSource, imageQuality: 30);
+}
+
 void uploadToFireStore(context,
     {required XFile file,
     required String otherUid,
     required SendDataType type}) async {
   final firebaseStorage = FirebaseStorage.instance;
   try {
-    var snapshot = await firebaseStorage
-        .ref()
-        .child('${TextResources().imageStoreInStoragePath}${file.name}')
-        .putFile(File(file.path));
-    var downloadUrl = await snapshot.ref.getDownloadURL();
+    String url = await uploadImageToFirebase(
+        firebaseStorage: firebaseStorage,
+        path: TextResources().imageStoreInStoragePath,
+        file: file);
     BlocProvider.of<ChatBloc>(context).add(SendMessage(
-        name: (RepositoryProvider.of<FirebaseAuth>(context)
-                .currentUser
-                ?.displayName)
-            .toString(),
+        name: await PreferenceServices().getAdmin(),
         context: context,
-        message: downloadUrl,
+        message: url,
         otherUid: otherUid,
-        yourUid: (RepositoryProvider.of<FirebaseAuth>(context).currentUser?.uid)
-            .toString(),
+        yourUid: await PreferenceServices().getUid(),
         type: type));
   } catch (e) {
     await alertDialog(context, 'error');
   }
+}
+
+Future<String> uploadImageToFirebase(
+    {required FirebaseStorage firebaseStorage,
+    required XFile file,
+    required String path}) async {
+  var snapshot = await firebaseStorage
+      .ref()
+      .child('$path${file.name}')
+      .putFile(File(file.path));
+  var downloadUrl = await snapshot.ref.getDownloadURL();
+  return downloadUrl;
 }

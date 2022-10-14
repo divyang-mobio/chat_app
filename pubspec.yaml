@@ -53,6 +53,9 @@ dependencies:
   video_thumbnail: ^0.5.3
   path_provider: ^2.0.11
   video_player: ^2.4.7
+  sms_otp_auto_verify: ^2.1.0
+  firebase_phone_auth_handler: ^1.0.6
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

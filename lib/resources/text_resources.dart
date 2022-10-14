@@ -9,6 +9,7 @@ class AppTitle {
 class RoutesName {
   final String redirectRoute = '/';
   final String registrationRoute = '/signUp';
+  final String mainScreenRoute = '/mainScreen';
   final String signInRoute = '/signIn';
   final String newContact = '/newContact';
   final String chat = '/chat';
@@ -20,19 +21,21 @@ class TextResources {
   final String signInTile = 'Login';
   final String passHintText = 'Password';
   final String nameHintText = 'Name';
-  final String emailHintText = 'Email address';
-  final String signUpString = 'Sign Up';
-  final String signInString = 'Sign In';
+  final String phoneHintText = 'Phone Number';
+  final String updateProfileString = 'Update Profile';
+  final String signInString = 'Login';
   final String signInTextButton = 'Sign In';
   final String signInTextButtonPrefix = 'New to app?';
   final String signUpTextButton = 'Sign Up';
   final String signUpTextButtonPrefix = 'Joined us before?';
   final String nameEmptyValidation = 'Enter name';
   final String emailEmptyValidation = 'Enter email address';
+  final String phoneEmptyValidation = 'Enter phone number';
   final String passEmptyValidation = 'Enter password';
   final String passInValidValidation = 'Enter min 3 characters';
   final String nameInValidValidation = 'Enter min 8 characters';
   final String emailInValidValidation = 'Enter a valid email address';
+  final String phoneInValidValidation = 'Enter a valid phone Number';
   final String redirectScreenError = 'Error';
   final String error = 'Error';
   final String blocError = 'bloc Error';
@@ -42,6 +45,7 @@ class TextResources {
   final String offlineStatue = 'Offline';
   final String errorAtMessageSendTime = 'message not send';
   final String imageStoreInStoragePath = 'chat_file/';
+  final String profileInStoragePath = 'profile_image/';
   final String alertBoxButton = 'OK';
   final String permissionIsNotGiven = 'Pls allow permission';
 }

@@ -3,7 +3,7 @@ part of 'new_contact_bloc.dart';
 abstract class NewContactEvent {}
 
 class GetNewContactData extends NewContactEvent{
-  String email;
+  String uid;
 
-  GetNewContactData({required this.email});
+  GetNewContactData({required this.uid});
 }

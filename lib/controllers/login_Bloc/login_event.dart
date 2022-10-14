@@ -3,15 +3,15 @@ part of 'login_bloc.dart';
 abstract class LoginEvent {}
 
 class SignUp extends LoginEvent {
-  String name, email, password;
+  String otp;
 
-  SignUp({required this.name, required this.email, required this.password});
+  SignUp({required this.otp});
 }
 
-class SignIn extends LoginEvent {
-  String email, password;
+class GetOtp extends LoginEvent {
+  String phone;
 
-  SignIn({required this.email, required this.password});
+  GetOtp({required this.phone});
 }
 
 class LogOut extends LoginEvent {}
