@@ -15,4 +15,5 @@ class IconResources {
   final videoPlay = Icons.play_arrow;
   final videoPause = Icons.pause;
   final navigationBack = Icons.navigate_before_outlined;
+  final micFromSpeechToText = Icons.mic;
 }

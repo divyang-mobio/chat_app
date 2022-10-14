@@ -3,7 +3,6 @@ import 'package:chat_app/widgets/bottom_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:swipe_to/swipe_to.dart';
 import '../controllers/chat_bloc/chat_bloc.dart';
 import '../models/message_model.dart';
 import '../resources/resource.dart';
@@ -63,25 +62,28 @@ Row showMessageWidget(context,
                   bottomLeft: Radius.circular(isMe ? 10 : 0),
                   bottomRight: Radius.circular(isMe ? 0 : 10)),
               border: Border.all(color: ColorResources().chatBubbleBorder)),
-          child: Wrap(alignment:isMe ? WrapAlignment.start : WrapAlignment.end,children: [
-            (message.type == SendDataType.text)
-                ? textMessage(isMe: isMe, text: message.message)
-                : (message.type == SendDataType.image)
-                    ? networkImages(
-                        link: message
-                            .message) // : Text(message.type.toString()),
-                    : BlocProvider<VideoThumbnailBloc>(
-                        create: (context) => VideoThumbnailBloc(),
-                        child: VideoThumbNail(link: message.message),
-                      ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, top: 8, right: 8),
-              child: Text(message.data, style: TextStyle(
-                  color: isMe
-                      ? ColorResources().chatBubbleYourSideText
-                      : ColorResources().chatBubbleOtherSideText)),
-            ),
-          ]),
+          child: Wrap(
+              alignment: isMe ? WrapAlignment.start : WrapAlignment.end,
+              children: [
+                (message.type == SendDataType.text)
+                    ? textMessage(isMe: isMe, text: message.message)
+                    : (message.type == SendDataType.image)
+                        ? networkImages(
+                            link: message
+                                .message) // : Text(message.type.toString()),
+                        : BlocProvider<VideoThumbnailBloc>(
+                            create: (context) => VideoThumbnailBloc(),
+                            child: VideoThumbNail(link: message.message),
+                          ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(message.data,
+                      style: TextStyle(
+                          color: isMe
+                              ? ColorResources().chatBubbleYourSideText
+                              : ColorResources().chatBubbleOtherSideText)),
+                ),
+              ]),
         ),
       ),
       if (!isMe) const Flexible(flex: 1, child: SizedBox()),
@@ -132,16 +134,19 @@ class _NewMessageSendState extends State<NewMessageSend> {
     super.dispose();
   }
 
+  IconButton addFilePrefix() {
+    return IconButton(
+        onPressed: () {
+          bottomSheet(context, otherUid: widget.otherId);
+        },
+        icon: Icon(IconResources().addOtherTypeOfMessage));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(children: [
-        IconButton(
-            onPressed: () {
-              bottomSheet(context, otherUid: widget.otherId);
-            },
-            icon: Icon(IconResources().addOtherTypeOfMessage)),
         Expanded(
           child: TextField(
             controller: _controller,
@@ -151,6 +156,10 @@ class _NewMessageSendState extends State<NewMessageSend> {
             autocorrect: true,
             enableSuggestions: true,
             decoration: InputDecoration(
+              prefixIcon: addFilePrefix(),
+              suffixIcon: IconButton(
+                  onPressed: () {},
+                  icon: Icon(IconResources().micFromSpeechToText)),
               filled: true,
               fillColor: ColorResources().sendMessageTextField,
               hintText: TextResources().sendMessageTextFieldHintText,

@@ -21,7 +21,8 @@ void uploadImage(context,
     if (isVideo) {
       image = await imagePicker.pickVideo(source: imageSource);
     } else {
-      image = await imagePicker.pickImage(source: imageSource);
+      image =
+          await imagePicker.pickImage(source: imageSource, imageQuality: 30);
     }
     if (image != null) {
       uploadToFireStore(context, file: image, otherUid: otherUid, type: type);
@@ -32,7 +33,9 @@ void uploadImage(context,
 }
 
 void uploadToFireStore(context,
-    {required XFile file, required String otherUid, required SendDataType type}) async {
+    {required XFile file,
+    required String otherUid,
+    required SendDataType type}) async {
   final firebaseStorage = FirebaseStorage.instance;
   try {
     var snapshot = await firebaseStorage
