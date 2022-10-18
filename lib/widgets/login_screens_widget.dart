@@ -28,53 +28,31 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  final formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: TextFormField(
-        validator: widget.validator,
-        cursorColor: ColorResources().textFieldSignInSignUpColor,
-        textInputAction: widget.textInputAction,
-        keyboardType: widget.keyBoard,
-        controller: widget.controller,
-        decoration: InputDecoration(
-            focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                    color: ColorResources().textFieldSignInSignUpColor)),
-            prefixIcon: Icon(widget.iconData,
-                color: ColorResources().textFieldSignInSignUpIconColor),
-            hintText: widget.hintName,
-            suffixIcon: widget.isLogin
-                ? IconButton(
-                    onPressed: () {
-                      final isValidForm = formKey.currentState?.validate();
-                      if (isValidForm != null) {
-                        if (isValidForm) {
-                          BlocProvider.of<LoginBloc>(context).add(
-                              GetOtp(phone: widget.controller.text.trim()));
-                        }
-                      }
-                    },
-                    icon: Icon(IconResources().sendOtp,
-                        color: ColorResources().textFieldSignInSignUpIconColor))
-                : null),
-      ),
+    return TextFormField(
+      validator: widget.validator,
+      cursorColor: ColorResources().textFieldSignInSignUpColor,
+      textInputAction: widget.textInputAction,
+      keyboardType: widget.keyBoard,
+      controller: widget.controller,
+      decoration: InputDecoration(
+          focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                  color: ColorResources().textFieldSignInSignUpColor)),
+          prefixIcon: Icon(widget.iconData,
+              color: ColorResources().textFieldSignInSignUpIconColor),
+          hintText: widget.hintName),
     );
   }
 }
 
-Center image(context, {required String link}) {
-  return Center(
-      child:
-          Image.asset(link, height: MediaQuery.of(context).size.height * .4));
-}
+image(context, {required String link}) =>
+    Image.asset(link, height: MediaQuery.of(context).size.height * .4);
 
 Text loginTitle(context, {required String title}) {
   return Text(title,
-      style: Theme.of(context).textTheme.headline3?.copyWith(
+      style: Theme.of(context).textTheme.headline4?.copyWith(
           color: ColorResources().loginScreenTitle,
           fontWeight: FontWeight.bold));
 }
@@ -100,21 +78,14 @@ Align textButton(
   );
 }
 
-BlocConsumer submitButtonRow(BuildContext context,
+BlocBuilder submitButtonRow(BuildContext context,
     {required VoidCallback onPressed, required String title}) {
-  return BlocConsumer<LoginBloc, LoginState>(
-    listener: (context, state) {
-      if (state is LoginSuccess) {
-        Navigator.pushNamedAndRemoveUntil(
-            context, RoutesName().registrationRoute, (route) => false);
-      }
-      if (state is LoginError) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(state.error)));
-      }
-    },
+  return BlocBuilder<LoginBloc, LoginState>(
     builder: (context, state) {
       if (state is LoginInitial) {
+        return floatingActionButton(context,
+            onPressed: onPressed, widget: Text(title));
+      } else if (state is OtpSuccess) {
         return floatingActionButton(context,
             onPressed: onPressed, widget: Text(title));
       } else if (state is LoginLoading) {
@@ -132,7 +103,9 @@ BlocConsumer submitButtonRow(BuildContext context,
 }
 
 SizedBox floatingActionButton(context,
-        {required VoidCallback onPressed, required Widget widget, Color? color}) =>
+        {required VoidCallback onPressed,
+        required Widget widget,
+        Color? color}) =>
     SizedBox(
         width: MediaQuery.of(context).size.width,
         child: MaterialButton(

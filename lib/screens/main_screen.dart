@@ -76,35 +76,61 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-            title: Text(AppTitle().mainScreen,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-            actions: [
-              IconButton(onPressed: () {}, icon: Icon(IconResources().search)),
-              popupMenuButton()
-            ]),
-        body: BlocBuilder<NewContactBloc, NewContactState>(
-          builder: (context, state) {
-            if (state is NewContactInitial) {
-              return shimmerLoading();
-            } else if (state is NewContactLoaded) {
-              return StreamBuilder<List<UserModel>>(
-                  stream: state.newContactData,
-                  builder: (context, snapshot) {
-                    if (snapshot.data != null) {
-                      return listView(
-                          userData: snapshot.data as List<UserModel>,
-                          isLoading: false);
-                    } else {
-                      return shimmerLoading();
-                    }
-                  });
-            } else if (state is NewContactError) {
-              return Center(child: Text(TextResources().error));
-            } else {
-              return Center(child: Text(TextResources().blocError));
-            }
-          },
+        // appBar: AppBar(
+        //     title: Text(AppTitle().mainScreen,
+        //         style: const TextStyle(fontWeight: FontWeight.bold)),
+        //     actions: [
+        //       IconButton(onPressed: () {}, icon: Icon(IconResources().search)),
+        //       popupMenuButton()
+        //     ]),
+        body: NestedScrollView(
+          floatHeaderSlivers: true,
+          headerSliverBuilder:
+              (BuildContext context, bool innerBoxIsScrolled) => [
+            SliverAppBar(
+              expandedHeight: 100,
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding: const EdgeInsets.only(left: 10.0, bottom: 15),
+                title: Text(AppTitle().mainScreen,
+                    style:
+                        TextStyle(color: ColorResources().appBarIconTextColor)),
+              ),
+              actions: [
+                IconButton(
+                    onPressed: () {}, icon: Icon(IconResources().search)),
+                popupMenuButton()
+              ],
+              floating: false,
+              pinned: true,
+            )
+          ],
+          body: BlocBuilder<NewContactBloc, NewContactState>(
+            builder: (context, state) {
+              if (state is NewContactInitial) {
+                return shimmerLoading();
+              } else if (state is NewContactLoaded) {
+                return MediaQuery.removePadding(
+                  removeTop: true,
+                  context: context,
+                  child: StreamBuilder<List<UserModel>>(
+                      stream: state.newContactData,
+                      builder: (context, snapshot) {
+                        if (snapshot.data != null) {
+                          return listView(
+                              userData: snapshot.data as List<UserModel>,
+                              isLoading: false);
+                        } else {
+                          return shimmerLoading();
+                        }
+                      }),
+                );
+              } else if (state is NewContactError) {
+                return Center(child: Text(TextResources().error));
+              } else {
+                return Center(child: Text(TextResources().blocError));
+              }
+            },
+          ),
         ),
       ),
     );

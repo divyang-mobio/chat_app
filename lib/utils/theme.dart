@@ -8,5 +8,6 @@ class MyTheme {
           selectionHandleColor: ColorResources().selectionHandleColor),
       appBarTheme: AppBarTheme(
           backgroundColor: ColorResources().appBar,
+          iconTheme: IconThemeData(color: ColorResources().appBarIconTextColor),
           foregroundColor: ColorResources().appBarIconTextColor));
 }

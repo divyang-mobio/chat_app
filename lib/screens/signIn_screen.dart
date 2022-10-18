@@ -20,13 +20,110 @@ class _SignInScreenState extends State<SignInScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
 
   BoxDecoration get _pinPutDecoration => BoxDecoration(
-      border: Border.all(color: Theme.of(context).primaryColor),
-      borderRadius: BorderRadius.circular(15.0));
+      border:
+          Border(bottom: BorderSide(color: Theme.of(context).primaryColor)));
 
   @override
   void dispose() {
     _phone.dispose();
     super.dispose();
+  }
+
+  Column textField() {
+    return Column(
+      children: [
+        CustomTextField(
+            controller: _phone,
+            hintName: TextResources().phoneHintText,
+            iconData: IconResources().phonePrefixInLogin,
+            textInputAction: TextInputAction.done,
+            validator: (value) {
+              if (value == '') {
+                return TextResources().phoneEmptyValidation;
+              } else if (value != null && value.length != 10) {
+                return TextResources().phoneInValidValidation;
+              } else {
+                return null;
+              }
+            },
+            keyBoard: TextInputType.phone,
+            isLogin: true),
+        const SizedBox(height: 20),
+        submitButtonRow(context, onPressed: () {
+          final isValidForm = formKey.currentState?.validate();
+          if (isValidForm != null) {
+            if (isValidForm) {
+              BlocProvider.of<LoginBloc>(context)
+                  .add(GetOtp(phone: _phone.text.trim()));
+            }
+          }
+        }, title: TextResources().sendOtpButton),
+      ],
+    );
+  }
+
+  otpVerify() {
+    return Column(
+      children: [
+        TextFieldPin(
+            margin: 5,
+            codeLength: 6,
+            autoFocus: true,
+            defaultBoxSize: 45.0,
+            onChange: (code) => setState(() {}),
+            textController: _otp,
+            alignment: MainAxisAlignment.center,
+            textStyle: const TextStyle(fontSize: 30),
+            defaultDecoration: _pinPutDecoration.copyWith(
+                border: const Border(bottom: BorderSide(color: Colors.grey))),
+            selectedDecoration: _pinPutDecoration),
+        const SizedBox(height: 20),
+        submitButtonRow(context, onPressed: () {
+          final isValidForm = formKey.currentState?.validate();
+          if (isValidForm != null) {
+            if (isValidForm) {
+              BlocProvider.of<LoginBloc>(context)
+                  .add(SignUp(otp: _otp.text.trim()));
+            }
+          }
+        }, title: TextResources().otpVerifyButton),
+      ],
+    );
+  }
+
+  ListView listView() {
+    return ListView(
+        shrinkWrap: true,
+        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+        children: [
+          image(context, link: ImagePath().signUpImagePath),
+          Center(child: loginTitle(context, title: TextResources().signInTile)),
+          Text(TextResources().signInTextMessage, textAlign: TextAlign.center),
+          const SizedBox(height: 20),
+          BlocConsumer<LoginBloc, LoginState>(
+            listener: (context, state) {
+              if (state is LoginSuccess) {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, RoutesName().registrationRoute, (route) => false);
+              }
+              if (state is LoginError) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(state.error)));
+              }
+            },
+            builder: (context, state) {
+              if (state is LoginInitial) {
+                return textField();
+              } else if (state is OtpSuccess || state is LoginLoading) {
+                return otpVerify();
+              } else if (state is LoginError) {
+                return Text(TextResources().loginError);
+              } else {
+                return Text(TextResources().blocError);
+              }
+            },
+          ),
+        ]);
   }
 
   @override
@@ -35,56 +132,8 @@ class _SignInScreenState extends State<SignInScreen> {
       body: SafeArea(
         child: Form(
           key: formKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: SingleChildScrollView(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    image(context, link: ImagePath().signUpImagePath),
-                    loginTitle(context, title: TextResources().signInTile),
-                    const SizedBox(height: 50),
-                    CustomTextField(
-                        controller: _phone,
-                        hintName: TextResources().phoneHintText,
-                        iconData: IconResources().phonePrefixInLogin,
-                        textInputAction: TextInputAction.done,
-                        validator: (value) {
-                          if (value == '') {
-                            return TextResources().phoneEmptyValidation;
-                          } else if (value != null && value.length != 10) {
-                            return TextResources().phoneInValidValidation;
-                          } else {
-                            return null;
-                          }
-                        },
-                        keyBoard: TextInputType.phone,
-                        isLogin: true),
-                    const SizedBox(height: 20),
-                    TextFieldPin(
-                        margin: 5,
-                        codeLength: 6,
-                        autoFocus: true,
-                        defaultBoxSize: 45.0,
-                        onChange: (code) => setState(() {}),
-                        textController: _otp,
-                        alignment: MainAxisAlignment.center,
-                        textStyle: const TextStyle(fontSize: 30),
-                        defaultDecoration: _pinPutDecoration.copyWith(
-                            border: Border.all(color: Colors.black)),
-                        selectedDecoration: _pinPutDecoration),
-                    const SizedBox(height: 40),
-                    submitButtonRow(context, onPressed: () {
-                      final isValidForm = formKey.currentState?.validate();
-                      if (isValidForm != null) {
-                        if (isValidForm) {
-                          BlocProvider.of<LoginBloc>(context)
-                              .add(SignUp(otp: _otp.text.trim()));
-                        }
-                      }
-                    }, title: TextResources().signInString),
-                  ]),
-            ),
+          child: Center(
+            child: listView(),
           ),
         ),
       ),

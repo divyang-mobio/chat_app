@@ -13,9 +13,10 @@ class IconResources {
   final search = Icons.search_rounded;
   final floatingActionButtonIcon = Icons.message;
   final sendMessage = Icons.send;
-  final addOtherTypeOfMessage = Icons.add;
+  final addOtherTypeOfMessage = Icons.camera_alt_outlined;
   final videoPlay = Icons.play_arrow;
   final videoPause = Icons.pause;
   final navigationBack = Icons.navigate_before_outlined;
   final micFromSpeechToText = Icons.mic;
+  final removeImageOnRegistrationScreen = Icons.cancel;
 }

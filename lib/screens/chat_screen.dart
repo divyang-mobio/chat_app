@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../controllers/show_Status_bloc/show_status_bloc.dart';
 import '../models/user_model.dart';
 import '../widgets/chat_screen_widgets.dart';
+import '../widgets/network_image.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key, required this.userModel}) : super(key: key);
@@ -70,11 +71,20 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+            leadingWidth: 20,
             title: ListTile(
-          title: Text(widget.userModel.name),
-          subtitle: checkStatus(),
-          textColor: ColorResources().appBarIconTextColor,
-        )),
+              leading: ClipOval(
+                child: SizedBox.fromSize(
+                  size: const Size.fromRadius(20),
+                  child: (widget.userModel.profilePic == '')
+                      ? Image.asset(ImagePath().noImageImagePath)
+                      : networkImages(link: widget.userModel.profilePic),
+                ),
+              ),
+              title: Text(widget.userModel.name),
+              subtitle: checkStatus(),
+              textColor: ColorResources().appBarIconTextColor,
+            )),
         body: BlocBuilder<ChatBloc, ChatState>(
           builder: (context, state) {
             if (state is ChatInitial) {

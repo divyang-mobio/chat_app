@@ -27,8 +27,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       {required GestureTapCallback onTap, required Widget child}) {
     return GestureDetector(
       onTap: onTap,
-      child:
-      CircleAvatar(backgroundColor: Colors.grey, radius: 60, child: child),
+      child: CircleAvatar(
+          backgroundColor: ColorResources().registrationImageBg,
+          radius: 60,
+          child: child),
     );
   }
 
@@ -96,8 +98,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                           BlocProvider.of<ImageBloc>(context)
                                               .add(DeleteImage(url: state.url));
                                         },
-                                        icon: const Icon(Icons.cancel,
-                                            color: Colors.red))))
+                                        icon: Icon(
+                                            IconResources()
+                                                .removeImageOnRegistrationScreen,
+                                            color: ColorResources()
+                                                .registrationImageRemoveIcon))))
                           ]);
                         } else {
                           return Text(TextResources().error);
@@ -142,8 +147,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       } else if (state is UpdateProfileLoaded) {
                         return floatingActionButton(context,
                             onPressed: () {},
-                            color: Colors.green,
-                            widget: const Text('success'));
+                            color: ColorResources().uploadImageSuccessButton,
+                            widget: Text(TextResources()
+                                .registrationScreenUploadSuccess));
                       } else {
                         return floatingActionButton(context,
                             onPressed: () {},
@@ -152,10 +158,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     },
                   ),
                 ]),
-                Positioned.fill(child: Align(alignment: Alignment.topRight,
-                  child: TextButton(child: Text('skip'), onPressed: () {
-                    navigator();
-                  },),))
+                Positioned.fill(
+                    child: Align(
+                  alignment: Alignment.topRight,
+                  child: TextButton(
+                    child: Text(TextResources().registrationScreenSkip),
+                    onPressed: () {
+                      navigator();
+                    },
+                  ),
+                ))
               ],
             ),
           ),

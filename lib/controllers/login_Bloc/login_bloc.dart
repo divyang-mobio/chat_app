@@ -19,9 +19,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   void _getOTP(GetOtp event, Emitter<LoginState> emit) async {
     try {
-      firebaseAuth.enterPhone(phone: event.phone);
-      emit(OtpSuccess());
-      emit(LoginInitial());
+      final bool sendOtp = await firebaseAuth.enterPhone(phone: event.phone);
+      if (sendOtp) {
+        emit(OtpSuccess());
+      }
     } catch (e) {
       emit(LoginError(error: e.toString()));
       emit(LoginInitial());
@@ -31,9 +32,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   void _signUp(SignUp event, Emitter<LoginState> emit) async {
     emit(LoginLoading());
     try {
-      firebaseAuth.enterOtp(otp: event.otp);
-      emit(LoginSuccess());
-      emit(LoginInitial());
+      final bool verifyOtp = await firebaseAuth.enterOtp(otp: event.otp);
+      if (verifyOtp) {
+        emit(LoginSuccess());
+        emit(LoginInitial());
+      }
     } catch (e) {
       emit(LoginError(error: e.toString()));
       emit(LoginInitial());

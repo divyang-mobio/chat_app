@@ -49,42 +49,37 @@ Row showMessageWidget(context,
       if (isMe) const Flexible(flex: 1, child: SizedBox()),
       Flexible(
         flex: 2,
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              color: isMe
-                  ? ColorResources().chatBubbleYourSideBG
-                  : Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(10),
-                  topRight: const Radius.circular(10),
-                  bottomLeft: Radius.circular(isMe ? 10 : 0),
-                  bottomRight: Radius.circular(isMe ? 0 : 10)),
-              border: Border.all(color: ColorResources().chatBubbleBorder)),
-          child: Wrap(
-              alignment: isMe ? WrapAlignment.start : WrapAlignment.end,
-              children: [
-                (message.type == SendDataType.text)
+        child: Column(
+            crossAxisAlignment:
+                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    color: isMe
+                        ? ColorResources().chatBubbleYourSideBG
+                        : Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: const Radius.circular(10),
+                        topRight: const Radius.circular(10),
+                        bottomLeft: Radius.circular(isMe ? 10 : 0),
+                        bottomRight: Radius.circular(isMe ? 0 : 10))),
+                child: (message.type == SendDataType.text)
                     ? textMessage(isMe: isMe, text: message.message)
                     : (message.type == SendDataType.image)
-                        ? networkImages(
-                            link: message
-                                .message) // : Text(message.type.toString()),
+                        ? networkImages(link: message.message)
                         : BlocProvider<VideoThumbnailBloc>(
                             create: (context) => VideoThumbnailBloc(),
                             child: VideoThumbNail(link: message.message),
                           ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Text(message.data,
-                      style: TextStyle(
-                          color: isMe
-                              ? ColorResources().chatBubbleYourSideText
-                              : ColorResources().chatBubbleOtherSideText)),
-                ),
-              ]),
-        ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                child: Text(message.data,
+                    style: TextStyle(color: ColorResources().chatScreenDate)),
+              ),
+            ]),
       ),
       if (!isMe) const Flexible(flex: 1, child: SizedBox()),
     ],
@@ -139,7 +134,8 @@ class _NewMessageSendState extends State<NewMessageSend> {
         onPressed: () {
           bottomSheet(context, otherUid: widget.otherId);
         },
-        icon: Icon(IconResources().addOtherTypeOfMessage));
+        icon: Icon(IconResources().addOtherTypeOfMessage,
+            color: ColorResources().textFieldIcon));
   }
 
   TextField textField() {
@@ -153,7 +149,9 @@ class _NewMessageSendState extends State<NewMessageSend> {
       decoration: InputDecoration(
         prefixIcon: addFilePrefix(),
         suffixIcon: IconButton(
-            onPressed: () {}, icon: Icon(IconResources().micFromSpeechToText)),
+            onPressed: () {},
+            icon: Icon(IconResources().micFromSpeechToText,
+                color: ColorResources().textFieldIcon)),
         filled: true,
         fillColor: ColorResources().sendMessageTextField,
         hintText: TextResources().sendMessageTextFieldHintText,

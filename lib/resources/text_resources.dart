@@ -18,11 +18,17 @@ class RoutesName {
 
 class TextResources {
   final String signUpTile = 'Sign up.';
-  final String signInTile = 'Login';
+  final String signInTile = 'Phone Verification';
+  final String signInTextMessage = 'We need to register your phone number before getting started!';
   final String passHintText = 'Password';
   final String nameHintText = 'Name';
   final String phoneHintText = 'Phone Number';
   final String updateProfileString = 'Update Profile';
+  final String sendOtpButton = 'Send the code';
+  final String otpVerifyButton = 'Verify Phone Number';
+  final String loginError = 'Retry';
+  final String registrationScreenUploadSuccess = 'Success';
+  final String registrationScreenSkip = 'SKip';
   final String signInString = 'Login';
   final String signInTextButton = 'Sign In';
   final String signInTextButtonPrefix = 'New to app?';

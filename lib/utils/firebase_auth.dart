@@ -23,7 +23,7 @@ class FirebaseAuthService {
 
   Future enterPhone({required String phone}) async {
     try {
-      firebaseAuth.verifyPhoneNumber(
+      await firebaseAuth.verifyPhoneNumber(
           phoneNumber: '+91 $phone',
           codeSent: (verificationID, token) {
             verificationIDString = verificationID;
@@ -35,6 +35,7 @@ class FirebaseAuthService {
           verificationFailed: (exception) {
             throw exception.toString();
           });
+      print('object');
       return true;
     } catch (e) {
       throw e.toString();
