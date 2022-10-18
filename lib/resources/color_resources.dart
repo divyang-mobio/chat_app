@@ -32,4 +32,5 @@ class ColorResources {
   final Color textFieldIcon = Colors.black;
   final Color registrationImageRemoveIcon = Colors.red;
   final Color registrationImageBg = Colors.grey;
+  final Color otpVerifyFieldWhenUnSelected = Colors.grey;
 }

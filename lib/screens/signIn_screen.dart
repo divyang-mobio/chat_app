@@ -1,3 +1,4 @@
+import 'package:chat_app/controllers/login_Bloc/set_otp_field_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
@@ -65,18 +66,28 @@ class _SignInScreenState extends State<SignInScreen> {
   otpVerify() {
     return Column(
       children: [
-        TextFieldPin(
-            margin: 5,
-            codeLength: 6,
-            autoFocus: true,
-            defaultBoxSize: 45.0,
-            onChange: (code) => setState(() {}),
-            textController: _otp,
-            alignment: MainAxisAlignment.center,
-            textStyle: const TextStyle(fontSize: 30),
-            defaultDecoration: _pinPutDecoration.copyWith(
-                border: const Border(bottom: BorderSide(color: Colors.grey))),
-            selectedDecoration: _pinPutDecoration),
+        BlocBuilder<SetOtpFieldBloc, SetOtpFieldState>(
+          builder: (context, state) {
+            return TextFieldPin(
+                margin: 5,
+                codeLength: 6,
+                autoFocus: true,
+                defaultBoxSize: 45.0,
+                onChange: (code) {
+                  BlocProvider.of<SetOtpFieldBloc>(context)
+                      .add(ReSetOtpField());
+                },
+                textController: _otp,
+                alignment: MainAxisAlignment.center,
+                textStyle: const TextStyle(fontSize: 30),
+                defaultDecoration: _pinPutDecoration.copyWith(
+                    border: Border(
+                        bottom: BorderSide(
+                            color: ColorResources()
+                                .otpVerifyFieldWhenUnSelected))),
+                selectedDecoration: _pinPutDecoration);
+          },
+        ),
         const SizedBox(height: 20),
         submitButtonRow(context, onPressed: () {
           final isValidForm = formKey.currentState?.validate();
