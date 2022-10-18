@@ -6,6 +6,7 @@ import '../controllers/update_profile_bloc/update_profile_bloc.dart';
 import '../controllers/upload_user_image_bloc/image_bloc.dart';
 import '../controllers/video_player_bloc/play_pause_bloc.dart';
 import '../controllers/video_player_bloc/refresh_bloc.dart';
+import '../screens/bottom_navigation_bar.dart';
 import '../screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import '../screens/signIn_screen.dart';
@@ -29,6 +30,9 @@ class RouteGenerator {
                 ));
       case '/mainScreen':
         return MaterialPageRoute(builder: (context) => const MainScreen());
+      case '/bottomScreen':
+        return MaterialPageRoute(
+            builder: (context) => const BottomNavigationBarScreen());
       case '/signIn':
         return MaterialPageRoute(builder: (context) => const SignInScreen());
       case '/videoPlay':

@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:chat_app/resources/shared_data.dart';
+import 'package:chat_app/utils/shared_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

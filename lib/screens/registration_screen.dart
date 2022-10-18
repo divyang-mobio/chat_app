@@ -36,7 +36,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   void navigator() {
     Navigator.pushNamedAndRemoveUntil(
-        context, RoutesName().mainScreenRoute, (route) => false);
+        context, RoutesName().bottomBar, (route) => false);
   }
 
   void showError() {

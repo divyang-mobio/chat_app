@@ -1,58 +1,103 @@
-// import '../controllers/user_bloc/new_contact_bloc.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:flutter/material.dart';
-// import 'package:shimmer/shimmer.dart';
-// import '../resources/resource.dart';
-// import '../widgets/listview.dart';
-//
-// class SelectContactScreen extends StatefulWidget {
-//   const SelectContactScreen({Key? key}) : super(key: key);
-//
-//   @override
-//   State<SelectContactScreen> createState() => _SelectContactScreenState();
-// }
-//
-// class _SelectContactScreenState extends State<SelectContactScreen> {
-//   void callUserData() {
-//     String email =
-//         (RepositoryProvider.of<FirebaseAuth>(context).currentUser?.email)
-//             .toString();
-//     BlocProvider.of<NewContactBloc>(context)
-//         .add(GetNewContactData(email: email));
-//   }
-//
-//   @override
-//   void initState() {
-//     callUserData();
-//     super.initState();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//           title: Text(AppTitle().newContactScreen,
-//               style: const TextStyle(fontWeight: FontWeight.bold)),
-//           actions: [
-//             IconButton(onPressed: () {}, icon: Icon(IconResources().search))
-//           ]),
-//       body: BlocBuilder<NewContactBloc, NewContactState>(
-//         builder: (context, state) {
-//           if (state is NewContactInitial) {
-//             return Shimmer.fromColors(
-//                 baseColor: ColorResources().shimmerBase,
-//                 highlightColor: ColorResources().shimmerHighlight,
-//                 child: listView(userData: [], isLoading: true));
-//           } else if (state is NewContactLoaded) {
-//             return listView(userData: state.newContactData, isLoading: false);
-//           } else if (state is NewContactError) {
-//             return Center(child: Text(TextResources().error));
-//           } else {
-//             return Center(child: Text(TextResources().blocError));
-//           }
-//         },
-//       ),
-//     );
-//   }
-// }
+import '../controllers/user_bloc/new_contact_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
+import '../models/user_model.dart';
+import '../resources/resource.dart';
+import '../widgets/listview.dart';
+
+class SelectContactScreen extends StatefulWidget {
+  const SelectContactScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SelectContactScreen> createState() => _SelectContactScreenState();
+}
+
+class _SelectContactScreenState extends State<SelectContactScreen> {
+  void callUserData() {
+    String uid = (RepositoryProvider.of<FirebaseAuth>(context).currentUser?.uid)
+        .toString();
+    BlocProvider.of<NewContactBloc>(context).add(GetNewContactData(uid: uid));
+  }
+
+  Shimmer shimmerLoading() {
+    return Shimmer.fromColors(
+        baseColor: ColorResources().shimmerBase,
+        highlightColor: ColorResources().shimmerHighlight,
+        child: listView(userData: [], isLoading: true));
+  }
+
+  @override
+  void initState() {
+    callUserData();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NestedScrollView(
+      floatHeaderSlivers: true,
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
+        SliverAppBar(
+          expandedHeight: 100,
+          flexibleSpace: FlexibleSpaceBar(
+            titlePadding: const EdgeInsets.only(left: 10.0, bottom: 15),
+            title: Text(AppTitle().newContactScreen,
+                style: TextStyle(color: ColorResources().appBarIconTextColor)),
+          ),
+          actions: [
+            IconButton(onPressed: () {}, icon: Icon(IconResources().search)),
+          ],
+          floating: false,
+          pinned: true,
+        )
+      ],
+      body: BlocBuilder<NewContactBloc, NewContactState>(
+        builder: (context, state) {
+          if (state is NewContactInitial) {
+            return shimmerLoading();
+          } else if (state is NewContactLoaded) {
+            return MediaQuery.removePadding(
+              removeTop: true,
+              context: context,
+              child: StreamBuilder<List<UserModel>>(
+                  stream: state.newContactData,
+                  builder: (context, snapshot) {
+                    if (snapshot.data != null) {
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+
+                            },
+                            child: ListTile(
+                                leading: CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    radius: 30,
+                                    child: ClipOval(
+                                        child: Image.asset(
+                                            ImagePath().noImageImagePath))),
+                                title: const Text('Create Group')),
+                          ),
+                          Divider(color: ColorResources().dividerColor),
+                          listView(
+                              userData: snapshot.data as List<UserModel>,
+                              isLoading: false),
+                        ],
+                      );
+                    } else {
+                      return shimmerLoading();
+                    }
+                  }),
+            );
+          } else if (state is NewContactError) {
+            return Center(child: Text(TextResources().error));
+          } else {
+            return Center(child: Text(TextResources().blocError));
+          }
+        },
+      ),
+    );
+  }
+}

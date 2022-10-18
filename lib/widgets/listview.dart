@@ -6,6 +6,7 @@ import 'network_image.dart';
 ListView listView(
     {required List<UserModel> userData, required bool isLoading}) {
   return ListView.builder(
+    shrinkWrap: true,
     itemCount: isLoading ? 20 : userData.length,
     itemBuilder: (context, index) => GestureDetector(
       onTap: () => Navigator.pushNamed(context, RoutesName().chat,

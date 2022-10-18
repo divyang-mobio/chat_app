@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:chat_app/models/chat_room_model.dart';
 import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/models/user_model.dart';
-import 'package:chat_app/resources/shared_data.dart';
+import 'package:chat_app/utils/shared_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../resources/resource.dart';
@@ -57,14 +56,6 @@ class DatabaseService {
     return getId.id;
   }
 
-  // Future getUserData({required String email}) async {
-  //   QuerySnapshot data =
-  //       await userCollection.where('email', isEqualTo: email).get();
-  //   return data.docs
-  //       .map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>))
-  //       .toList();
-  // }
-
   Stream<List<UserModel>> getAllUserData() {
     try {
       return userCollection
@@ -73,6 +64,40 @@ class DatabaseService {
           .transform(Utils.transformer(UserModel.fromJson));
     } catch (e) {
       throw 'error';
+    }
+  }
+
+  Stream<List<List<PersonsModel>>> getUserChatList({required String yourId}) {
+    try {
+      final data = chatsCollection
+          .where('persons.$yourId', isEqualTo: true)
+          .snapshots()
+          .transform(Utils.transformer(MessageDetailModel.fromJson))
+          .map((event) => event
+              .map((e) => e.persons.entries
+                  .map((e) => PersonsModel.fromJson(e.key))
+                  .toList())
+              .toList());
+      return data;
+    } catch (e) {
+      throw 'error';
+    }
+  }
+
+  createGroup({required String uid, required String groupName}) async {
+    try {
+      final getId = await chatsCollection.add({
+        'admin': uid,
+        'persons': {uid: true},
+        'id': '',
+        'groupName': groupName,
+      });
+
+      await getId.update({'id': getId.id});
+
+      return true;
+    } catch (e) {
+      throw e.toString();
     }
   }
 

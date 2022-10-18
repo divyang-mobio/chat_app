@@ -2,7 +2,7 @@ part of 'resource.dart';
 
 class AppTitle {
   final String mainScreen = 'Chats';
-  final String newContactScreen = 'New Contact';
+  final String newContactScreen = 'Contacts';
 
 }
 
@@ -13,6 +13,7 @@ class RoutesName {
   final String signInRoute = '/signIn';
   final String newContact = '/newContact';
   final String chat = '/chat';
+  final String bottomBar = '/bottomScreen';
   final String videoPlay = '/videoPlay';
 }
 

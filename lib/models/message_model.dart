@@ -34,8 +34,28 @@ class MessageModel {
     SendDataType type = (data == 'text')
         ? SendDataType.text
         : (data == 'image')
-        ? SendDataType.image
-        : SendDataType.video;
+            ? SendDataType.image
+            : SendDataType.video;
     return type;
+  }
+}
+
+class MessageDetailModel {
+  String id;
+  Map<String, dynamic> persons;
+
+  MessageDetailModel({required this.id, required this.persons});
+
+  factory MessageDetailModel.fromJson(Map<String, dynamic> json) =>
+      MessageDetailModel(id: json['id'], persons: json['persons']);
+}
+
+class PersonsModel {
+  String id;
+
+  PersonsModel({required this.id});
+
+  factory PersonsModel.fromJson(String json) {
+    return PersonsModel(id: json);
   }
 }
