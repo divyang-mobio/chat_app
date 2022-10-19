@@ -11,4 +11,11 @@ class ChatListLoaded extends ChatListState {
 
 }
 
+class ChatListUserModel extends ChatListState {
+  Stream<List<UserModel>> chatData;
+
+  ChatListUserModel({required this.chatData});
+
+}
+
 class ChatListError extends ChatListState {}

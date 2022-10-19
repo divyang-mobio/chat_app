@@ -108,7 +108,11 @@ SizedBox floatingActionButton(context,
         Color? color}) =>
     SizedBox(
         width: MediaQuery.of(context).size.width,
+        height: 40,
         child: MaterialButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15)
+          ),
             onPressed: onPressed,
             color: color ?? ColorResources().loginScreenSubmitButton,
             textColor: ColorResources().loginScreenSubmitButtonText,

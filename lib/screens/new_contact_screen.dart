@@ -68,9 +68,7 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
                       return Column(
                         children: [
                           GestureDetector(
-                            onTap: () {
-
-                            },
+                            onTap: () {},
                             child: ListTile(
                                 leading: CircleAvatar(
                                     backgroundColor: Colors.transparent,

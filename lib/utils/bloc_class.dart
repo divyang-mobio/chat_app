@@ -1,5 +1,6 @@
 import 'package:chat_app/controllers/chat_bloc/chat_bloc.dart';
 import '../controllers/chat_list/chat_list_bloc.dart';
+import '../controllers/chat_list/get_user_data_bloc.dart';
 import '../controllers/login_Bloc/set_otp_field_bloc.dart';
 import '../controllers/show_Status_bloc/show_status_bloc.dart';
 import '../controllers/user_bloc/new_contact_bloc.dart';
@@ -39,6 +40,7 @@ class BlocClass extends StatelessWidget {
       BlocProvider<ChatBloc>(create: (context) => ChatBloc()),
       BlocProvider<SetOtpFieldBloc>(create: (context) => SetOtpFieldBloc()),
       BlocProvider<ChatListBloc>(create: (context) => ChatListBloc()),
+      BlocProvider<GetUserDataBloc>(create: (context) => GetUserDataBloc()),
       BlocProvider<VisibleContainerBloc>(
           create: (context) =>
               VisibleContainerBloc()..add(ShowContainer(isVis: true)))

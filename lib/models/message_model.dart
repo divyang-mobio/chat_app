@@ -42,12 +42,11 @@ class MessageModel {
 
 class MessageDetailModel {
   String id;
-  Map<String, dynamic> persons;
 
-  MessageDetailModel({required this.id, required this.persons});
+  MessageDetailModel({required this.id});
 
   factory MessageDetailModel.fromJson(Map<String, dynamic> json) =>
-      MessageDetailModel(id: json['id'], persons: json['persons']);
+      MessageDetailModel(id: json['id']);
 }
 
 class PersonsModel {

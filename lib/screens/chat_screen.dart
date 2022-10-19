@@ -81,7 +81,9 @@ class _ChatScreenState extends State<ChatScreen> {
                       : networkImages(link: widget.userModel.profilePic),
                 ),
               ),
-              title: Text(widget.userModel.name),
+              title: Text((widget.userModel.name == "")
+                  ? widget.userModel.phone
+                  : widget.userModel.name),
               subtitle: checkStatus(),
               textColor: ColorResources().appBarIconTextColor,
             )),

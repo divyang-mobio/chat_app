@@ -1,10 +1,13 @@
+import 'package:chat_app/controllers/chat_list/chat_list_bloc.dart';
+import 'package:chat_app/controllers/chat_list/get_user_data_bloc.dart';
+import 'package:chat_app/models/user_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../controllers/user_bloc/new_contact_bloc.dart';
 import '../models/message_model.dart';
-import '../models/user_model.dart';
 import '../utils/firestore_service.dart';
 import '../utils/shared_data.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import '../resources/resource.dart';
 import '../widgets/listview.dart';
@@ -23,7 +26,11 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void callUserData() async {
     uid = await PreferenceServices().getUid();
     setState(() {});
-    // BlocProvider.of<NewContactBloc>(context).add(GetNewContactData(uid: uid));
+    callBloc(uid);
+  }
+
+  callBloc(String uid) {
+    BlocProvider.of<ChatListBloc>(context).add(GetChatList(uid: uid));
   }
 
   Shimmer shimmerLoading() {
@@ -46,6 +53,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
         SliverAppBar(
           expandedHeight: 100,
+          elevation: 0,
           flexibleSpace: FlexibleSpaceBar(
             titlePadding: const EdgeInsets.only(left: 10.0, bottom: 15),
             title: Text(AppTitle().mainScreen,
@@ -59,56 +67,86 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           pinned: true,
         )
       ],
-      body:
-          // Text("In progress")
-          (uid != '')
-              ? StreamBuilder<List<List<PersonsModel>>>(
-                  stream: DatabaseService().getUserChatList(yourId: uid),
+      body: BlocConsumer<ChatListBloc, ChatListState>(
+        listener: (context, state) {
+          if (state is ChatListLoaded) {}
+        },
+        builder: (context, state) {
+          if (state is ChatListInitial) {
+            return shimmerLoading();
+          } else if (state is ChatListLoaded) {
+            return MediaQuery.removePadding(
+              removeTop: true,
+              context: context,
+              child: StreamBuilder<List<MessageDetailModel>>(
+                  stream: state.chatData,
                   builder: (context, snapshot) {
                     if (snapshot.data != null) {
-                      print(snapshot.data?.map((e) => e.map((e) => PersonsModel(id: e.id))));
-                      return const Text("data");
-                      // return listView(
-                      //     userData: snapshot.data as List<UserModel>,
-                      //     isLoading: false);
+                      List<String>? data = snapshot.data
+                          ?.map((e) =>
+                              e.id.replaceAll(uid, "").replaceAll("_", ""))
+                          .toList();
+                      if (data!.isNotEmpty) {
+                        BlocProvider.of<GetUserDataBloc>(context)
+                            .add(GetUserModel(data: data));
+                        return BlocBuilder<GetUserDataBloc, GetUserDataState>(
+                          builder: (context, state) {
+                            if (state is GetUserDataInitial) {
+                              return shimmerLoading();
+                            } else if (state is GetUserDataLoaded) {
+                              return MediaQuery.removePadding(
+                                  removeTop: true,
+                                  context: context,
+                                  child: StreamBuilder<List<UserModel>>(
+                                      stream: state.chatData,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.data != null) {
+                                          return listView(
+                                              userData: snapshot.data
+                                                  as List<UserModel>,
+                                              isLoading: false);
+                                        } else {
+                                          return shimmerLoading();
+                                        }
+                                      }));
+                            } else if (state is ChatListError) {
+                              return Center(child: Text(TextResources().error));
+                            } else {
+                              return Center(
+                                  child: Text(TextResources().blocError));
+                            }
+                          },
+                        );
+                      } else {
+                        return const Text('Start Chatting');
+                      }
                     } else {
                       return shimmerLoading();
                     }
-                    // if (snapshot.data != null) {
-                    //   Text('hello');
-                    // } else {
-                    //   return CircularProgressIndicator();
-                    // }
-                  })
-              : Text('data'),
+                  }),
+            );
+            // } else if (state is ChatListUserModel) {
+            //   return MediaQuery.removePadding(
+            //       removeTop: true,
+            //       context: context,
+            //       child: StreamBuilder<List<UserModel>>(
+            //           stream: state.chatData,
+            //           builder: (context, snapshot) {
+            //             if (snapshot.data != null) {
+            //               return listView(
+            //                   userData: snapshot.data as List<UserModel>,
+            //                   isLoading: false);
+            //             } else {
+            //               return shimmerLoading();
+            //             }
+            //           }));
+          } else if (state is ChatListError) {
+            return Center(child: Text(TextResources().error));
+          } else {
+            return Center(child: Text(TextResources().blocError));
+          }
+        },
+      ),
     );
-    // body: BlocBuilder<NewContactBloc, NewContactState>(
-    //   builder: (context, state) {
-    //     if (state is NewContactInitial) {
-    //       return shimmerLoading();
-    //     } else if (state is NewContactLoaded) {
-    //       return MediaQuery.removePadding(
-    //         removeTop: true,
-    //         context: context,
-    //         child: StreamBuilder<List<UserModel>>(
-    //             stream: state.newContactData,
-    //             builder: (context, snapshot) {
-    //               if (snapshot.data != null) {
-    //                 return listView(
-    //                     userData: snapshot.data as List<UserModel>,
-    //                     isLoading: false);
-    //               } else {
-    //                 return shimmerLoading();
-    //               }
-    //             }),
-    //       );
-    //     } else if (state is NewContactError) {
-    //       return Center(child: Text(TextResources().error));
-    //     } else {
-    //       return Center(child: Text(TextResources().blocError));
-    //     }
-    //   },
-    // ),
-    // );
   }
 }

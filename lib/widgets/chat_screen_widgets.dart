@@ -155,8 +155,12 @@ class _NewMessageSendState extends State<NewMessageSend> {
         filled: true,
         fillColor: ColorResources().sendMessageTextField,
         hintText: TextResources().sendMessageTextFieldHintText,
-        border: OutlineInputBorder(
-            borderSide: const BorderSide(width: 0),
+        enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(width: 0, color: Colors.grey),
+            gapPadding: 10,
+            borderRadius: BorderRadius.circular(25)),
+        focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(width: 0, color: Colors.grey),
             gapPadding: 10,
             borderRadius: BorderRadius.circular(25)),
       ),
@@ -166,10 +170,9 @@ class _NewMessageSendState extends State<NewMessageSend> {
   GestureDetector sendButton() {
     return GestureDetector(
       onTap: () => _controller.text.trim() == '' ? null : sendMessage(),
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-            shape: BoxShape.circle, color: Theme.of(context).primaryColor),
+      child: CircleAvatar(
+        backgroundColor: Theme.of(context).primaryColor,
+        radius: 25,
         child: Icon(IconResources().sendMessage,
             color: ColorResources().sendMessageIcon),
       ),

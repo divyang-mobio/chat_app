@@ -47,13 +47,12 @@ class DatabaseService {
 
   Future createChatRoom(
       {required String yourName, required String otherName}) async {
-    final getId = await chatsCollection.add({
+    await chatsCollection.doc("${yourName}_$otherName").set({
       'persons': {yourName: true, otherName: true},
-      'id': ''
+      'id': "${yourName}_$otherName"
     });
-    await getId.update({'id': getId.id});
 
-    return getId.id;
+    return '${yourName}_$otherName';
   }
 
   Stream<List<UserModel>> getAllUserData() {
@@ -67,18 +66,12 @@ class DatabaseService {
     }
   }
 
-  Stream<List<List<PersonsModel>>> getUserChatList({required String yourId}) {
+  Stream<List<MessageDetailModel>> getUserChatList({required String yourId}) {
     try {
-      final data = chatsCollection
+      return chatsCollection
           .where('persons.$yourId', isEqualTo: true)
           .snapshots()
-          .transform(Utils.transformer(MessageDetailModel.fromJson))
-          .map((event) => event
-              .map((e) => e.persons.entries
-                  .map((e) => PersonsModel.fromJson(e.key))
-                  .toList())
-              .toList());
-      return data;
+          .transform(Utils.transformer(MessageDetailModel.fromJson));
     } catch (e) {
       throw 'error';
     }
@@ -125,6 +118,13 @@ class DatabaseService {
     } else {
       setMassage(id: ids, name: yourName, message: message, type: type);
     }
+  }
+
+  Stream<List<UserModel>> getUserModelFromIdList(List<String> ids) {
+    return userCollection
+        .where('uid', whereIn: ids)
+        .snapshots()
+        .transform(Utils.transformer(UserModel.fromJson));
   }
 
   setMassage(

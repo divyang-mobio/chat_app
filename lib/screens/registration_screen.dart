@@ -118,8 +118,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               onTap: () {
                 BlocProvider.of<ImageBloc>(context).add(UploadImage());
               },
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(45),
+              child: ClipOval(
                   child: Image.asset(ImagePath().noImageImagePath)));
         } else if (state is ImageLoading) {
           return showProfilePic(

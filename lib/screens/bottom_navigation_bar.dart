@@ -77,6 +77,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
           child: _widgetOptions.elementAt(_selectedIndex),
         ),
         bottomNavigationBar: BottomNavigationBar(
+          elevation: 0,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.message_outlined),
