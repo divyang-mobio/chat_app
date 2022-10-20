@@ -8,7 +8,7 @@ part 'message_model.g.dart';
 
 @JsonSerializable()
 class MessageModel {
-  String message, name;
+  String message, name, phone;
   @JsonKey(fromJson: _fromJson, name: 'time')
   String data;
   @JsonKey(fromJson: _typeFromJson)
@@ -17,6 +17,7 @@ class MessageModel {
   MessageModel({
     required this.message,
     required this.name,
+    required this.phone,
     required this.data,
     required this.type,
   });

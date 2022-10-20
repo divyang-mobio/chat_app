@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:chat_app/utils/shared_data.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -55,7 +54,8 @@ void uploadToFireStore(context,
         message: url,
         otherUid: otherUid,
         yourUid: await PreferenceServices().getUid(),
-        type: type));
+        type: type,
+        phone: await PreferenceServices().getPhone()));
   } catch (e) {
     await alertDialog(context, 'error');
   }

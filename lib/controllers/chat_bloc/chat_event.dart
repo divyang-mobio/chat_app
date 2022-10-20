@@ -5,7 +5,7 @@ abstract class ChatEvent {}
 class SendMessage extends ChatEvent {
   String? id;
   BuildContext context;
-  String message, name, yourUid, otherUid;
+  String message, name, yourUid, otherUid, phone;
   SendDataType type;
 
   SendMessage(
@@ -15,6 +15,7 @@ class SendMessage extends ChatEvent {
       required this.message,
       required this.otherUid,
       required this.type,
+      required this.phone,
       required this.yourUid});
 }
 
@@ -27,10 +28,10 @@ class SendTypeMessage extends ChatEvent {
 
   SendTypeMessage(
       {required this.isVideo,
-        required this.context,
-        required this.otherUid,
-        required this.imageSource,
-        required this.type});
+      required this.context,
+      required this.otherUid,
+      required this.imageSource,
+      required this.type});
 }
 
 class GetId extends ChatEvent {

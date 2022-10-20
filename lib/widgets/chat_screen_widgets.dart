@@ -7,6 +7,7 @@ import '../controllers/chat_bloc/chat_bloc.dart';
 import '../models/message_model.dart';
 import '../resources/resource.dart';
 import '../utils/firestore_service.dart';
+import '../utils/shared_data.dart';
 import 'network_image.dart';
 
 showMessage({String? id}) {
@@ -24,11 +25,11 @@ showMessage({String? id}) {
                           reverse: true,
                           itemCount: message.length,
                           itemBuilder: (context, index) {
-                            return (message[index].name ==
+                            return (message[index].phone ==
                                     (RepositoryProvider.of<FirebaseAuth>(
                                                 context)
                                             .currentUser
-                                            ?.displayName)
+                                            ?.phoneNumber)
                                         .toString())
                                 ? showMessageWidget(context,
                                     message: message[index], isMe: true)
@@ -110,16 +111,13 @@ class _NewMessageSendState extends State<NewMessageSend> {
   void sendMessage() async {
     FocusScope.of(context).unfocus();
     BlocProvider.of<ChatBloc>(context).add(SendMessage(
-        name: (RepositoryProvider.of<FirebaseAuth>(context)
-                .currentUser
-                ?.displayName)
-            .toString(),
+        name: await PreferenceServices().getAdmin(),
         context: context,
         message: _controller.text.trim(),
         otherUid: widget.otherId,
-        yourUid: (RepositoryProvider.of<FirebaseAuth>(context).currentUser?.uid)
-            .toString(),
-        type: SendDataType.text));
+        yourUid: await PreferenceServices().getUid(),
+        type: SendDataType.text,
+        phone: await PreferenceServices().getPhone()));
     _controller.clear();
   }
 
@@ -184,9 +182,7 @@ class _NewMessageSendState extends State<NewMessageSend> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(children: [
-        Expanded(
-          child: textField(),
-        ),
+        Expanded(child: textField()),
         const SizedBox(width: 10),
         sendButton()
       ]),

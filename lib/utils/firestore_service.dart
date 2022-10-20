@@ -98,6 +98,7 @@ class DatabaseService {
       {required String yourId,
       required String yourName,
       required String otherId,
+      required String phone,
       required SendDataType type,
       String? ids,
       required String message}) async {
@@ -108,15 +109,22 @@ class DatabaseService {
           .get();
       if (data.docs.isEmpty) {
         final id = await createChatRoom(yourName: yourId, otherName: otherId);
-        setMassage(id: id, name: yourName, message: message, type: type);
+        setMassage(
+            id: id, name: yourName, message: message, type: type, phone: phone);
       } else {
         List<ChatRoom> id = data.docs
             .map((e) => ChatRoom.fromJson(e.data() as Map<String, dynamic>))
             .toList();
-        setMassage(id: id[0].id, name: yourName, message: message, type: type);
+        setMassage(
+            id: id[0].id,
+            name: yourName,
+            message: message,
+            type: type,
+            phone: phone);
       }
     } else {
-      setMassage(id: ids, name: yourName, message: message, type: type);
+      setMassage(
+          id: ids, name: yourName, message: message, type: type, phone: phone);
     }
   }
 
@@ -131,10 +139,12 @@ class DatabaseService {
       {required String id,
       required String name,
       required String message,
+      required String phone,
       required SendDataType type}) {
     chatsCollection.doc(id).collection('message').doc().set({
       'name': name,
       'message': message,
+      'phone': phone,
       'type': (type == SendDataType.text)
           ? 'text'
           : (type == SendDataType.image)

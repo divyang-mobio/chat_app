@@ -55,4 +55,5 @@ class TextResources {
   final String profileInStoragePath = 'profile_image/';
   final String alertBoxButton = 'OK';
   final String permissionIsNotGiven = 'Pls allow permission';
+  final String noOneFroChat = 'Start Chatting';
 }

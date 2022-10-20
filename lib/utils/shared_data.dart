@@ -23,13 +23,15 @@ class PreferenceServices {
     return uid ?? '';
   }
 
-  Future<String> getPhone(SharedPreferences preferences) async {
-    final screen = preferences.getString("phone");
+  Future<String> getPhone() async {
+    final preference = await SharedPreferences.getInstance();
+    final screen = preference.getString("phone");
     return screen ?? '';
   }
 
-  Future<String> getPic(SharedPreferences preferences) async {
-    final urlList = preferences.getString("pic");
+  Future<String> getPic() async {
+    final preference = await SharedPreferences.getInstance();
+    final urlList = preference.getString("pic");
     return urlList ?? '';
   }
 

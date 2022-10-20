@@ -1,16 +1,11 @@
-import 'package:chat_app/controllers/chat_list/chat_list_bloc.dart';
-import 'package:chat_app/controllers/chat_list/get_user_data_bloc.dart';
-import 'package:chat_app/models/user_model.dart';
+import '../controllers/chat_list/chat_list_bloc.dart';
+import '../controllers/chat_list/get_user_data_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../controllers/user_bloc/new_contact_bloc.dart';
 import '../models/message_model.dart';
-import '../utils/firestore_service.dart';
 import '../utils/shared_data.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:flutter/material.dart';
 import '../resources/resource.dart';
-import '../widgets/listview.dart';
+import '../widgets/common_widgets_of_chat_screen.dart';
 import '../widgets/pop_up_menu.dart';
 
 class MainScreen extends StatefulWidget {
@@ -21,23 +16,15 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
-  String uid = '';
+  String uid = "";
 
   void callUserData() async {
     uid = await PreferenceServices().getUid();
-    setState(() {});
     callBloc(uid);
   }
 
   callBloc(String uid) {
     BlocProvider.of<ChatListBloc>(context).add(GetChatList(uid: uid));
-  }
-
-  Shimmer shimmerLoading() {
-    return Shimmer.fromColors(
-        baseColor: ColorResources().shimmerBase,
-        highlightColor: ColorResources().shimmerHighlight,
-        child: listView(userData: [], isLoading: true));
   }
 
   @override
@@ -54,11 +41,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         SliverAppBar(
           expandedHeight: 100,
           elevation: 0,
-          flexibleSpace: FlexibleSpaceBar(
-            titlePadding: const EdgeInsets.only(left: 10.0, bottom: 15),
-            title: Text(AppTitle().mainScreen,
-                style: TextStyle(color: ColorResources().appBarIconTextColor)),
-          ),
+          flexibleSpace: flexibleSpaceBar(title: AppTitle().mainScreen),
           actions: [
             IconButton(onPressed: () {}, icon: Icon(IconResources().search)),
             popupMenuButton()
@@ -67,10 +50,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
           pinned: true,
         )
       ],
-      body: BlocConsumer<ChatListBloc, ChatListState>(
-        listener: (context, state) {
-          if (state is ChatListLoaded) {}
-        },
+      body: BlocBuilder<ChatListBloc, ChatListState>(
         builder: (context, state) {
           if (state is ChatListInitial) {
             return shimmerLoading();
@@ -81,12 +61,15 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
               child: StreamBuilder<List<MessageDetailModel>>(
                   stream: state.chatData,
                   builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return shimmerLoading();
+                    }
                     if (snapshot.data != null) {
                       List<String>? data = snapshot.data
                           ?.map((e) =>
                               e.id.replaceAll(uid, "").replaceAll("_", ""))
                           .toList();
-                      if (data!.isNotEmpty) {
+                      if (data != null && data != []) {
                         BlocProvider.of<GetUserDataBloc>(context)
                             .add(GetUserModel(data: data));
                         return BlocBuilder<GetUserDataBloc, GetUserDataState>(
@@ -94,52 +77,23 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                             if (state is GetUserDataInitial) {
                               return shimmerLoading();
                             } else if (state is GetUserDataLoaded) {
-                              return MediaQuery.removePadding(
-                                  removeTop: true,
-                                  context: context,
-                                  child: StreamBuilder<List<UserModel>>(
-                                      stream: state.chatData,
-                                      builder: (context, snapshot) {
-                                        if (snapshot.data != null) {
-                                          return listView(
-                                              userData: snapshot.data
-                                                  as List<UserModel>,
-                                              isLoading: false);
-                                        } else {
-                                          return shimmerLoading();
-                                        }
-                                      }));
-                            } else if (state is ChatListError) {
-                              return Center(child: Text(TextResources().error));
+                              return userModelStream(context,
+                                  data: state.chatData);
                             } else {
                               return Center(
-                                  child: Text(TextResources().blocError));
+                                  child: Text(TextResources().noOneFroChat));
                             }
                           },
                         );
                       } else {
-                        return const Text('Start Chatting');
+                        return Center(
+                            child: Text(TextResources().noOneFroChat));
                       }
                     } else {
                       return shimmerLoading();
                     }
                   }),
             );
-            // } else if (state is ChatListUserModel) {
-            //   return MediaQuery.removePadding(
-            //       removeTop: true,
-            //       context: context,
-            //       child: StreamBuilder<List<UserModel>>(
-            //           stream: state.chatData,
-            //           builder: (context, snapshot) {
-            //             if (snapshot.data != null) {
-            //               return listView(
-            //                   userData: snapshot.data as List<UserModel>,
-            //                   isLoading: false);
-            //             } else {
-            //               return shimmerLoading();
-            //             }
-            //           }));
           } else if (state is ChatListError) {
             return Center(child: Text(TextResources().error));
           } else {

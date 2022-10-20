@@ -19,7 +19,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             yourId: event.yourUid,
             ids: event.id,
             type: event.type,
-            otherId: event.otherUid);
+            otherId: event.otherUid, phone: event.phone);
       } catch (e) {
         ScaffoldMessenger.of(event.context).showSnackBar(
             SnackBar(content: Text(TextResources().errorAtMessageSendTime)));
