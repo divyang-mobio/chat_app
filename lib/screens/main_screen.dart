@@ -27,6 +27,58 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     BlocProvider.of<ChatListBloc>(context).add(GetChatList(uid: uid));
   }
 
+  BlocBuilder listBloc() {
+    return BlocBuilder<GetUserDataBloc, GetUserDataState>(
+      builder: (context, state) {
+        if (state is GetUserDataInitial) {
+          return shimmerLoading();
+        } else if (state is GetUserDataLoaded) {
+          return userModelStream(context, data: state.chatData);
+        } else {
+          return Center(child: Text(TextResources().noOneFroChat));
+        }
+      },
+    );
+  }
+
+  BlocBuilder chatBody() {
+    return BlocBuilder<ChatListBloc, ChatListState>(
+      builder: (context, state) {
+        if (state is ChatListInitial) {
+          return shimmerLoading();
+        } else if (state is ChatListLoaded) {
+          return StreamBuilder<List<MessageDetailModel>>(
+              stream: state.chatData,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return shimmerLoading();
+                } else {
+                  if (snapshot.data != null) {
+                    List<String>? data = snapshot.data
+                        ?.map(
+                            (e) => e.id.replaceAll(uid, "").replaceAll("_", ""))
+                        .toList();
+                    if (data != null && data != []) {
+                      BlocProvider.of<GetUserDataBloc>(context)
+                          .add(GetUserModel(data: data));
+                      return listBloc();
+                    } else {
+                      return Center(child: Text(TextResources().noOneFroChat));
+                    }
+                  } else {
+                    return Center(child: Text(TextResources().noOneFroChat));
+                  }
+                }
+              });
+        } else if (state is ChatListError) {
+          return Center(child: Text(TextResources().error));
+        } else {
+          return Center(child: Text(TextResources().blocError));
+        }
+      },
+    );
+  }
+
   @override
   void initState() {
     callUserData();
@@ -36,71 +88,22 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
-      floatHeaderSlivers: true,
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
-        SliverAppBar(
-          expandedHeight: 100,
-          elevation: 0,
-          flexibleSpace: flexibleSpaceBar(title: AppTitle().mainScreen),
-          actions: [
-            IconButton(onPressed: () {}, icon: Icon(IconResources().search)),
-            popupMenuButton()
-          ],
-          floating: false,
-          pinned: true,
-        )
-      ],
-      body: BlocBuilder<ChatListBloc, ChatListState>(
-        builder: (context, state) {
-          if (state is ChatListInitial) {
-            return shimmerLoading();
-          } else if (state is ChatListLoaded) {
-            return MediaQuery.removePadding(
-              removeTop: true,
-              context: context,
-              child: StreamBuilder<List<MessageDetailModel>>(
-                  stream: state.chatData,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return shimmerLoading();
-                    }
-                    if (snapshot.data != null) {
-                      List<String>? data = snapshot.data
-                          ?.map((e) =>
-                              e.id.replaceAll(uid, "").replaceAll("_", ""))
-                          .toList();
-                      if (data != null && data != []) {
-                        BlocProvider.of<GetUserDataBloc>(context)
-                            .add(GetUserModel(data: data));
-                        return BlocBuilder<GetUserDataBloc, GetUserDataState>(
-                          builder: (context, state) {
-                            if (state is GetUserDataInitial) {
-                              return shimmerLoading();
-                            } else if (state is GetUserDataLoaded) {
-                              return userModelStream(context,
-                                  data: state.chatData);
-                            } else {
-                              return Center(
-                                  child: Text(TextResources().noOneFroChat));
-                            }
-                          },
-                        );
-                      } else {
-                        return Center(
-                            child: Text(TextResources().noOneFroChat));
-                      }
-                    } else {
-                      return shimmerLoading();
-                    }
-                  }),
-            );
-          } else if (state is ChatListError) {
-            return Center(child: Text(TextResources().error));
-          } else {
-            return Center(child: Text(TextResources().blocError));
-          }
-        },
-      ),
-    );
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
+            [
+              SliverAppBar(
+                expandedHeight: 100,
+                elevation: 0,
+                flexibleSpace: flexibleSpaceBar(title: AppTitle().mainScreen),
+                actions: [
+                  IconButton(
+                      onPressed: () {}, icon: Icon(IconResources().search)),
+                  popupMenuButton()
+                ],
+                floating: false,
+                pinned: true,
+              )
+            ],
+        body: chatBody());
   }
 }

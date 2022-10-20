@@ -1,17 +1,17 @@
 part of 'resource.dart';
 
 class ColorResources {
-  final Color primaryColor = const Color.fromARGB(255, 0, 101, 255);
+  final Color primaryColor = const Color.fromARGB(255, 0, 101, 200);
   final Color textFieldSignInSignUpColor = Colors.black;
   final Color textFieldSignInSignUpIconColor = Colors.black;
   final Color loginScreenTitle = Colors.black;
-  final Color loginScreenTextButton = const Color.fromARGB(255, 0, 101, 255);
-  final Color loginScreenSubmitButton = const Color.fromARGB(255, 0, 101, 255);
+  final Color loginScreenTextButton = const Color.fromARGB(255, 0, 101, 200);
+  final Color loginScreenSubmitButton = const Color.fromARGB(255, 0, 101, 200);
+  final Color bgFloatingActionButton = const Color.fromARGB(255, 0, 101, 200);
   final Color loginScreenSubmitButtonText = Colors.white;
   final Color loginScreenCircularIndicator = Colors.white;
   final Color selectionHandleColor = Colors.black;
   final Color appBar = Colors.white;
-  final Color bgFloatingActionButton = const Color.fromARGB(255, 0, 101, 255);
   final Color appBarIconTextColor = Colors.black;
   final Color popUpMenuIconColor = Colors.black;
   final Color shimmerBase = Colors.grey.shade400;
@@ -33,4 +33,6 @@ class ColorResources {
   final Color registrationImageRemoveIcon = Colors.red;
   final Color registrationImageBg = Colors.grey;
   final Color otpVerifyFieldWhenUnSelected = Colors.grey;
+  final Color bgOfAllScreen = Colors.white;
+  final Color chatScreenTextFieldBorder = Colors.grey;
 }

@@ -118,8 +118,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               onTap: () {
                 BlocProvider.of<ImageBloc>(context).add(UploadImage());
               },
-              child: ClipOval(
-                  child: Image.asset(ImagePath().noImageImagePath)));
+              child:
+                  ClipOval(child: Image.asset(ImagePath().noImageImagePath)));
         } else if (state is ImageLoading) {
           return showProfilePic(
               onTap: () {},
@@ -159,6 +159,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorResources().bgOfAllScreen,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -166,9 +167,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             child: Stack(
               children: [
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Center(
-                    child: uploadImage(),
-                  ),
+                  Center(child: uploadImage()),
                   const SizedBox(height: 20),
                   textField(),
                   const SizedBox(height: 20),

@@ -1,4 +1,5 @@
 import 'package:chat_app/controllers/chat_bloc/chat_bloc.dart';
+import 'package:chat_app/models/botton_nav_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 

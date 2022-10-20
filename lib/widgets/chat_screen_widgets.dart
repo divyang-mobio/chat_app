@@ -55,8 +55,9 @@ Row showMessageWidget(context,
                 isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(
+                    (message.type == SendDataType.text) ? 10 : 4),
+                margin: const EdgeInsets.only(right: 10, left: 10, top: 10),
                 decoration: BoxDecoration(
                     color: isMe
                         ? ColorResources().chatBubbleYourSideBG
@@ -136,6 +137,14 @@ class _NewMessageSendState extends State<NewMessageSend> {
             color: ColorResources().textFieldIcon));
   }
 
+  OutlineInputBorder outlineInputBorder() {
+    return OutlineInputBorder(
+        borderSide: BorderSide(
+            width: 0, color: ColorResources().chatScreenTextFieldBorder),
+        gapPadding: 10,
+        borderRadius: BorderRadius.circular(25));
+  }
+
   TextField textField() {
     return TextField(
       controller: _controller,
@@ -153,14 +162,8 @@ class _NewMessageSendState extends State<NewMessageSend> {
         filled: true,
         fillColor: ColorResources().sendMessageTextField,
         hintText: TextResources().sendMessageTextFieldHintText,
-        enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(width: 0, color: Colors.grey),
-            gapPadding: 10,
-            borderRadius: BorderRadius.circular(25)),
-        focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(width: 0, color: Colors.grey),
-            gapPadding: 10,
-            borderRadius: BorderRadius.circular(25)),
+        enabledBorder: outlineInputBorder(),
+        focusedBorder: outlineInputBorder(),
       ),
     );
   }

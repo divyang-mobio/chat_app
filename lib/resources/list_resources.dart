@@ -39,6 +39,15 @@ class BottomSheetList {
   }
 }
 
+List<BottomNavModel> bottomNav = [
+  BottomNavModel(
+      label: TextResources().bottomNavMessage,
+      iconData: IconResources().bottomNavMessage),
+  BottomNavModel(
+      label: TextResources().bottomNavContact,
+      iconData: IconResources().bottomNavContact)
+];
+
 enum SendDataType {
   image,
   text,

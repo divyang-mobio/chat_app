@@ -29,7 +29,7 @@ class TextResources {
   final String otpVerifyButton = 'Verify Phone Number';
   final String loginError = 'Retry';
   final String registrationScreenUploadSuccess = 'Success';
-  final String registrationScreenSkip = 'SKip';
+  final String registrationScreenSkip = 'Skip';
   final String signInString = 'Login';
   final String signInTextButton = 'Sign In';
   final String signInTextButtonPrefix = 'New to app?';
@@ -56,4 +56,6 @@ class TextResources {
   final String alertBoxButton = 'OK';
   final String permissionIsNotGiven = 'Pls allow permission';
   final String noOneFroChat = 'Start Chatting';
+  final String bottomNavMessage = 'Chats';
+  final String bottomNavContact = 'Contacts';
 }

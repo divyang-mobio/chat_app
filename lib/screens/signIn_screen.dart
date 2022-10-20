@@ -108,7 +108,8 @@ class _SignInScreenState extends State<SignInScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         children: [
           image(context, link: ImagePath().signUpImagePath),
-          Center(child: loginTitle(context, title: TextResources().signInTile)),
+          loginTitle(context, title: TextResources().signInTile),
+          const SizedBox(height: 10),
           Text(TextResources().signInTextMessage, textAlign: TextAlign.center),
           const SizedBox(height: 20),
           BlocConsumer<LoginBloc, LoginState>(
@@ -140,6 +141,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorResources().bgOfAllScreen,
       body: SafeArea(
         child: Form(
           key: formKey,

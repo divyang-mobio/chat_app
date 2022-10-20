@@ -38,11 +38,17 @@ ListView listView(
                               alignment: Alignment.bottomRight,
                               child: isLoading
                                   ? const SizedBox()
-                                  : CircleAvatar(
-                                      backgroundColor: userData[index].status
-                                          ? ColorResources().statusOnlineColor
-                                          : ColorResources().statusOfflineColor,
-                                      radius: 7),
+                                  : Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: CircleAvatar(
+                                          backgroundColor:
+                                              userData[index].status
+                                                  ? ColorResources()
+                                                      .statusOnlineColor
+                                                  : ColorResources()
+                                                      .statusOfflineColor,
+                                          radius: 5),
+                                    ),
                             ),
                           ),
                         ],
@@ -54,7 +60,7 @@ ListView listView(
                         ? userData[index].phone
                         : userData[index].name,
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 19))),
+                        fontWeight: FontWeight.w700, fontSize: 20))),
       ),
     ),
   );

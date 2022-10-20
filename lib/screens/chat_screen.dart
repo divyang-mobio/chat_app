@@ -70,8 +70,9 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: ColorResources().bgOfAllScreen,
         appBar: AppBar(
-            leadingWidth: 20,
+            leadingWidth: 25,
             title: ListTile(
               leading: ClipOval(
                 child: SizedBox.fromSize(
@@ -81,9 +82,11 @@ class _ChatScreenState extends State<ChatScreen> {
                       : networkImages(link: widget.userModel.profilePic),
                 ),
               ),
-              title: Text((widget.userModel.name == "")
-                  ? widget.userModel.phone
-                  : widget.userModel.name),
+              title: Text(
+                  (widget.userModel.name == "")
+                      ? widget.userModel.phone
+                      : widget.userModel.name,
+                  style: const TextStyle(fontWeight: FontWeight.w600)),
               subtitle: checkStatus(),
               textColor: ColorResources().appBarIconTextColor,
             )),

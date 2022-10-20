@@ -19,4 +19,6 @@ class IconResources {
   final navigationBack = Icons.navigate_before_outlined;
   final micFromSpeechToText = Icons.mic;
   final removeImageOnRegistrationScreen = Icons.cancel;
+  final bottomNavMessage = Icons.message_outlined;
+  final bottomNavContact = Icons.people_alt_outlined;
 }

@@ -54,7 +54,8 @@ Text loginTitle(context, {required String title}) {
   return Text(title,
       style: Theme.of(context).textTheme.headline4?.copyWith(
           color: ColorResources().loginScreenTitle,
-          fontWeight: FontWeight.bold));
+          fontWeight: FontWeight.w700),
+      textAlign: TextAlign.center);
 }
 
 Align textButton(
@@ -110,9 +111,8 @@ SizedBox floatingActionButton(context,
         width: MediaQuery.of(context).size.width,
         height: 40,
         child: MaterialButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15)
-          ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             onPressed: onPressed,
             color: color ?? ColorResources().loginScreenSubmitButton,
             textColor: ColorResources().loginScreenSubmitButtonText,

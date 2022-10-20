@@ -1,4 +1,5 @@
 import 'package:chat_app/controllers/chat_bloc/chat_bloc.dart';
+import '../controllers/bottom_nav_bloc/bottom_navigation_bloc.dart';
 import '../controllers/chat_list/chat_list_bloc.dart';
 import '../controllers/chat_list/get_user_data_bloc.dart';
 import '../controllers/login_Bloc/set_otp_field_bloc.dart';
@@ -41,6 +42,9 @@ class BlocClass extends StatelessWidget {
       BlocProvider<SetOtpFieldBloc>(create: (context) => SetOtpFieldBloc()),
       BlocProvider<ChatListBloc>(create: (context) => ChatListBloc()),
       BlocProvider<GetUserDataBloc>(create: (context) => GetUserDataBloc()),
+      BlocProvider<BottomNavigationBloc>(
+          create: (context) =>
+              BottomNavigationBloc()..add(OnChangeBar(index: 0))),
       BlocProvider<VisibleContainerBloc>(
           create: (context) =>
               VisibleContainerBloc()..add(ShowContainer(isVis: true)))

@@ -1,5 +1,5 @@
+import '../controllers/bottom_nav_bloc/bottom_navigation_bloc.dart';
 import 'package:chat_app/screens/main_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,16 +19,14 @@ class BottomNavigationBarScreen extends StatefulWidget {
 
 class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
     with WidgetsBindingObserver {
-  int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     MainScreen(),
     SelectContactScreen()
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    BlocProvider.of<BottomNavigationBloc>(context)
+        .add(OnChangeBar(index: index));
   }
 
   void changeStatusFun(bool status) async {
@@ -72,26 +70,30 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
               .showSnackBar(SnackBar(content: Text(state.error)));
         }
       },
-      child: Scaffold(
-        body: Center(
-          child: _widgetOptions.elementAt(_selectedIndex),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          elevation: 0,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.message_outlined),
-              label: 'Chats',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.people_alt_outlined),
-              label: 'Contacts',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Theme.of(context).primaryColor,
-          onTap: _onItemTapped,
-        ),
+      child: BlocBuilder<BottomNavigationBloc, BottomNavigationState>(
+        builder: (context, state) {
+          if (state is BottomNavigationInitial) {
+            return const Scaffold(
+                body: Center(child: CircularProgressIndicator.adaptive()));
+          } else if (state is BottomNavigationLoaded) {
+            return Scaffold(
+              backgroundColor: ColorResources().bgOfAllScreen,
+              body: Center(child: _widgetOptions.elementAt(state.index)),
+              bottomNavigationBar: BottomNavigationBar(
+                elevation: 0,
+                items: bottomNav
+                    .map((e) => BottomNavigationBarItem(
+                        icon: Icon(e.iconData), label: e.label))
+                    .toList(),
+                currentIndex: state.index,
+                selectedItemColor: Theme.of(context).primaryColor,
+                onTap: _onItemTapped,
+              ),
+            );
+          } else {
+            return Scaffold(body: Center(child: Text(TextResources().error)));
+          }
+        },
       ),
     );
   }
