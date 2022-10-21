@@ -88,11 +88,15 @@ class DatabaseService {
     }
   }
 
-  createGroup({required String uid, required String groupName}) async {
+  createGroup(
+      {required Map<String, dynamic> uid,
+      required String groupName,
+      required String adminUid,
+      required String url}) async {
     try {
       final getId = await chatsCollection.add({
-        'admin': uid,
-        'persons': {uid: true},
+        'admin': adminUid,
+        'persons': uid,
         'id': '',
         'groupName': groupName,
       });

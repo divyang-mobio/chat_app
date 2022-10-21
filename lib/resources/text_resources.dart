@@ -16,6 +16,7 @@ class RoutesName {
   final String bottomBar = '/bottomScreen';
   final String videoPlay = '/videoPlay';
   final String groupContactScreen = '/GroupContactScreen';
+  final String groupRegistrationScreen = '/groupRegistration';
 }
 
 class TextResources {

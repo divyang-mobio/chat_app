@@ -1,3 +1,4 @@
+import 'package:chat_app/utils/shared_data.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../models/user_model.dart';
@@ -44,7 +45,7 @@ SingleChildScrollView contactBody(context,
     child: Column(children: [
       if (!isChatScreen)
         GestureDetector(
-          onTap: () {
+          onTap: () async {
             Navigator.pushNamed(context, RoutesName().groupContactScreen);
           },
           child: Padding(
@@ -61,8 +62,9 @@ SingleChildScrollView contactBody(context,
             ),
           ),
         ),
-      listView(
-          userData: userData, isLoading: false, isGroupScreen: isGroupScreen)
+      isGroupScreen
+          ? groupListViewListView(context, userData: userData)
+          : listView(userData: userData, isLoading: false)
     ]),
   );
 }

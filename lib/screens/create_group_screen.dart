@@ -1,57 +1,183 @@
-import 'package:chat_app/resources/resource.dart';
-import 'package:flutter/material.dart';
+import 'package:chat_app/controllers/group_bloc/send_group_data_bloc.dart';
+import 'package:chat_app/controllers/update_profile_bloc/update_profile_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../controllers/group_bloc/create_group_bloc.dart';
-import '../utils/shared_data.dart';
-import '../widgets/common_widgets_of_chat_screen.dart';
+import '../controllers/upload_user_image_bloc/image_bloc.dart';
+import '../models/user_model.dart';
+import '../widgets/login_screens_widget.dart';
+import 'package:flutter/material.dart';
+import '../resources/resource.dart';
+import '../widgets/network_image.dart';
 
-class CreateGroupScreen extends StatefulWidget {
-  const CreateGroupScreen({Key? key}) : super(key: key);
+class RegistrationGroupScreen extends StatefulWidget {
+  const RegistrationGroupScreen({Key? key, required this.member})
+      : super(key: key);
+
+  final List<UserModel> member;
 
   @override
-  State<CreateGroupScreen> createState() => _CreateGroupScreenState();
+  State<RegistrationGroupScreen> createState() =>
+      _RegistrationGroupScreenState();
 }
 
-class _CreateGroupScreenState extends State<CreateGroupScreen> {
-  void callUserData() async {
-    String uid = await PreferenceServices().getUid();
-    callBloc(uid);
-  }
-
-  callBloc(String uid) {
-    BlocProvider.of<CreateGroupBloc>(context).add(GetGroupData(uid: uid));
-  }
+class _RegistrationGroupScreenState extends State<RegistrationGroupScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  String url = '';
 
   @override
-  void initState() {
-    callUserData();
-    super.initState();
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  GestureDetector showProfilePic(
+      {required GestureTapCallback onTap, required Widget child}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: CircleAvatar(
+          backgroundColor: ColorResources().registrationImageBg,
+          radius: 60,
+          child: child),
+    );
+  }
+
+  void navigator() {
+    Navigator.pushNamedAndRemoveUntil(
+        context, RoutesName().bottomBar, (route) => false);
+  }
+
+  void showError() {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(TextResources().error)));
+  }
+
+  CustomTextField textField() {
+    return CustomTextField(
+        controller: _nameController,
+        hintName: "Group name",
+        iconData: IconResources().namePrefixInLogin,
+        textInputAction: TextInputAction.next,
+        validator: (value) {
+          if (value == null || value == '') {
+            return 'enter group name';
+          } else if (value.length <= 3) {
+            return 'good name';
+          } else {
+            return null;
+          }
+        },
+        keyBoard: TextInputType.text,
+        isLogin: false);
+  }
+
+  BlocConsumer uploadDataButton() {
+    return BlocConsumer<SendGroupDataBloc, SendGroupDataState>(
+      listener: (context, state) {
+        if (state is UpdateProfileLoaded) {
+          print('succes');
+          // navigator();
+        }
+      },
+      builder: (context, state) {
+        if (state is SendGroupDataInitial) {
+          return floatingActionButton(context, onPressed: () {
+            BlocProvider.of<SendGroupDataBloc>(context).add(GiveGroupData(
+                url: url,
+                groupName: _nameController.text.trim(),
+                data: widget.member));
+          }, widget: const Text('Create group'));
+        } else if (state is SendGroupDataLoading) {
+          return floatingActionButton(context,
+              onPressed: () {},
+              widget: CircularProgressIndicator.adaptive(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      ColorResources().loginScreenCircularIndicator)));
+        } else if (state is SendGroupDataSuccess) {
+          return floatingActionButton(context,
+              onPressed: () {},
+              color: ColorResources().uploadImageSuccessButton,
+              widget: Text(TextResources().registrationScreenUploadSuccess));
+        } else {
+          return floatingActionButton(context,
+              onPressed: () {}, widget: Text(TextResources().error));
+        }
+      },
+    );
+  }
+
+  BlocConsumer uploadImage() {
+    return BlocConsumer<ImageBloc, ImageState>(
+      listener: (context, state) {
+        if (state is ImageError) {
+          showError();
+        }
+      },
+      builder: (context, state) {
+        if (state is ImageInitial) {
+          url = '';
+          return showProfilePic(
+              onTap: () {
+                BlocProvider.of<ImageBloc>(context).add(UploadImage());
+              },
+              child:
+                  ClipOval(child: Image.asset(ImagePath().noImageImagePath)));
+        } else if (state is ImageLoading) {
+          return showProfilePic(
+              onTap: () {},
+              child: const Center(child: CircularProgressIndicator.adaptive()));
+        } else if (state is ImageLoaded) {
+          url = state.url;
+          return Stack(children: [
+            showProfilePic(
+              onTap: () {},
+              child: ClipOval(
+                child: SizedBox.fromSize(
+                  size: const Size.fromRadius(60),
+                  child: networkImages(link: state.url),
+                ),
+              ),
+            ),
+            Positioned.fill(
+                child: Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                        onPressed: () {
+                          BlocProvider.of<ImageBloc>(context)
+                              .add(DeleteImage(url: state.url));
+                        },
+                        icon: Icon(
+                            IconResources().removeImageOnRegistrationScreen,
+                            color:
+                                ColorResources().registrationImageRemoveIcon))))
+          ]);
+        } else {
+          return Text(TextResources().error);
+        }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppTitle().createGroupScreen),
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(IconResources().search)),
-          IconButton(
-              onPressed: () {}, icon: Icon(IconResources().navigateForward))
-        ],
-      ),
-      body: BlocBuilder<CreateGroupBloc, CreateGroupState>(
-        builder: (context, state) {
-          if (state is CreateGroupInitial) {
-            return shimmerLoading();
-          } else if (state is CreateGroupLoaded) {
-            return userModelStream(context,
-                data: state.data, isChatScreen: true, isGroupScreen: true);
-          } else if (state is CreateGroupError) {
-            return Center(child: Text(TextResources().error));
-          } else {
-            return Center(child: Text(TextResources().blocError));
-          }
-        },
+      backgroundColor: ColorResources().bgOfAllScreen,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: SingleChildScrollView(
+            child: Stack(
+              children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Center(child: uploadImage()),
+                  const SizedBox(height: 20),
+                  textField(),
+                  const SizedBox(height: 20),
+                  uploadDataButton()
+                ])
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

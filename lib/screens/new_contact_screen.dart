@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../resources/resource.dart';
 import '../utils/shared_data.dart';
 import '../widgets/common_widgets_of_chat_screen.dart';
-import 'create_group_screen.dart';
 
 class SelectContactScreen extends StatefulWidget {
   const SelectContactScreen({Key? key}) : super(key: key);

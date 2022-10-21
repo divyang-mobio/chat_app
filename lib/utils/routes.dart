@@ -1,13 +1,16 @@
 import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/screens/chat_screen.dart';
+import 'package:chat_app/screens/create_group_screen.dart';
 import 'package:chat_app/screens/main_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../controllers/group_bloc/add_data_group_bloc.dart';
+import '../controllers/group_bloc/send_group_data_bloc.dart';
 import '../controllers/update_profile_bloc/update_profile_bloc.dart';
 import '../controllers/upload_user_image_bloc/image_bloc.dart';
 import '../controllers/video_player_bloc/play_pause_bloc.dart';
 import '../controllers/video_player_bloc/refresh_bloc.dart';
 import '../screens/bottom_navigation_bar_screen.dart';
-import '../screens/create_group_screen.dart';
+import '../screens/select_member_screen.dart';
 import '../screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import '../screens/signIn_screen.dart';
@@ -29,32 +32,39 @@ class RouteGenerator {
                   ],
                   child: const RegistrationScreen(),
                 ));
+      case '/groupRegistration':
+        final args = settings.arguments as List<UserModel>;
+        return MaterialPageRoute(
+            builder: (context) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider<SendGroupDataBloc>(
+                        create: (context) => SendGroupDataBloc()),
+                    BlocProvider<ImageBloc>(create: (context) => ImageBloc()),
+                  ],
+                  child: RegistrationGroupScreen(member: args),
+                ));
       case '/mainScreen':
         return MaterialPageRoute(builder: (context) => const MainScreen());
       case '/bottomScreen':
         return MaterialPageRoute(
             builder: (context) => const BottomNavigationBarScreen());
-        case '/GroupContactScreen':
+      case '/GroupContactScreen':
         return MaterialPageRoute(
-            builder: (context) => const CreateGroupScreen());
+            builder: (context) => BlocProvider<AddDataGroupBloc>(
+                  create: (context) =>
+                      AddDataGroupBloc()..add(AddMember(userModel: [])),
+                  child: const CreateGroupScreen(),
+                ));
       case '/signIn':
         return MaterialPageRoute(builder: (context) => const SignInScreen());
       case '/videoPlay':
         final args = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (context) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider<PlayPauseBloc>(
-                      create: (context) => PlayPauseBloc(),
-                    ),
-                    BlocProvider<RefreshBloc>(
-                      create: (context) => RefreshBloc(),
-                    ),
-                  ],
-                  child: VideoApp(
-                    link: args,
-                  ),
-                ));
+            builder: (context) => MultiBlocProvider(providers: [
+                  BlocProvider<PlayPauseBloc>(
+                      create: (context) => PlayPauseBloc()),
+                  BlocProvider<RefreshBloc>(create: (context) => RefreshBloc()),
+                ], child: VideoApp(link: args)));
       case '/chat':
         final args = settings.arguments as UserModel;
         return MaterialPageRoute(
