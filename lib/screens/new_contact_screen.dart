@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../resources/resource.dart';
 import '../utils/shared_data.dart';
 import '../widgets/common_widgets_of_chat_screen.dart';
+import 'create_group_screen.dart';
 
 class SelectContactScreen extends StatefulWidget {
   const SelectContactScreen({Key? key}) : super(key: key);
@@ -48,7 +49,8 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
           if (state is NewContactInitial) {
             return shimmerLoading();
           } else if (state is NewContactLoaded) {
-            return userModelStream(context, data: state.newContactData);
+            return userModelStream(context,
+                data: state.newContactData, isChatScreen: false);
           } else if (state is NewContactError) {
             return Center(child: Text(TextResources().error));
           } else {

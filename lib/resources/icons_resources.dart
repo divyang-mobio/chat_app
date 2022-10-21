@@ -6,9 +6,8 @@ class IconResources {
   final phonePrefixInLogin = Icons.phone;
   final passPrefixInLogin = Icons.lock;
   final passSuffixShow = Icons.remove_red_eye;
-  final sendOtp = Icons.arrow_forward;
+  final navigateForward = Icons.arrow_forward;
   final passSuffixUnShow = Icons.remove_red_eye_outlined;
-  final signUpSignInSubmitIcon = Icons.navigate_next_rounded;
   final logout = Icons.logout;
   final search = Icons.search_rounded;
   final floatingActionButtonIcon = Icons.message;
@@ -21,4 +20,5 @@ class IconResources {
   final removeImageOnRegistrationScreen = Icons.cancel;
   final bottomNavMessage = Icons.message_outlined;
   final bottomNavContact = Icons.people_alt_outlined;
+  final createGroupButton = Icons.groups;
 }

@@ -1,4 +1,4 @@
-import 'package:chat_app/screens/bottom_navigation_bar.dart';
+import 'package:chat_app/screens/bottom_navigation_bar_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';

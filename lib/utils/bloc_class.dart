@@ -2,6 +2,7 @@ import 'package:chat_app/controllers/chat_bloc/chat_bloc.dart';
 import '../controllers/bottom_nav_bloc/bottom_navigation_bloc.dart';
 import '../controllers/chat_list/chat_list_bloc.dart';
 import '../controllers/chat_list/get_user_data_bloc.dart';
+import '../controllers/group_bloc/create_group_bloc.dart';
 import '../controllers/login_Bloc/set_otp_field_bloc.dart';
 import '../controllers/show_Status_bloc/show_status_bloc.dart';
 import '../controllers/user_bloc/new_contact_bloc.dart';
@@ -37,6 +38,7 @@ class BlocClass extends StatelessWidget {
                 firebaseAuth: RepositoryProvider.of<FirebaseAuth>(context))),
       ),
       BlocProvider<NewContactBloc>(create: (context) => NewContactBloc()),
+      BlocProvider<CreateGroupBloc>(create: (context) => CreateGroupBloc()),
       BlocProvider<ShowStatusBloc>(create: (context) => ShowStatusBloc()),
       BlocProvider<ChatBloc>(create: (context) => ChatBloc()),
       BlocProvider<SetOtpFieldBloc>(create: (context) => SetOtpFieldBloc()),

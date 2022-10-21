@@ -35,4 +35,6 @@ class ColorResources {
   final Color otpVerifyFieldWhenUnSelected = Colors.grey;
   final Color bgOfAllScreen = Colors.white;
   final Color chatScreenTextFieldBorder = Colors.grey;
+  final Color createGroupButtonBg = Colors.grey;
+  final Color createGroupButtonIcon = Colors.black;
 }

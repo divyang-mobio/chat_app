@@ -66,6 +66,17 @@ class DatabaseService {
     }
   }
 
+  Stream<List<UserModel>> getAllUserDataForGroup() {
+    try {
+      return userCollection
+          .orderBy('name')
+          .snapshots()
+          .transform(Utils.transformer(UserModel.fromJson));
+    } catch (e) {
+      throw 'error';
+    }
+  }
+
   Stream<List<MessageDetailModel>> getUserChatList({required String yourId}) {
     try {
       return chatsCollection

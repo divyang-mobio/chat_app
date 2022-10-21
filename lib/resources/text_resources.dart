@@ -3,7 +3,7 @@ part of 'resource.dart';
 class AppTitle {
   final String mainScreen = 'Chats';
   final String newContactScreen = 'Contacts';
-
+  final String createGroupScreen = 'Add Participants';
 }
 
 class RoutesName {
@@ -15,12 +15,14 @@ class RoutesName {
   final String chat = '/chat';
   final String bottomBar = '/bottomScreen';
   final String videoPlay = '/videoPlay';
+  final String groupContactScreen = '/GroupContactScreen';
 }
 
 class TextResources {
   final String signUpTile = 'Sign up.';
   final String signInTile = 'Phone Verification';
-  final String signInTextMessage = 'We need to register your phone number before getting started!';
+  final String signInTextMessage =
+      'We need to register your phone number before getting started!';
   final String passHintText = 'Password';
   final String nameHintText = 'Name';
   final String phoneHintText = 'Phone Number';
@@ -58,4 +60,5 @@ class TextResources {
   final String noOneFroChat = 'Start Chatting';
   final String bottomNavMessage = 'Chats';
   final String bottomNavContact = 'Contacts';
+  final String createGroupButton = 'Create Group';
 }

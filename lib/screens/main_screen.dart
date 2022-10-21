@@ -33,7 +33,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         if (state is GetUserDataInitial) {
           return shimmerLoading();
         } else if (state is GetUserDataLoaded) {
-          return userModelStream(context, data: state.chatData);
+          return userModelStream(context, data: state.chatData, isChatScreen: true);
         } else {
           return Center(child: Text(TextResources().noOneFroChat));
         }
