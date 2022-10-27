@@ -53,8 +53,9 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                           context, RoutesName().groupRegistrationScreen,
                           arguments: data);
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text('pls select min three member')));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                              TextResources().errorWhenSelectGroupMember)));
                     }
                   }
                 },

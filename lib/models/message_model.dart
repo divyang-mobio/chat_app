@@ -8,7 +8,7 @@ part 'message_model.g.dart';
 
 @JsonSerializable()
 class MessageModel {
-  String message, name, phone;
+  String message, name, uid;
   @JsonKey(fromJson: _fromJson, name: 'time')
   String data;
   @JsonKey(fromJson: _typeFromJson)
@@ -17,7 +17,7 @@ class MessageModel {
   MessageModel({
     required this.message,
     required this.name,
-    required this.phone,
+    required this.uid,
     required this.data,
     required this.type,
   });
@@ -48,14 +48,4 @@ class MessageDetailModel {
 
   factory MessageDetailModel.fromJson(Map<String, dynamic> json) =>
       MessageDetailModel(id: json['id']);
-}
-
-class PersonsModel {
-  String id;
-
-  PersonsModel({required this.id});
-
-  factory PersonsModel.fromJson(String json) {
-    return PersonsModel(id: json);
-  }
 }

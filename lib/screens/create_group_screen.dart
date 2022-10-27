@@ -1,5 +1,5 @@
+import 'package:chat_app/controllers/bottom_nav_bloc/bottom_navigation_bloc.dart';
 import 'package:chat_app/controllers/group_bloc/send_group_data_bloc.dart';
-import 'package:chat_app/controllers/update_profile_bloc/update_profile_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../controllers/upload_user_image_bloc/image_bloc.dart';
 import '../models/user_model.dart';
@@ -33,17 +33,17 @@ class _RegistrationGroupScreenState extends State<RegistrationGroupScreen> {
   GestureDetector showProfilePic(
       {required GestureTapCallback onTap, required Widget child}) {
     return GestureDetector(
-      onTap: onTap,
-      child: CircleAvatar(
-          backgroundColor: ColorResources().registrationImageBg,
-          radius: 60,
-          child: child),
-    );
+        onTap: onTap,
+        child: CircleAvatar(
+            backgroundColor: ColorResources().registrationImageBg,
+            radius: 60,
+            child: child));
   }
 
   void navigator() {
+    BlocProvider.of<BottomNavigationBloc>(context).add(OnChangeBar(index: 1));
     Navigator.pushNamedAndRemoveUntil(
-        context, RoutesName().bottomBar, (route) => false);
+        context, RoutesName().bottomBar, (router) => false);
   }
 
   void showError() {
@@ -54,17 +54,11 @@ class _RegistrationGroupScreenState extends State<RegistrationGroupScreen> {
   CustomTextField textField() {
     return CustomTextField(
         controller: _nameController,
-        hintName: "Group name",
+        hintName: TextResources().textFieldHint,
         iconData: IconResources().namePrefixInLogin,
         textInputAction: TextInputAction.next,
         validator: (value) {
-          if (value == null || value == '') {
-            return 'enter group name';
-          } else if (value.length <= 3) {
-            return 'good name';
-          } else {
-            return null;
-          }
+          return null;
         },
         keyBoard: TextInputType.text,
         isLogin: false);
@@ -73,9 +67,8 @@ class _RegistrationGroupScreenState extends State<RegistrationGroupScreen> {
   BlocConsumer uploadDataButton() {
     return BlocConsumer<SendGroupDataBloc, SendGroupDataState>(
       listener: (context, state) {
-        if (state is UpdateProfileLoaded) {
-          print('succes');
-          // navigator();
+        if (state is SendGroupDataSuccess) {
+          navigator();
         }
       },
       builder: (context, state) {
@@ -85,7 +78,7 @@ class _RegistrationGroupScreenState extends State<RegistrationGroupScreen> {
                 url: url,
                 groupName: _nameController.text.trim(),
                 data: widget.member));
-          }, widget: const Text('Create group'));
+          }, widget: Text(TextResources().createGroupButton));
         } else if (state is SendGroupDataLoading) {
           return floatingActionButton(context,
               onPressed: () {},

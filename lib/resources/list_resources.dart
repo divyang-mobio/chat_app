@@ -43,9 +43,23 @@ List<BottomNavModel> bottomNav = [
   BottomNavModel(
       label: TextResources().bottomNavMessage,
       iconData: IconResources().bottomNavMessage),
+  BottomNavModel(label: 'Groups', iconData: Icons.groups),
   BottomNavModel(
       label: TextResources().bottomNavContact,
       iconData: IconResources().bottomNavContact)
+];
+
+List<AppBarModel> appbarModel = [
+  AppBarModel(title: AppTitle().mainScreen, actions: [
+    IconButton(onPressed: () {}, icon: Icon(IconResources().search)),
+    popupMenuButton()
+  ]),
+  AppBarModel(title: AppTitle().groupScreen, actions: [
+    IconButton(onPressed: () {}, icon: Icon(IconResources().search))
+  ]),
+  AppBarModel(title: AppTitle().newContactScreen, actions: [
+    IconButton(onPressed: () {}, icon: Icon(IconResources().search))
+  ])
 ];
 
 enum SendDataType {

@@ -1,3 +1,4 @@
+import 'package:chat_app/models/group_model.dart';
 import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/screens/chat_screen.dart';
 import 'package:chat_app/screens/create_group_screen.dart';
@@ -69,6 +70,12 @@ class RouteGenerator {
         final args = settings.arguments as UserModel;
         return MaterialPageRoute(
             builder: (context) => ChatScreen(userModel: args));
+      case '/chatGroup':
+        final args = settings.arguments as GroupModel;
+        return MaterialPageRoute(
+            builder: (context) => GroupChatScreen(
+                  groupModel: args,
+                ));
       default:
         return MaterialPageRoute(builder: (context) => const RedirectClass());
     }

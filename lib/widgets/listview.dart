@@ -1,9 +1,8 @@
 import 'package:chat_app/controllers/group_bloc/add_data_group_bloc.dart';
-import 'package:chat_app/controllers/group_bloc/add_data_group_bloc.dart';
-import 'package:chat_app/models/chat_room_model.dart';
 import 'package:chat_app/widgets/common_widgets_of_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../models/group_model.dart';
 import '../models/user_model.dart';
 import '../resources/resource.dart';
 import 'network_image.dart';
@@ -64,8 +63,10 @@ CheckboxListTile groupListTile(context,
     title: Row(children: [
       circleAvatar(userData: userData, isGroupScreen: true),
       const SizedBox(width: 15),
-      Text((userData.name == '') ? userData.phone : userData.name,
-          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+      Flexible(
+        child: Text((userData.name == '') ? userData.phone : userData.name,
+            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+      ),
     ]),
     value: values,
     onChanged: (value) {
@@ -85,6 +86,30 @@ ListTile listTile(context, {required UserModel userData}) {
     leading: circleAvatar(userData: userData),
     title: Text((userData.name == '') ? userData.phone : userData.name,
         style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+  );
+}
+
+GestureDetector groupNameListTile(context, {required GroupModel groupModel}) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.pushNamed(context, RoutesName().groupChat,
+          arguments: groupModel);
+    },
+    child: ListTile(
+      leading: CircleAvatar(
+        backgroundColor: Colors.transparent,
+        radius: 30,
+        child: (groupModel.image == '')
+            ? ClipOval(child: Image.asset(ImagePath().noImageImagePath))
+            : ClipOval(
+                child: SizedBox.fromSize(
+                    size: const Size.fromRadius(40),
+                    child: networkImages(link: groupModel.image)),
+              ),
+      ),
+      title: Text(groupModel.groupName,
+          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+    ),
   );
 }
 

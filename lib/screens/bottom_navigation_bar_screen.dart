@@ -7,6 +7,8 @@ import '../controllers/login_Bloc/login_bloc.dart';
 import '../resources/resource.dart';
 import '../utils/firestore_service.dart';
 import '../utils/shared_data.dart';
+import '../widgets/common_widgets_of_chat_screen.dart';
+import 'groups_display_screen.dart';
 import 'new_contact_screen.dart';
 
 class BottomNavigationBarScreen extends StatefulWidget {
@@ -21,6 +23,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
     with WidgetsBindingObserver {
   static const List<Widget> _widgetOptions = <Widget>[
     MainScreen(),
+    GroupDisplayScreen(),
     SelectContactScreen()
   ];
 
@@ -78,7 +81,21 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
           } else if (state is BottomNavigationLoaded) {
             return Scaffold(
               backgroundColor: ColorResources().bgOfAllScreen,
-              body: Center(child: _widgetOptions.elementAt(state.index)),
+              body: NestedScrollView(
+                  floatHeaderSlivers: true,
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) => [
+                            SliverAppBar(
+                              expandedHeight: 100,
+                              elevation: 0,
+                              flexibleSpace: flexibleSpaceBar(
+                                  title: appbarModel[state.index].title),
+                              actions: appbarModel[state.index].actions,
+                              floating: false,
+                              pinned: true,
+                            )
+                          ],
+                  body: _widgetOptions.elementAt(state.index)),
               bottomNavigationBar: BottomNavigationBar(
                 elevation: 0,
                 items: bottomNav

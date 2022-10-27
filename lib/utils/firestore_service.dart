@@ -5,6 +5,7 @@ import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/utils/shared_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../models/group_model.dart';
 import '../resources/resource.dart';
 import '../widgets/json_model_stream_converter.dart';
 
@@ -17,6 +18,8 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('users');
   final CollectionReference chatsCollection =
       FirebaseFirestore.instance.collection('chats');
+  final CollectionReference groupCollection =
+      FirebaseFirestore.instance.collection('groups');
 
   Future addUserData({required String phone}) async {
     PreferenceServices().setNo(number: phone, uid: uid.toString());
@@ -77,6 +80,17 @@ class DatabaseService {
     }
   }
 
+  Stream<List<GroupModel>> getAllGroup() {
+    try {
+      return groupCollection
+          .where('persons', arrayContains: uid)
+          .snapshots()
+          .transform(Utils.transformer(GroupModel.fromJson));
+    } catch (e) {
+      throw 'error';
+    }
+  }
+
   Stream<List<MessageDetailModel>> getUserChatList({required String yourId}) {
     try {
       return chatsCollection
@@ -88,15 +102,16 @@ class DatabaseService {
     }
   }
 
-  createGroup(
-      {required Map<String, dynamic> uid,
+  Future<bool> createGroup(
+      {required List<String> uid,
       required String groupName,
       required String adminUid,
       required String url}) async {
     try {
-      final getId = await chatsCollection.add({
-        'admin': adminUid,
+      final getId = await groupCollection.add({
+        'admin': [adminUid],
         'persons': uid,
+        'image': url,
         'id': '',
         'groupName': groupName,
       });
@@ -113,7 +128,6 @@ class DatabaseService {
       {required String yourId,
       required String yourName,
       required String otherId,
-      required String phone,
       required SendDataType type,
       String? ids,
       required String message}) async {
@@ -125,7 +139,7 @@ class DatabaseService {
       if (data.docs.isEmpty) {
         final id = await createChatRoom(yourName: yourId, otherName: otherId);
         setMassage(
-            id: id, name: yourName, message: message, type: type, phone: phone);
+            id: id, name: yourName, message: message, type: type, uid: yourId);
       } else {
         List<ChatRoom> id = data.docs
             .map((e) => ChatRoom.fromJson(e.data() as Map<String, dynamic>))
@@ -135,11 +149,11 @@ class DatabaseService {
             name: yourName,
             message: message,
             type: type,
-            phone: phone);
+            uid: yourId);
       }
     } else {
       setMassage(
-          id: ids, name: yourName, message: message, type: type, phone: phone);
+          id: ids, name: yourName, message: message, type: type, uid: yourId);
     }
   }
 
@@ -150,16 +164,35 @@ class DatabaseService {
         .transform(Utils.transformer(UserModel.fromJson));
   }
 
+  sendMessageGroup(
+      {required String id,
+      required String name,
+      required String message,
+      required String uid,
+      required SendDataType type}) {
+    groupCollection.doc(id).collection('message').doc().set({
+      'name': name,
+      'message': message,
+      'uid': uid,
+      'type': (type == SendDataType.text)
+          ? 'text'
+          : (type == SendDataType.image)
+              ? 'image'
+              : 'video',
+      'time': DateTime.now(),
+    });
+  }
+
   setMassage(
       {required String id,
       required String name,
       required String message,
-      required String phone,
+      required String uid,
       required SendDataType type}) {
     chatsCollection.doc(id).collection('message').doc().set({
       'name': name,
       'message': message,
-      'phone': phone,
+      'uid': uid,
       'type': (type == SendDataType.text)
           ? 'text'
           : (type == SendDataType.image)
@@ -194,12 +227,20 @@ class DatabaseService {
     }
   }
 
-  Stream<List<MessageModel>> getMessages({required String id}) {
-    return chatsCollection
-        .doc(id)
-        .collection('message')
-        .orderBy('time', descending: true)
-        .snapshots()
-        .transform(Utils.transformer(MessageModel.fromJson));
+  Stream<List<MessageModel>> getMessages(
+      {required String id, required bool isGroup}) {
+    return (isGroup)
+        ? groupCollection
+            .doc(id)
+            .collection('message')
+            .orderBy('time', descending: true)
+            .snapshots()
+            .transform(Utils.transformer(MessageModel.fromJson))
+        : chatsCollection
+            .doc(id)
+            .collection('message')
+            .orderBy('time', descending: true)
+            .snapshots()
+            .transform(Utils.transformer(MessageModel.fromJson));
   }
 }

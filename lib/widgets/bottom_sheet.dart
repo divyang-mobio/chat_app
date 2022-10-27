@@ -6,7 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../controllers/chat_bloc/chat_bloc.dart';
 
-bottomSheet(contexts, {required String otherUid}) {
+bottomSheet(contexts,
+    {required String otherUid, required bool isGroup, String? id}) {
   if (Platform.isIOS) {
     return showModalBottomSheet(
         context: contexts,
@@ -20,11 +21,13 @@ bottomSheet(contexts, {required String otherUid}) {
                         onPressed: () {
                           BlocProvider.of<ChatBloc>(context).add(
                               SendTypeMessage(
+                                  id: id,
                                   context: contexts,
                                   otherUid: otherUid,
                                   type: data.type,
                                   imageSource: data.imageSource,
-                                  isVideo: data.isVideo));
+                                  isVideo: data.isVideo,
+                                  isGroup: isGroup));
                           Navigator.pop(context);
                         },
                         child: Text(data.title),
@@ -50,11 +53,13 @@ bottomSheet(contexts, {required String otherUid}) {
                           onPressed: () {
                             BlocProvider.of<ChatBloc>(context).add(
                                 SendTypeMessage(
+                                    id: id,
                                     context: contexts,
                                     otherUid: otherUid,
                                     type: e.type,
                                     imageSource: e.imageSource,
-                                    isVideo: e.isVideo));
+                                    isVideo: e.isVideo,
+                                    isGroup: isGroup));
                             Navigator.pop(context);
                           },
                           child: Text(e.title)))

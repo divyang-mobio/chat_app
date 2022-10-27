@@ -3,6 +3,7 @@ part of 'resource.dart';
 class AppTitle {
   final String mainScreen = 'Chats';
   final String newContactScreen = 'Contacts';
+  final String groupScreen = 'Groups';
   final String createGroupScreen = 'Add Participants';
 }
 
@@ -13,6 +14,7 @@ class RoutesName {
   final String signInRoute = '/signIn';
   final String newContact = '/newContact';
   final String chat = '/chat';
+  final String groupChat = '/chatGroup';
   final String bottomBar = '/bottomScreen';
   final String videoPlay = '/videoPlay';
   final String groupContactScreen = '/GroupContactScreen';
@@ -62,4 +64,6 @@ class TextResources {
   final String bottomNavMessage = 'Chats';
   final String bottomNavContact = 'Contacts';
   final String createGroupButton = 'Create Group';
+  final String textFieldHint = "Group name";
+  final String errorWhenSelectGroupMember = 'pls select min three member';
 }

@@ -1,5 +1,5 @@
-import 'package:chat_app/controllers/video_thumbnail_bloc/video_thumbnail_bloc.dart';
-import 'package:chat_app/widgets/bottom_sheet.dart';
+import '../controllers/video_thumbnail_bloc/video_thumbnail_bloc.dart';
+import 'bottom_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,43 +7,44 @@ import '../controllers/chat_bloc/chat_bloc.dart';
 import '../models/message_model.dart';
 import '../resources/resource.dart';
 import '../utils/firestore_service.dart';
-import '../utils/shared_data.dart';
 import 'network_image.dart';
 
-showMessage({String? id}) {
+showMessage({String? id, required bool isGroup}) {
   return (id == null)
       ? Container()
-      : BlocBuilder<ChatBloc, ChatState>(
-          builder: (context, state) {
-            return StreamBuilder<List<MessageModel>>(
-                stream: DatabaseService().getMessages(id: id),
-                builder: (context, snapshot) {
-                  final message = snapshot.data;
-                  return message == null
-                      ? Container()
-                      : ListView.builder(
-                          reverse: true,
-                          itemCount: message.length,
-                          itemBuilder: (context, index) {
-                            return (message[index].phone ==
-                                    (RepositoryProvider.of<FirebaseAuth>(
-                                                context)
-                                            .currentUser
-                                            ?.phoneNumber)
-                                        .toString())
-                                ? showMessageWidget(context,
-                                    message: message[index], isMe: true)
-                                : showMessageWidget(context,
-                                    message: message[index], isMe: false);
-                          },
-                        );
-                });
+      : StreamBuilder<List<MessageModel>>(
+          stream: DatabaseService().getMessages(id: id, isGroup: isGroup),
+          builder: (context, snapshot) {
+            final message = snapshot.data;
+            return message == null
+                ? Container()
+                : ListView.builder(
+                    reverse: true,
+                    itemCount: message.length,
+                    itemBuilder: (context, index) {
+                      return (message[index].uid ==
+                              (RepositoryProvider.of<FirebaseAuth>(context)
+                                      .currentUser
+                                      ?.uid)
+                                  .toString())
+                          ? showMessageWidget(context,
+                              message: message[index],
+                              isMe: true,
+                              isGroup: isGroup)
+                          : showMessageWidget(context,
+                              message: message[index],
+                              isMe: false,
+                              isGroup: isGroup);
+                    },
+                  );
           },
         );
 }
 
 Row showMessageWidget(context,
-    {required MessageModel message, required bool isMe}) {
+    {required MessageModel message,
+    required bool isMe,
+    required bool isGroup}) {
   return Row(
     mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
     children: [
@@ -67,14 +68,23 @@ Row showMessageWidget(context,
                         topRight: const Radius.circular(10),
                         bottomLeft: Radius.circular(isMe ? 10 : 0),
                         bottomRight: Radius.circular(isMe ? 0 : 10))),
-                child: (message.type == SendDataType.text)
-                    ? textMessage(isMe: isMe, text: message.message)
-                    : (message.type == SendDataType.image)
-                        ? networkImages(link: message.message)
-                        : BlocProvider<VideoThumbnailBloc>(
-                            create: (context) => VideoThumbnailBloc(),
-                            child: VideoThumbNail(link: message.message),
-                          ),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (isGroup && !isMe)
+                        Text(message.name,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                color: ColorResources().chatBubbleSenderName)),
+                      (message.type == SendDataType.text)
+                          ? textMessage(isMe: isMe, text: message.message)
+                          : (message.type == SendDataType.image)
+                              ? networkImages(link: message.message)
+                              : BlocProvider<VideoThumbnailBloc>(
+                                  create: (context) => VideoThumbnailBloc(),
+                                  child: VideoThumbNail(link: message.message),
+                                ),
+                    ]),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 10, right: 10),
@@ -97,10 +107,12 @@ Text textMessage({required String text, required bool isMe}) {
 }
 
 class NewMessageSend extends StatefulWidget {
-  const NewMessageSend({Key? key, required this.otherId, this.id})
+  const NewMessageSend(
+      {Key? key, required this.otherId, this.id, required this.isGroup})
       : super(key: key);
   final String otherId;
   final String? id;
+  final bool isGroup;
 
   @override
   State<NewMessageSend> createState() => _NewMessageSendState();
@@ -109,16 +121,15 @@ class NewMessageSend extends StatefulWidget {
 class _NewMessageSendState extends State<NewMessageSend> {
   final TextEditingController _controller = TextEditingController();
 
-  void sendMessage() async {
+  void sendMessage() {
     FocusScope.of(context).unfocus();
     BlocProvider.of<ChatBloc>(context).add(SendMessage(
-        name: await PreferenceServices().getAdmin(),
+        id: widget.id,
         context: context,
         message: _controller.text.trim(),
         otherUid: widget.otherId,
-        yourUid: await PreferenceServices().getUid(),
         type: SendDataType.text,
-        phone: await PreferenceServices().getPhone()));
+        isGroup: widget.isGroup));
     _controller.clear();
   }
 
@@ -131,7 +142,8 @@ class _NewMessageSendState extends State<NewMessageSend> {
   IconButton addFilePrefix() {
     return IconButton(
         onPressed: () {
-          bottomSheet(context, otherUid: widget.otherId);
+          bottomSheet(context,
+              otherUid: widget.otherId, isGroup: widget.isGroup, id: widget.id);
         },
         icon: Icon(IconResources().addOtherTypeOfMessage,
             color: ColorResources().textFieldIcon));

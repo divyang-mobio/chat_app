@@ -9,7 +9,7 @@ part of 'message_model.dart';
 MessageModel _$MessageModelFromJson(Map<String, dynamic> json) => MessageModel(
       message: json['message'] as String,
       name: json['name'] as String,
-      phone: json['phone'] as String,
+      uid: json['uid'] as String,
       data: MessageModel._fromJson(json['time'] as Timestamp),
       type: MessageModel._typeFromJson(json['type'] as String),
     );
@@ -18,7 +18,7 @@ Map<String, dynamic> _$MessageModelToJson(MessageModel instance) =>
     <String, dynamic>{
       'message': instance.message,
       'name': instance.name,
-      'phone': instance.phone,
+      'uid': instance.uid,
       'time': instance.data,
       'type': _$SendDataTypeEnumMap[instance.type]!,
     };

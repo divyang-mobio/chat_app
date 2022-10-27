@@ -12,15 +12,17 @@ class SendGroupDataBloc extends Bloc<SendGroupDataEvent, SendGroupDataState> {
   SendGroupDataBloc() : super(SendGroupDataInitial()) {
     on<GiveGroupData>((event, emit) async {
       emit(SendGroupDataLoading());
-      Map<String, dynamic> ids = {};
-      event.data.map((e) => ids[e.uid] = true);
-      print(ids);
-      DatabaseService().createGroup(
-          uid: ids,
-          groupName: event.groupName,
-          url: event.url,
-          adminUid: await PreferenceServices().getUid());
-      emit(SendGroupDataSuccess());
+      try {
+        List<String> ids = event.data.map((e) => e.uid).toList();
+        DatabaseService().createGroup(
+            uid: ids,
+            groupName: event.groupName,
+            url: event.url,
+            adminUid: await PreferenceServices().getUid());
+        emit(SendGroupDataSuccess());
+      } catch (e) {
+        emit(SendGroupDataError());
+      }
     });
   }
 }

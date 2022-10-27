@@ -1,4 +1,5 @@
 import 'package:chat_app/controllers/chat_bloc/chat_bloc.dart';
+import 'package:chat_app/models/group_model.dart';
 import 'package:chat_app/resources/resource.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +20,8 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   getChatId() {
-    BlocProvider.of<ChatBloc>(context).add(GetId(
-        otherUid: widget.userModel.uid,
-        yourUid: (RepositoryProvider.of<FirebaseAuth>(context).currentUser?.uid)
-            .toString()));
+    BlocProvider.of<ChatBloc>(context)
+        .add(GetId(otherUid: widget.userModel.uid));
   }
 
   @override
@@ -60,9 +59,13 @@ class _ChatScreenState extends State<ChatScreen> {
       children: [
         Expanded(
             child: Container(
-          child: showMessage(id: id),
+          child: showMessage(id: id, isGroup: false),
         )),
-        NewMessageSend(otherId: widget.userModel.uid, id: id)
+        NewMessageSend(
+          otherId: widget.userModel.uid,
+          id: id,
+          isGroup: false,
+        )
       ],
     );
   }
@@ -101,5 +104,52 @@ class _ChatScreenState extends State<ChatScreen> {
             }
           },
         ));
+  }
+}
+
+class GroupChatScreen extends StatefulWidget {
+  const GroupChatScreen({Key? key, required this.groupModel}) : super(key: key);
+
+  final GroupModel groupModel;
+
+  @override
+  State<GroupChatScreen> createState() => _GroupChatScreenState();
+}
+
+class _GroupChatScreenState extends State<GroupChatScreen> {
+  Column showBody({String? id}) {
+    return Column(
+      children: [
+        Expanded(
+            child: Container(
+          child: showMessage(id: id, isGroup: true),
+        )),
+        NewMessageSend(
+          otherId: '',
+          id: id,
+          isGroup: true,
+        )
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+            leadingWidth: 25,
+            title: ListTile(
+                leading: ClipOval(
+                  child: SizedBox.fromSize(
+                    size: const Size.fromRadius(20),
+                    child: (widget.groupModel.image == '')
+                        ? Image.asset(ImagePath().noImageImagePath)
+                        : networkImages(link: widget.groupModel.image),
+                  ),
+                ),
+                title: Text(widget.groupModel.groupName,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                textColor: ColorResources().appBarIconTextColor)),
+        body: showBody(id: widget.groupModel.id));
   }
 }

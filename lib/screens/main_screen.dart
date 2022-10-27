@@ -6,7 +6,6 @@ import '../utils/shared_data.dart';
 import 'package:flutter/material.dart';
 import '../resources/resource.dart';
 import '../widgets/common_widgets_of_chat_screen.dart';
-import '../widgets/pop_up_menu.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -20,11 +19,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   void callUserData() async {
     uid = await PreferenceServices().getUid();
-    callBloc(uid);
-  }
-
-  callBloc(String uid) {
-    BlocProvider.of<ChatListBloc>(context).add(GetChatList(uid: uid));
   }
 
   BlocBuilder listBloc() {
@@ -88,23 +82,6 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return NestedScrollView(
-        floatHeaderSlivers: true,
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
-            [
-              SliverAppBar(
-                expandedHeight: 100,
-                elevation: 0,
-                flexibleSpace: flexibleSpaceBar(title: AppTitle().mainScreen),
-                actions: [
-                  IconButton(
-                      onPressed: () {}, icon: Icon(IconResources().search)),
-                  popupMenuButton()
-                ],
-                floating: false,
-                pinned: true,
-              )
-            ],
-        body: chatBody());
+    return chatBody();
   }
 }
