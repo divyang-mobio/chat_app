@@ -1,3 +1,7 @@
+import 'package:avatar_glow/avatar_glow.dart';
+import 'package:chat_app/widgets/text_to_speech_widget.dart';
+
+import '../controllers/speect_to_text_bloc/speech_to_text_bloc.dart';
 import '../controllers/video_thumbnail_bloc/video_thumbnail_bloc.dart';
 import 'bottom_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -157,6 +161,38 @@ class _NewMessageSendState extends State<NewMessageSend> {
         borderRadius: BorderRadius.circular(25));
   }
 
+  IconButton micFunction() {
+    return IconButton(onPressed: () {
+      SpeechApi.startRecording(onResult: (text, confidence) {
+        if (confidence > 0) {
+          return _controller.text += ' $text';
+        }
+      }, statusChange: (String text) {
+        if (text == 'listening') {
+          BlocProvider.of<SpeechToTextBloc>(context)
+              .add(IsListening(isListening: true));
+        } else if (text == 'notListening') {
+          BlocProvider.of<SpeechToTextBloc>(context)
+              .add(IsListening(isListening: false));
+        }
+      });
+    }, icon: BlocBuilder<SpeechToTextBloc, SpeechToTextState>(
+        builder: (context, state) {
+      if (state is SpeechToTextStateListening) {
+        return AvatarGlow(
+          animate: state.isListening,
+          endRadius: 200,
+          glowColor: Theme.of(context).primaryColor,
+          child: Icon(IconResources().micFromSpeechToText,
+              color: ColorResources().textFieldIcon),
+        );
+      } else {
+        return Icon(IconResources().micFromSpeechToTextNotWorking,
+            color: ColorResources().textFieldIcon);
+      }
+    }));
+  }
+
   TextField textField() {
     return TextField(
       controller: _controller,
@@ -167,10 +203,7 @@ class _NewMessageSendState extends State<NewMessageSend> {
       enableSuggestions: true,
       decoration: InputDecoration(
         prefixIcon: addFilePrefix(),
-        suffixIcon: IconButton(
-            onPressed: () {},
-            icon: Icon(IconResources().micFromSpeechToText,
-                color: ColorResources().textFieldIcon)),
+        suffixIcon: micFunction(),
         filled: true,
         fillColor: ColorResources().sendMessageTextField,
         hintText: TextResources().sendMessageTextFieldHintText,

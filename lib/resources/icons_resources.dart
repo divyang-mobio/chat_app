@@ -17,6 +17,7 @@ class IconResources {
   final videoPause = Icons.pause;
   final navigationBack = Icons.navigate_before_outlined;
   final micFromSpeechToText = Icons.mic;
+  final micFromSpeechToTextNotWorking = Icons.mic_off;
   final removeImageOnRegistrationScreen = Icons.cancel;
   final bottomNavMessage = Icons.message_outlined;
   final bottomNavContact = Icons.people_alt_outlined;

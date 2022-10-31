@@ -7,6 +7,7 @@ import '../controllers/group_bloc/create_group_bloc.dart';
 import '../controllers/group_bloc/get_group_bloc.dart';
 import '../controllers/login_Bloc/set_otp_field_bloc.dart';
 import '../controllers/show_Status_bloc/show_status_bloc.dart';
+import '../controllers/speect_to_text_bloc/speech_to_text_bloc.dart';
 import '../controllers/user_bloc/new_contact_bloc.dart';
 import '../controllers/video_player_bloc/visible_container_bloc.dart';
 import 'firebase_auth.dart';
@@ -50,6 +51,9 @@ class BlocClass extends StatelessWidget {
       BlocProvider<GetUserDataBloc>(create: (context) => GetUserDataBloc()),
       BlocProvider<GetGroupBloc>(
           create: (context) => GetGroupBloc()..add(GetGroupsId())),
+      BlocProvider<SpeechToTextBloc>(
+          create: (context) =>
+              SpeechToTextBloc()..add(IsListening(isListening: false))),
       BlocProvider<BottomNavigationBloc>(
           create: (context) =>
               BottomNavigationBloc()..add(OnChangeBar(index: 0))),
