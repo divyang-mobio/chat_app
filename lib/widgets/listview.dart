@@ -5,18 +5,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/group_model.dart';
 import '../models/user_model.dart';
 import '../resources/resource.dart';
+import 'bottom_sheet.dart';
 import 'network_image.dart';
 
 ListView listView(
-    {required List<UserModel> userData, required bool isLoading}) {
+    {required List<UserModel> userData,
+    required bool isLoading,
+    int length = 20,
+    String groupId = '',
+    List<String> adminList = const [],
+    bool isAdmin = false}) {
   return ListView.builder(
     physics: const NeverScrollableScrollPhysics(),
     shrinkWrap: true,
-    itemCount: isLoading ? 20 : userData.length,
+    itemCount: isLoading ? length : userData.length,
     itemBuilder: (context, index) => GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, RoutesName().chat,
-            arguments: userData[index]);
+        if (isAdmin) {
+          groupBottomSheet(context,
+              userModel: userData[index], groupId: groupId);
+        } else {
+          Navigator.pushNamed(context, RoutesName().chat,
+              arguments: userData[index]);
+        }
       },
       child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -26,7 +37,9 @@ ListView listView(
                   title: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(height: 10, color: Colors.grey)))
-              : listTile(context, userData: userData[index])),
+              : listTile(context,
+                  userData: userData[index],
+                  isAdmin: adminList.contains(userData[index].uid))),
     ),
   );
 }
@@ -81,11 +94,13 @@ CheckboxListTile groupListTile(context,
   );
 }
 
-ListTile listTile(context, {required UserModel userData}) {
+ListTile listTile(context,
+    {required UserModel userData, bool isAdmin = false}) {
   return ListTile(
     leading: circleAvatar(userData: userData),
     title: Text((userData.name == '') ? userData.phone : userData.name,
         style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+    trailing: isAdmin ? const Text('~Admin') : null,
   );
 }
 

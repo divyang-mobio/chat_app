@@ -1,3 +1,4 @@
+import 'package:chat_app/controllers/group_bloc/user_detail_bloc.dart';
 import 'package:chat_app/models/group_model.dart';
 import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/screens/chat_screen.dart';
@@ -11,6 +12,7 @@ import '../controllers/upload_user_image_bloc/image_bloc.dart';
 import '../controllers/video_player_bloc/play_pause_bloc.dart';
 import '../controllers/video_player_bloc/refresh_bloc.dart';
 import '../screens/bottom_navigation_bar_screen.dart';
+import '../screens/detail_screen.dart';
 import '../screens/select_member_screen.dart';
 import '../screens/registration_screen.dart';
 import 'package:flutter/material.dart';
@@ -73,9 +75,14 @@ class RouteGenerator {
       case '/chatGroup':
         final args = settings.arguments as GroupModel;
         return MaterialPageRoute(
-            builder: (context) => GroupChatScreen(
-                  groupModel: args,
-                ));
+            builder: (context) => GroupChatScreen(groupModel: args));
+      case '/groupInfo':
+        final args = settings.arguments as GroupModel;
+        return MaterialPageRoute(
+            builder: (context) => BlocProvider<UserDetailBloc>(
+                create: (context) => UserDetailBloc(groupModel: args)
+                  ..add(UserIds(ids: args.persons)),
+                child: DetailScreen(groupModel: args)));
       default:
         return MaterialPageRoute(builder: (context) => const RedirectClass());
     }

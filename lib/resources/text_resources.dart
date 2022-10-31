@@ -15,6 +15,7 @@ class RoutesName {
   final String newContact = '/newContact';
   final String chat = '/chat';
   final String groupChat = '/chatGroup';
+  final String detailInfo = '/groupInfo';
   final String bottomBar = '/bottomScreen';
   final String videoPlay = '/videoPlay';
   final String groupContactScreen = '/GroupContactScreen';

@@ -80,6 +80,19 @@ class DatabaseService {
     }
   }
 
+  makeAdmin(String groupId, String id) {
+    groupCollection.doc(groupId).set({
+      'admin': FieldValue.arrayUnion([id]),
+    }, SetOptions(merge: true));
+  }
+
+  removeExitGroup(String groupId, String id) {
+    groupCollection.doc(groupId).set({
+      'persons': FieldValue.arrayRemove([id]),
+      'admin': FieldValue.arrayRemove([id]),
+    }, SetOptions(merge: true));
+  }
+
   Stream<List<GroupModel>> getAllGroup() {
     try {
       return groupCollection

@@ -12,32 +12,34 @@ class ListResources {
   }
 }
 
-class BottomSheetList {
-  List<BottomSheetModel> getBottomSheetData() {
-    return [
-      BottomSheetModel(
-          title: 'Open Camera',
-          type: SendDataType.image,
-          imageSource: ImageSource.camera,
-          isVideo: false),
-      BottomSheetModel(
-          title: 'Upload Video',
-          type: SendDataType.video,
-          imageSource: ImageSource.gallery,
-          isVideo: true),
-      BottomSheetModel(
-          title: 'Open Video',
-          type: SendDataType.video,
-          imageSource: ImageSource.camera,
-          isVideo: true),
-      BottomSheetModel(
-          title: 'Upload Image',
-          type: SendDataType.image,
-          imageSource: ImageSource.gallery,
-          isVideo: false),
-    ];
-  }
-}
+List<BottomSheetModel> getBottomSheetData = [
+  BottomSheetModel(
+      title: 'Open Camera',
+      type: SendDataType.image,
+      imageSource: ImageSource.camera,
+      isVideo: false),
+  BottomSheetModel(
+      title: 'Upload Video',
+      type: SendDataType.video,
+      imageSource: ImageSource.gallery,
+      isVideo: true),
+  BottomSheetModel(
+      title: 'Open Video',
+      type: SendDataType.video,
+      imageSource: ImageSource.camera,
+      isVideo: true),
+  BottomSheetModel(
+      title: 'Upload Image',
+      type: SendDataType.image,
+      imageSource: ImageSource.gallery,
+      isVideo: false),
+];
+
+List<GroupBottomSheet> getGroupBottomSheet = [
+  GroupBottomSheet(title: 'chat', type: NavigatorType.info),
+  GroupBottomSheet(title: 'make admin', type: NavigatorType.admin),
+  GroupBottomSheet(title: 'remove from group', type: NavigatorType.remove)
+];
 
 List<BottomNavModel> bottomNav = [
   BottomNavModel(
@@ -68,3 +70,5 @@ enum SendDataType {
   file,
   video,
 }
+
+enum NavigatorType { info, admin, remove }

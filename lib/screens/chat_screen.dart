@@ -138,18 +138,24 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     return Scaffold(
         appBar: AppBar(
             leadingWidth: 25,
-            title: ListTile(
-                leading: ClipOval(
-                  child: SizedBox.fromSize(
-                    size: const Size.fromRadius(20),
-                    child: (widget.groupModel.image == '')
-                        ? Image.asset(ImagePath().noImageImagePath)
-                        : networkImages(link: widget.groupModel.image),
+            title: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, RoutesName().detailInfo,
+                    arguments: widget.groupModel);
+              },
+              child: ListTile(
+                  leading: ClipOval(
+                    child: SizedBox.fromSize(
+                      size: const Size.fromRadius(20),
+                      child: (widget.groupModel.image == '')
+                          ? Image.asset(ImagePath().noImageImagePath)
+                          : networkImages(link: widget.groupModel.image),
+                    ),
                   ),
-                ),
-                title: Text(widget.groupModel.groupName,
-                    style: const TextStyle(fontWeight: FontWeight.w600)),
-                textColor: ColorResources().appBarIconTextColor)),
+                  title: Text(widget.groupModel.groupName,
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  textColor: ColorResources().appBarIconTextColor),
+            )),
         body: showBody(id: widget.groupModel.id));
   }
 }

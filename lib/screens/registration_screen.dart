@@ -5,6 +5,7 @@ import '../widgets/login_screens_widget.dart';
 import 'package:flutter/material.dart';
 import '../resources/resource.dart';
 import '../widgets/network_image.dart';
+import '../widgets/regitration_screen_widgets.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -21,17 +22,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   void dispose() {
     _nameController.dispose();
     super.dispose();
-  }
-
-  GestureDetector showProfilePic(
-      {required GestureTapCallback onTap, required Widget child}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: CircleAvatar(
-          backgroundColor: ColorResources().registrationImageBg,
-          radius: 60,
-          child: child),
-    );
   }
 
   void navigator() {

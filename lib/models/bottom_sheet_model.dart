@@ -14,3 +14,10 @@ class BottomSheetModel {
       required this.imageSource,
       required this.isVideo});
 }
+
+class GroupBottomSheet {
+  String title;
+  NavigatorType type;
+
+  GroupBottomSheet({required this.title, required this.type});
+}
