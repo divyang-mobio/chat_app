@@ -7,7 +7,7 @@ import '../widgets/login_screens_widget.dart';
 import 'package:flutter/material.dart';
 import '../resources/resource.dart';
 import '../widgets/network_image.dart';
-import '../widgets/regitration_screen_widgets.dart';
+import '../widgets/registration_screen_widgets.dart';
 
 class RegistrationGroupScreen extends StatefulWidget {
   const RegistrationGroupScreen({Key? key, required this.member})

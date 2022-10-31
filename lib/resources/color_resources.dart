@@ -38,4 +38,5 @@ class ColorResources {
   final Color chatScreenTextFieldBorder = Colors.grey;
   final Color createGroupButtonBg = Colors.grey;
   final Color createGroupButtonIcon = Colors.black;
+  final Color exitGroupButton = Colors.red;
 }

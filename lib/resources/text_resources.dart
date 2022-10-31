@@ -5,6 +5,7 @@ class AppTitle {
   final String newContactScreen = 'Contacts';
   final String groupScreen = 'Groups';
   final String createGroupScreen = 'Add Participants';
+  final String groupDetailScreen = 'Group Info';
 }
 
 class RoutesName {
@@ -67,4 +68,7 @@ class TextResources {
   final String createGroupButton = 'Create Group';
   final String textFieldHint = "Group name";
   final String errorWhenSelectGroupMember = 'pls select min three member';
+  final String participantsListTile = 'Participants';
+  final String participantsNumber = 'participants';
+  final String exitGroupButton = 'Exit Group';
 }
