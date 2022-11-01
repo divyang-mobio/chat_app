@@ -1,7 +1,6 @@
 import 'package:chat_app/controllers/chat_bloc/chat_bloc.dart';
 import 'package:chat_app/models/group_model.dart';
 import 'package:chat_app/resources/resource.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../controllers/show_Status_bloc/show_status_bloc.dart';

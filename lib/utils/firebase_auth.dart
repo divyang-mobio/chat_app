@@ -35,7 +35,6 @@ class FirebaseAuthService {
           verificationFailed: (exception) {
             throw exception.toString();
           });
-      print('object');
       return true;
     } catch (e) {
       throw e.toString();

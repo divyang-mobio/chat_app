@@ -177,16 +177,34 @@ class DatabaseService {
         .transform(Utils.transformer(UserModel.fromJson));
   }
 
+  deleteMessage(
+      {required String id, required String otherId, required bool isGroup}) {
+    if (isGroup) {
+      groupCollection
+          .doc(id)
+          .collection('message')
+          .doc(otherId)
+          .update({'message': "This Message is Deleted"});
+    } else {
+      chatsCollection
+          .doc(id)
+          .collection('message')
+          .doc(otherId)
+          .update({'message': "This Message is Deleted"});
+    }
+  }
+
   sendMessageGroup(
       {required String id,
       required String name,
       required String message,
       required String uid,
-      required SendDataType type}) {
-    groupCollection.doc(id).collection('message').doc().set({
+      required SendDataType type}) async {
+    final ids = await groupCollection.doc(id).collection('message').add({
       'name': name,
       'message': message,
       'uid': uid,
+      'id': '',
       'type': (type == SendDataType.text)
           ? 'text'
           : (type == SendDataType.image)
@@ -194,6 +212,7 @@ class DatabaseService {
               : 'video',
       'time': DateTime.now(),
     });
+    await ids.update({'id': ids.id});
   }
 
   setMassage(
@@ -201,11 +220,12 @@ class DatabaseService {
       required String name,
       required String message,
       required String uid,
-      required SendDataType type}) {
-    chatsCollection.doc(id).collection('message').doc().set({
+      required SendDataType type}) async {
+    final ids = await chatsCollection.doc(id).collection('message').add({
       'name': name,
       'message': message,
       'uid': uid,
+      'id': '',
       'type': (type == SendDataType.text)
           ? 'text'
           : (type == SendDataType.image)
@@ -213,6 +233,8 @@ class DatabaseService {
               : 'video',
       'time': DateTime.now(),
     });
+
+    await ids.update({'id': ids.id});
   }
 
   Stream<QuerySnapshot> getAllChatData({required String name}) {

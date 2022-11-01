@@ -10,6 +10,7 @@ MessageModel _$MessageModelFromJson(Map<String, dynamic> json) => MessageModel(
       message: json['message'] as String,
       name: json['name'] as String,
       uid: json['uid'] as String,
+      id: json['id'] as String,
       data: MessageModel._fromJson(json['time'] as Timestamp),
       type: MessageModel._typeFromJson(json['type'] as String),
     );
@@ -19,6 +20,7 @@ Map<String, dynamic> _$MessageModelToJson(MessageModel instance) =>
       'message': instance.message,
       'name': instance.name,
       'uid': instance.uid,
+      'id': instance.id,
       'time': instance.data,
       'type': _$SendDataTypeEnumMap[instance.type]!,
     };

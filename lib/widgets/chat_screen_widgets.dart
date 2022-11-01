@@ -1,5 +1,7 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:chat_app/widgets/text_to_speech_widget.dart';
+import 'package:focused_menu/focused_menu.dart';
+import 'package:focused_menu/modals.dart';
 
 import '../controllers/speect_to_text_bloc/speech_to_text_bloc.dart';
 import '../controllers/video_thumbnail_bloc/video_thumbnail_bloc.dart';
@@ -33,10 +35,12 @@ showMessage({String? id, required bool isGroup}) {
                                   .toString())
                           ? showMessageWidget(context,
                               message: message[index],
+                              id: id,
                               isMe: true,
                               isGroup: isGroup)
                           : showMessageWidget(context,
                               message: message[index],
+                              id: id,
                               isMe: false,
                               isGroup: isGroup);
                     },
@@ -45,61 +49,90 @@ showMessage({String? id, required bool isGroup}) {
         );
 }
 
+FocusedMenuHolder showPopUpForDelete(context,
+    {required MessageModel message,
+    required String id,
+    required bool isMe,
+    required bool isGroup}) {
+  return FocusedMenuHolder(
+      onPressed: () {},
+      menuItems: [
+        FocusedMenuItem(
+            trailingIcon: const Icon(Icons.delete),
+            title: const Text('Delete'),
+            onPressed: () {
+              DatabaseService()
+                  .deleteMessage(isGroup: isGroup, otherId: message.id, id: id);
+            })
+      ],
+      child:
+          chatBubble(context, message: message, isMe: isMe, isGroup: isGroup));
+}
+
 Row showMessageWidget(context,
     {required MessageModel message,
     required bool isMe,
+    required String id,
     required bool isGroup}) {
   return Row(
     mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
     children: [
       if (isMe) const Flexible(flex: 1, child: SizedBox()),
       Flexible(
-        flex: 2,
-        child: Column(
-            crossAxisAlignment:
-                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.all(
-                    (message.type == SendDataType.text) ? 10 : 4),
-                margin: const EdgeInsets.only(right: 10, left: 10, top: 10),
-                decoration: BoxDecoration(
-                    color: isMe
-                        ? ColorResources().chatBubbleYourSideBG
-                        : Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(10),
-                        topRight: const Radius.circular(10),
-                        bottomLeft: Radius.circular(isMe ? 10 : 0),
-                        bottomRight: Radius.circular(isMe ? 0 : 10))),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (isGroup && !isMe)
-                        Text(message.name,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w900,
-                                color: ColorResources().chatBubbleSenderName)),
-                      (message.type == SendDataType.text)
-                          ? textMessage(isMe: isMe, text: message.message)
-                          : (message.type == SendDataType.image)
-                              ? networkImages(link: message.message)
-                              : BlocProvider<VideoThumbnailBloc>(
-                                  create: (context) => VideoThumbnailBloc(),
-                                  child: VideoThumbNail(link: message.message),
-                                ),
-                    ]),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10),
-                child: Text(message.data,
-                    style: TextStyle(color: ColorResources().chatScreenDate)),
-              ),
-            ]),
-      ),
+          flex: 2,
+          child: isMe
+              ? showPopUpForDelete(context,
+                  message: message, isMe: isMe, isGroup: isGroup, id: id)
+              : chatBubble(context,
+                  message: message, isMe: isMe, isGroup: isGroup)),
       if (!isMe) const Flexible(flex: 1, child: SizedBox()),
     ],
   );
+}
+
+chatBubble(context,
+    {required MessageModel message,
+    required bool isMe,
+    required bool isGroup}) {
+  return Column(
+      crossAxisAlignment:
+          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.all((message.type == SendDataType.text) ? 10 : 4),
+          margin: const EdgeInsets.only(right: 10, left: 10, top: 10),
+          decoration: BoxDecoration(
+              color: isMe
+                  ? ColorResources().chatBubbleYourSideBG
+                  : Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(10),
+                  topRight: const Radius.circular(10),
+                  bottomLeft: Radius.circular(isMe ? 10 : 0),
+                  bottomRight: Radius.circular(isMe ? 0 : 10))),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            if (isGroup && !isMe)
+              Text(message.name,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      color: ColorResources().chatBubbleSenderName)),
+            (message.type == SendDataType.text)
+                ? textMessage(isMe: isMe, text: message.message)
+                : (message.type == SendDataType.image)
+                    ? networkImages(link: message.message)
+                    : BlocProvider<VideoThumbnailBloc>(
+                        create: (context) => VideoThumbnailBloc(),
+                        child: VideoThumbNail(link: message.message),
+                      ),
+          ]),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10),
+          child: Text(message.data,
+              style: TextStyle(color: ColorResources().chatScreenDate)),
+        ),
+      ]);
 }
 
 Text textMessage({required String text, required bool isMe}) {

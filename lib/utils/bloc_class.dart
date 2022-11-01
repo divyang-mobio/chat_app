@@ -1,5 +1,4 @@
 import 'package:chat_app/controllers/chat_bloc/chat_bloc.dart';
-import 'package:chat_app/utils/shared_data.dart';
 import '../controllers/bottom_nav_bloc/bottom_navigation_bloc.dart';
 import '../controllers/chat_list/chat_list_bloc.dart';
 import '../controllers/chat_list/get_user_data_bloc.dart';
