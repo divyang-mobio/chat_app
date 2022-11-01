@@ -22,4 +22,5 @@ class IconResources {
   final bottomNavMessage = Icons.message_outlined;
   final bottomNavContact = Icons.people_alt_outlined;
   final createGroupButton = Icons.groups;
+  final deleteMessageButton = Icons.delete;
 }

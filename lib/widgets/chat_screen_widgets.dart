@@ -2,8 +2,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:chat_app/widgets/text_to_speech_widget.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
-
-import '../controllers/speect_to_text_bloc/speech_to_text_bloc.dart';
+import '../controllers/speech_to_text_bloc/speech_to_text_bloc.dart';
 import '../controllers/video_thumbnail_bloc/video_thumbnail_bloc.dart';
 import 'bottom_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -58,8 +57,8 @@ FocusedMenuHolder showPopUpForDelete(context,
       onPressed: () {},
       menuItems: [
         FocusedMenuItem(
-            trailingIcon: const Icon(Icons.delete),
-            title: const Text('Delete'),
+            trailingIcon: Icon(IconResources().deleteMessageButton),
+            title: Text(TextResources().deleteMessageButton),
             onPressed: () {
               DatabaseService()
                   .deleteMessage(isGroup: isGroup, otherId: message.id, id: id);

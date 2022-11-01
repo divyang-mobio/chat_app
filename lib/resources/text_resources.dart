@@ -71,4 +71,5 @@ class TextResources {
   final String participantsListTile = 'Participants';
   final String participantsNumber = 'participants';
   final String exitGroupButton = 'Exit Group';
+  final String deleteMessageButton = 'Delete';
 }
