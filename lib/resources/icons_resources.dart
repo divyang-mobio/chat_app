@@ -19,6 +19,7 @@ class IconResources {
   final micFromSpeechToText = Icons.mic;
   final micFromSpeechToTextNotWorking = Icons.mic_off;
   final removeImageOnRegistrationScreen = Icons.cancel;
+  final removeReply = Icons.cancel_outlined;
   final bottomNavMessage = Icons.message_outlined;
   final bottomNavContact = Icons.people_alt_outlined;
   final createGroupButton = Icons.groups;

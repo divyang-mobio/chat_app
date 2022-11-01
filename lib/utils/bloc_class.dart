@@ -5,6 +5,7 @@ import '../controllers/chat_list/get_user_data_bloc.dart';
 import '../controllers/group_bloc/create_group_bloc.dart';
 import '../controllers/group_bloc/get_group_bloc.dart';
 import '../controllers/login_Bloc/set_otp_field_bloc.dart';
+import '../controllers/reply_bloc/reply_bloc.dart';
 import '../controllers/show_Status_bloc/show_status_bloc.dart';
 import '../controllers/speech_to_text_bloc/speech_to_text_bloc.dart';
 import '../controllers/user_bloc/new_contact_bloc.dart';
@@ -56,6 +57,7 @@ class BlocClass extends StatelessWidget {
       BlocProvider<BottomNavigationBloc>(
           create: (context) =>
               BottomNavigationBloc()..add(OnChangeBar(index: 0))),
+      BlocProvider<ReplyBloc>(create: (context) => ReplyBloc()),
       BlocProvider<VisibleContainerBloc>(
           create: (context) =>
               VisibleContainerBloc()..add(ShowContainer(isVis: true)))

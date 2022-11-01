@@ -10,6 +10,9 @@ MessageModel _$MessageModelFromJson(Map<String, dynamic> json) => MessageModel(
       message: json['message'] as String,
       name: json['name'] as String,
       uid: json['uid'] as String,
+      reply: json['reply'] == null
+          ? null
+          : MessageModel.fromJson(json['reply'] as Map<String, dynamic>),
       id: json['id'] as String,
       data: MessageModel._fromJson(json['time'] as Timestamp),
       type: MessageModel._typeFromJson(json['type'] as String),
@@ -21,13 +24,7 @@ Map<String, dynamic> _$MessageModelToJson(MessageModel instance) =>
       'name': instance.name,
       'uid': instance.uid,
       'id': instance.id,
-      'time': instance.data,
-      'type': _$SendDataTypeEnumMap[instance.type]!,
+      'reply': instance.reply,
+      'time': MessageModel._toJson(instance.data),
+      'type': MessageModel._typeToJson(instance.type),
     };
-
-const _$SendDataTypeEnumMap = {
-  SendDataType.image: 'image',
-  SendDataType.text: 'text',
-  SendDataType.file: 'file',
-  SendDataType.video: 'video',
-};

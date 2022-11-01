@@ -2,6 +2,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:chat_app/widgets/text_to_speech_widget.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import '../controllers/reply_bloc/reply_bloc.dart';
 import '../controllers/speech_to_text_bloc/speech_to_text_bloc.dart';
 import '../controllers/video_thumbnail_bloc/video_thumbnail_bloc.dart';
 import 'bottom_sheet.dart';
@@ -12,6 +13,7 @@ import '../controllers/chat_bloc/chat_bloc.dart';
 import '../models/message_model.dart';
 import '../resources/resource.dart';
 import '../utils/firestore_service.dart';
+import 'package:swipe_to/swipe_to.dart';
 import 'network_image.dart';
 
 showMessage({String? id, required bool isGroup}) {
@@ -68,24 +70,32 @@ FocusedMenuHolder showPopUpForDelete(context,
           chatBubble(context, message: message, isMe: isMe, isGroup: isGroup));
 }
 
-Row showMessageWidget(context,
+SwipeTo showMessageWidget(context,
     {required MessageModel message,
     required bool isMe,
     required String id,
     required bool isGroup}) {
-  return Row(
-    mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-    children: [
-      if (isMe) const Flexible(flex: 1, child: SizedBox()),
-      Flexible(
-          flex: 2,
-          child: isMe
-              ? showPopUpForDelete(context,
-                  message: message, isMe: isMe, isGroup: isGroup, id: id)
-              : chatBubble(context,
-                  message: message, isMe: isMe, isGroup: isGroup)),
-      if (!isMe) const Flexible(flex: 1, child: SizedBox()),
-    ],
+  return SwipeTo(
+    onRightSwipe: isMe
+        ? null
+        : () {
+            BlocProvider.of<ReplyBloc>(context)
+                .add(ReplyMessage(messageModel: message));
+          },
+    child: Row(
+        mainAxisAlignment:
+            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          if (isMe) const Flexible(flex: 1, child: SizedBox()),
+          Flexible(
+              flex: 2,
+              child: isMe
+                  ? showPopUpForDelete(context,
+                      message: message, isMe: isMe, isGroup: isGroup, id: id)
+                  : chatBubble(context,
+                      message: message, isMe: isMe, isGroup: isGroup)),
+          if (!isMe) const Flexible(flex: 1, child: SizedBox()),
+        ]),
   );
 }
 
@@ -157,11 +167,12 @@ class NewMessageSend extends StatefulWidget {
 class _NewMessageSendState extends State<NewMessageSend> {
   final TextEditingController _controller = TextEditingController();
 
-  void sendMessage() {
+  void sendMessage(MessageModel? messageModel) {
     FocusScope.of(context).unfocus();
     BlocProvider.of<ChatBloc>(context).add(SendMessage(
         id: widget.id,
         context: context,
+        messageModel: messageModel,
         message: _controller.text.trim(),
         otherUid: widget.otherId,
         type: SendDataType.text,
@@ -185,12 +196,15 @@ class _NewMessageSendState extends State<NewMessageSend> {
             color: ColorResources().textFieldIcon));
   }
 
-  OutlineInputBorder outlineInputBorder() {
+  OutlineInputBorder outlineInputBorder(bool isReply) {
     return OutlineInputBorder(
-        borderSide: BorderSide(
-            width: 0, color: ColorResources().chatScreenTextFieldBorder),
+        borderSide: BorderSide.none,
         gapPadding: 10,
-        borderRadius: BorderRadius.circular(25));
+        borderRadius: BorderRadius.only(
+            topRight: isReply ? Radius.zero : const Radius.circular(25),
+            topLeft: isReply ? Radius.zero : const Radius.circular(25),
+            bottomRight: const Radius.circular(25),
+            bottomLeft: const Radius.circular(25)));
   }
 
   IconButton micFunction() {
@@ -225,7 +239,7 @@ class _NewMessageSendState extends State<NewMessageSend> {
     }));
   }
 
-  TextField textField() {
+  TextField textField({required bool isReplay}) {
     return TextField(
       controller: _controller,
       minLines: 1,
@@ -239,15 +253,21 @@ class _NewMessageSendState extends State<NewMessageSend> {
         filled: true,
         fillColor: ColorResources().sendMessageTextField,
         hintText: TextResources().sendMessageTextFieldHintText,
-        enabledBorder: outlineInputBorder(),
-        focusedBorder: outlineInputBorder(),
+        enabledBorder: outlineInputBorder(isReplay),
+        focusedBorder: outlineInputBorder(isReplay),
       ),
     );
   }
 
-  GestureDetector sendButton() {
+  GestureDetector sendButton(
+      {required bool isReply, MessageModel? messageModel}) {
     return GestureDetector(
-      onTap: () => _controller.text.trim() == '' ? null : sendMessage(),
+      onTap: () {
+        if (isReply && !(_controller.text.trim() == '')) {
+          BlocProvider.of<ReplyBloc>(context).add(CancelReply());
+        }
+        _controller.text.trim() == '' ? null : sendMessage(messageModel);
+      },
       child: CircleAvatar(
         backgroundColor: Theme.of(context).primaryColor,
         radius: 25,
@@ -257,15 +277,68 @@ class _NewMessageSendState extends State<NewMessageSend> {
     );
   }
 
+  Row textFieldBody(bool isReply, MessageModel? messageModel) {
+    return Row(children: [
+      Expanded(
+          child: Column(
+        children: [
+          if (isReply) replyCard(messageModel as MessageModel),
+          textField(isReplay: isReply),
+        ],
+      )),
+      const SizedBox(width: 10),
+      sendButton(isReply: isReply, messageModel: messageModel)
+    ]);
+  }
+
+  replyCard(MessageModel messageModel) {
+    return Container(
+      decoration: BoxDecoration(
+          color: ColorResources().sendMessageTextField,
+          borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(25), topLeft: Radius.circular(25))),
+      width: double.infinity,
+      height: 40,
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        SingleChildScrollView(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, top: 8),
+              child: Text(messageModel.name,
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child:
+                  Text(messageModel.message, overflow: TextOverflow.ellipsis),
+            )
+          ]),
+        ),
+        IconButton(
+            onPressed: () {
+              BlocProvider.of<ReplyBloc>(context).add(CancelReply());
+            },
+            icon: Icon(IconResources().removeReply))
+      ]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(children: [
-        Expanded(child: textField()),
-        const SizedBox(width: 10),
-        sendButton()
-      ]),
+      child: BlocBuilder<ReplyBloc, ReplyState>(
+        builder: (context, state) {
+          if (state is ReplyInitial) {
+            return textFieldBody(false, null);
+          } else if (state is ReplyMessageData) {
+            return textFieldBody(true, state.messageModel);
+          } else {
+            return textFieldBody(false, null);
+          }
+        },
+      ),
     );
   }
 }

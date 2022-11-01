@@ -17,7 +17,7 @@ class ColorResources {
   final Color shimmerBase = Colors.grey.shade400;
   final Color shimmerHighlight = Colors.grey.shade100;
   final Color sendMessageIcon = Colors.white;
-  final Color sendMessageTextField = Colors.grey.shade100;
+  final Color sendMessageTextField = Colors.grey.shade200;
   final Color chatBubbleYourSideBG = Colors.grey.shade300;
   final Color chatBubbleBorder = Colors.black;
   final Color chatBubbleYourSideText = Colors.black;

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:chat_app/resources/resource.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../models/message_model.dart';
 import '../../utils/firestore_service.dart';
 import '../../utils/shared_data.dart';
 import '../../widgets/upload_image.dart';
@@ -20,6 +21,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               id: event.id.toString(),
               name: (name == '') ? await PreferenceServices().getPhone() : name,
               message: event.message,
+              messageModel: event.messageModel,
               uid: await PreferenceServices().getUid(),
               type: event.type);
         } else {
@@ -30,6 +32,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               yourId: await PreferenceServices().getUid(),
               ids: event.id,
               type: event.type,
+              messageModel: event.messageModel,
               otherId: event.otherUid);
         }
       } catch (e) {

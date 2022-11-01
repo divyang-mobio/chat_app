@@ -8,13 +8,14 @@ class SendMessage extends ChatEvent {
   String message, otherUid;
   SendDataType type;
   bool isGroup;
+  MessageModel? messageModel;
 
   SendMessage(
-      {
-      this.id,
+      {this.id,
       required this.context,
       required this.message,
       required this.otherUid,
+      this.messageModel,
       required this.type,
       required this.isGroup});
 }

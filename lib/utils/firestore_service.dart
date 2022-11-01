@@ -142,6 +142,7 @@ class DatabaseService {
       required String yourName,
       required String otherId,
       required SendDataType type,
+      MessageModel? messageModel,
       String? ids,
       required String message}) async {
     if (ids == null) {
@@ -152,7 +153,12 @@ class DatabaseService {
       if (data.docs.isEmpty) {
         final id = await createChatRoom(yourName: yourId, otherName: otherId);
         setMassage(
-            id: id, name: yourName, message: message, type: type, uid: yourId);
+            id: id,
+            name: yourName,
+            message: message,
+            type: type,
+            uid: yourId,
+            messageModel: messageModel);
       } else {
         List<ChatRoom> id = data.docs
             .map((e) => ChatRoom.fromJson(e.data() as Map<String, dynamic>))
@@ -162,11 +168,17 @@ class DatabaseService {
             name: yourName,
             message: message,
             type: type,
+            messageModel: messageModel,
             uid: yourId);
       }
     } else {
       setMassage(
-          id: ids, name: yourName, message: message, type: type, uid: yourId);
+          id: ids,
+          name: yourName,
+          messageModel: messageModel,
+          message: message,
+          type: type,
+          uid: yourId);
     }
   }
 
@@ -199,12 +211,14 @@ class DatabaseService {
       required String name,
       required String message,
       required String uid,
+      MessageModel? messageModel,
       required SendDataType type}) async {
     final ids = await groupCollection.doc(id).collection('message').add({
       'name': name,
       'message': message,
       'uid': uid,
       'id': '',
+      'reply': (messageModel == null) ? null : messageModel.toJson(),
       'type': (type == SendDataType.text)
           ? 'text'
           : (type == SendDataType.image)
@@ -220,12 +234,14 @@ class DatabaseService {
       required String name,
       required String message,
       required String uid,
+      MessageModel? messageModel,
       required SendDataType type}) async {
     final ids = await chatsCollection.doc(id).collection('message').add({
       'name': name,
       'message': message,
       'uid': uid,
       'id': '',
+      'reply': (messageModel == null) ? null : messageModel.toJson(),
       'type': (type == SendDataType.text)
           ? 'text'
           : (type == SendDataType.image)
