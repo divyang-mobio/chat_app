@@ -79,8 +79,14 @@ SwipeTo showMessageWidget(context,
     onRightSwipe: isMe
         ? null
         : () {
-            BlocProvider.of<ReplyBloc>(context)
-                .add(ReplyMessage(messageModel: message));
+            BlocProvider.of<ReplyBloc>(context).add(ReplyMessage(
+                messageModel: MessageModel(
+                    message: message.message,
+                    name: message.name,
+                    uid: message.uid,
+                    id: message.id,
+                    data: message.data,
+                    type: message.type)));
           },
     child: Row(
         mainAxisAlignment:
@@ -126,14 +132,20 @@ chatBubble(context,
                   style: TextStyle(
                       fontWeight: FontWeight.w900,
                       color: ColorResources().chatBubbleSenderName)),
+            if (message.reply != null)
+              Column(children: [
+                replyCard(context,
+                    messageModel: message.reply as MessageModel,
+                    isChatBubble: true),
+                const SizedBox(height: 10),
+              ]),
             (message.type == SendDataType.text)
                 ? textMessage(isMe: isMe, text: message.message)
                 : (message.type == SendDataType.image)
                     ? networkImages(link: message.message)
                     : BlocProvider<VideoThumbnailBloc>(
                         create: (context) => VideoThumbnailBloc(),
-                        child: VideoThumbNail(link: message.message),
-                      ),
+                        child: VideoThumbNail(link: message.message))
           ]),
         ),
         Padding(
@@ -150,6 +162,57 @@ Text textMessage({required String text, required bool isMe}) {
           color: isMe
               ? ColorResources().chatBubbleYourSideText
               : ColorResources().chatBubbleOtherSideText));
+}
+
+Container replyCard(context,
+    {required MessageModel messageModel, required bool isChatBubble}) {
+  return Container(
+    decoration: BoxDecoration(
+        color: ColorResources().sendMessageTextField,
+        borderRadius: BorderRadius.only(
+            topRight: isChatBubble
+                ? const Radius.circular(10)
+                : const Radius.circular(25),
+            topLeft: isChatBubble
+                ? const Radius.circular(10)
+                : const Radius.circular(25),
+            bottomRight: isChatBubble ? const Radius.circular(10) : Radius.zero,
+            bottomLeft:
+                isChatBubble ? const Radius.circular(10) : Radius.zero)),
+    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      SingleChildScrollView(
+          child: Padding(
+        padding: EdgeInsets.only(
+            left: isChatBubble ? 8 : 18,
+            right: 8,
+            top: 8,
+            bottom: isChatBubble ? 8 : 0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(messageModel.name,
+              style: const TextStyle(fontWeight: FontWeight.bold)),
+          (messageModel.type == SendDataType.text)
+              ? Text(messageModel.message, overflow: TextOverflow.ellipsis)
+              : (messageModel.type == SendDataType.image)
+                  ? SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: networkImages(link: messageModel.message))
+                  : BlocProvider<VideoThumbnailBloc>(
+                      create: (context) => VideoThumbnailBloc(),
+                      child: SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: VideoThumbNail(link: messageModel.message)))
+        ]),
+      )),
+      if (!isChatBubble)
+        IconButton(
+            onPressed: () {
+              BlocProvider.of<ReplyBloc>(context).add(CancelReply());
+            },
+            icon: Icon(IconResources().removeReply))
+    ]),
+  );
 }
 
 class NewMessageSend extends StatefulWidget {
@@ -282,46 +345,16 @@ class _NewMessageSendState extends State<NewMessageSend> {
       Expanded(
           child: Column(
         children: [
-          if (isReply) replyCard(messageModel as MessageModel),
+          if (isReply)
+            replyCard(context,
+                messageModel: messageModel as MessageModel,
+                isChatBubble: false),
           textField(isReplay: isReply),
         ],
       )),
       const SizedBox(width: 10),
       sendButton(isReply: isReply, messageModel: messageModel)
     ]);
-  }
-
-  replyCard(MessageModel messageModel) {
-    return Container(
-      decoration: BoxDecoration(
-          color: ColorResources().sendMessageTextField,
-          borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(25), topLeft: Radius.circular(25))),
-      width: double.infinity,
-      height: 40,
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        SingleChildScrollView(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, top: 8),
-              child: Text(messageModel.name,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child:
-                  Text(messageModel.message, overflow: TextOverflow.ellipsis),
-            )
-          ]),
-        ),
-        IconButton(
-            onPressed: () {
-              BlocProvider.of<ReplyBloc>(context).add(CancelReply());
-            },
-            icon: Icon(IconResources().removeReply))
-      ]),
-    );
   }
 
   @override
