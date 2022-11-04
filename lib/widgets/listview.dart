@@ -1,5 +1,5 @@
-import 'package:chat_app/controllers/group_bloc/add_data_group_bloc.dart';
-import 'package:chat_app/widgets/common_widgets_of_chat_screen.dart';
+import '../controllers/group_bloc/add_data_group_bloc.dart';
+import 'common_widgets_of_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/group_model.dart';

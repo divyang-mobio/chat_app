@@ -76,18 +76,16 @@ SwipeTo showMessageWidget(context,
     required String id,
     required bool isGroup}) {
   return SwipeTo(
-    onRightSwipe: isMe
-        ? null
-        : () {
-            BlocProvider.of<ReplyBloc>(context).add(ReplyMessage(
-                messageModel: MessageModel(
-                    message: message.message,
-                    name: message.name,
-                    uid: message.uid,
-                    id: message.id,
-                    data: message.data,
-                    type: message.type)));
-          },
+    onRightSwipe: () {
+      BlocProvider.of<ReplyBloc>(context).add(ReplyMessage(
+          messageModel: MessageModel(
+              message: message.message,
+              name: message.name,
+              uid: message.uid,
+              id: message.id,
+              data: message.data,
+              type: message.type)));
+    },
     child: Row(
         mainAxisAlignment:
             isMe ? MainAxisAlignment.end : MainAxisAlignment.start,

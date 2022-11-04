@@ -1,5 +1,6 @@
 import 'package:chat_app/controllers/group_bloc/user_detail_bloc.dart';
 import 'package:chat_app/models/group_model.dart';
+import 'package:chat_app/models/status_model.dart';
 import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/screens/chat_screen.dart';
 import 'package:chat_app/screens/create_group_screen.dart';
@@ -17,6 +18,7 @@ import '../screens/select_member_screen.dart';
 import '../screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import '../screens/signIn_screen.dart';
+import '../screens/status_view.dart';
 import '../widgets/video_play.dart';
 import 'redirect_class.dart';
 
@@ -68,6 +70,10 @@ class RouteGenerator {
                       create: (context) => PlayPauseBloc()),
                   BlocProvider<RefreshBloc>(create: (context) => RefreshBloc()),
                 ], child: VideoApp(link: args)));
+      case '/statusView':
+        final args = settings.arguments as StatusModel;
+        return MaterialPageRoute(
+            builder: (context) => StatusViewScreen(statusModel: args));
       case '/chat':
         final args = settings.arguments as UserModel;
         return MaterialPageRoute(

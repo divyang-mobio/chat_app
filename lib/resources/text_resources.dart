@@ -4,6 +4,7 @@ class AppTitle {
   final String mainScreen = 'Chats';
   final String newContactScreen = 'Contacts';
   final String groupScreen = 'Groups';
+  final String statusScreen = 'Status';
   final String createGroupScreen = 'Add Participants';
   final String groupDetailScreen = 'Group Info';
 }
@@ -21,6 +22,7 @@ class RoutesName {
   final String videoPlay = '/videoPlay';
   final String groupContactScreen = '/GroupContactScreen';
   final String groupRegistrationScreen = '/groupRegistration';
+  final String statusViewScreen = '/statusView';
 }
 
 class TextResources {
@@ -59,6 +61,7 @@ class TextResources {
   final String offlineStatue = 'Offline';
   final String errorAtMessageSendTime = 'message not send';
   final String imageStoreInStoragePath = 'chat_file/';
+  final String statusStoreInStoragePath = 'status/';
   final String profileInStoragePath = 'profile_image/';
   final String alertBoxButton = 'OK';
   final String permissionIsNotGiven = 'Pls allow permission';

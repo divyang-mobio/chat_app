@@ -1,4 +1,5 @@
 import 'package:chat_app/controllers/chat_bloc/chat_bloc.dart';
+import 'package:chat_app/controllers/get_status_bloc/get_status_bloc.dart';
 import '../controllers/bottom_nav_bloc/bottom_navigation_bloc.dart';
 import '../controllers/chat_list/chat_list_bloc.dart';
 import '../controllers/chat_list/get_user_data_bloc.dart';
@@ -8,6 +9,7 @@ import '../controllers/login_Bloc/set_otp_field_bloc.dart';
 import '../controllers/reply_bloc/reply_bloc.dart';
 import '../controllers/show_Status_bloc/show_status_bloc.dart';
 import '../controllers/speech_to_text_bloc/speech_to_text_bloc.dart';
+import '../controllers/upload_status_bloc/upload_status_bloc.dart';
 import '../controllers/user_bloc/new_contact_bloc.dart';
 import '../controllers/video_player_bloc/visible_container_bloc.dart';
 import 'firebase_auth.dart';
@@ -45,6 +47,9 @@ class BlocClass extends StatelessWidget {
       BlocProvider<CreateGroupBloc>(create: (context) => CreateGroupBloc()),
       BlocProvider<ShowStatusBloc>(create: (context) => ShowStatusBloc()),
       BlocProvider<ChatBloc>(create: (context) => ChatBloc()),
+      BlocProvider<UploadStatusBloc>(create: (context) => UploadStatusBloc()),
+      BlocProvider<GetStatusBloc>(
+          create: (context) => GetStatusBloc()..add(GetStatusData())),
       BlocProvider<SetOtpFieldBloc>(create: (context) => SetOtpFieldBloc()),
       BlocProvider<ChatListBloc>(
           create: (context) => ChatListBloc()..add(GetChatList())),

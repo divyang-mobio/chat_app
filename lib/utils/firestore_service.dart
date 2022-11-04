@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:chat_app/models/chat_room_model.dart';
 import 'package:chat_app/models/message_model.dart';
+import 'package:chat_app/models/status_model.dart';
 import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/utils/shared_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,6 +21,8 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('chats');
   final CollectionReference groupCollection =
       FirebaseFirestore.instance.collection('groups');
+  final CollectionReference statusCollection =
+      FirebaseFirestore.instance.collection('status');
 
   Future addUserData({required String phone}) async {
     PreferenceServices().setNo(number: phone, uid: uid.toString());
@@ -293,5 +296,35 @@ class DatabaseService {
             .orderBy('time', descending: true)
             .snapshots()
             .transform(Utils.transformer(MessageModel.fromJson));
+  }
+
+  uploadStatus({required String name, required String url}) async {
+    try {
+      final data = await statusCollection.where('id', isEqualTo: uid).get();
+      if (data.docs.isNotEmpty) {
+        await statusCollection.doc(uid).set({
+          'image': FieldValue.arrayUnion([url]),
+        }, SetOptions(merge: true));
+      } else {
+        await statusCollection.doc(uid).set({
+          'person': name,
+          'image': [url],
+          'id': uid,
+        });
+      }
+      return true;
+    } catch (e) {
+      throw TextResources().error;
+    }
+  }
+
+  Stream<List<StatusModel>> getStatus() {
+    try {
+      return statusCollection
+          .snapshots()
+          .transform(Utils.transformer(StatusModel.fromJson));
+    } catch (e) {
+      throw TextResources().error;
+    }
   }
 }

@@ -1,8 +1,8 @@
+import 'package:chat_app/screens/status_screen.dart';
 import '../controllers/bottom_nav_bloc/bottom_navigation_bloc.dart';
 import 'package:chat_app/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../controllers/login_Bloc/login_bloc.dart';
 import '../resources/resource.dart';
 import '../utils/firestore_service.dart';
@@ -24,6 +24,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
   static const List<Widget> _widgetOptions = <Widget>[
     MainScreen(),
     GroupDisplayScreen(),
+    StatusScreen(),
     SelectContactScreen()
   ];
 
@@ -97,7 +98,6 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen>
                           ],
                   body: _widgetOptions.elementAt(state.index)),
               bottomNavigationBar: BottomNavigationBar(
-                elevation: 0,
                 items: bottomNav
                     .map((e) => BottomNavigationBarItem(
                         icon: Icon(e.iconData), label: e.label))

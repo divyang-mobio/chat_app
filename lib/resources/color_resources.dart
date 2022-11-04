@@ -39,4 +39,5 @@ class ColorResources {
   final Color createGroupButtonBg = Colors.grey;
   final Color createGroupButtonIcon = Colors.black;
   final Color exitGroupButton = Colors.red;
+  final Color bottomNavBarUnSelectedItem = Colors.grey;
 }

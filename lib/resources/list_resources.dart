@@ -46,6 +46,7 @@ List<BottomNavModel> bottomNav = [
       label: TextResources().bottomNavMessage,
       iconData: IconResources().bottomNavMessage),
   BottomNavModel(label: 'Groups', iconData: Icons.groups),
+  BottomNavModel(label: 'Status', iconData: Icons.data_saver_off),
   BottomNavModel(
       label: TextResources().bottomNavContact,
       iconData: IconResources().bottomNavContact)
@@ -57,6 +58,9 @@ List<AppBarModel> appbarModel = [
     popupMenuButton()
   ]),
   AppBarModel(title: AppTitle().groupScreen, actions: [
+    IconButton(onPressed: () {}, icon: Icon(IconResources().search))
+  ]),
+  AppBarModel(title: AppTitle().statusScreen, actions: [
     IconButton(onPressed: () {}, icon: Icon(IconResources().search))
   ]),
   AppBarModel(title: AppTitle().newContactScreen, actions: [
