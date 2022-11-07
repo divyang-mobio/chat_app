@@ -25,7 +25,9 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
   Widget build(BuildContext context) {
     return StoryView(
       storyItems: widget.statusModel.image.map((e) {
-        return StoryItem.pageImage(url: e, controller: controller);
+        if (e.date.difference(DateTime.now()).inHours >= -24) {
+          return StoryItem.pageImage(url: e.url, controller: controller);
+        }
       }).toList(),
       controller: controller,
       onStoryShow: (s) {},

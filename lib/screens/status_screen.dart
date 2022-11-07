@@ -83,7 +83,7 @@ class _StatusScreenState extends State<StatusScreen> {
                                           size: const Size.fromRadius(40),
                                           child: networkImages(
                                               link: (snapshot
-                                                      .data?[index].image[0])
+                                                      .data?[index].image[0].url)
                                                   .toString())),
                                     ),
                                   ),

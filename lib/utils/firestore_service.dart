@@ -303,12 +303,20 @@ class DatabaseService {
       final data = await statusCollection.where('id', isEqualTo: uid).get();
       if (data.docs.isNotEmpty) {
         await statusCollection.doc(uid).set({
-          'image': FieldValue.arrayUnion([url]),
+          'image': FieldValue.arrayUnion(
+            [
+              {'url': url, 'date': DateTime.now()}
+            ],
+          ),
+          'date': DateTime.now()
         }, SetOptions(merge: true));
       } else {
         await statusCollection.doc(uid).set({
           'person': name,
-          'image': [url],
+          'image': [
+            {'url': url, 'date': DateTime.now()}
+          ],
+          'date': DateTime.now(),
           'id': uid,
         });
       }
@@ -321,6 +329,9 @@ class DatabaseService {
   Stream<List<StatusModel>> getStatus() {
     try {
       return statusCollection
+          .where('data',
+              isGreaterThanOrEqualTo:
+              DateTime.now().subtract(const Duration(days: 1)).millisecondsSinceEpoch)
           .snapshots()
           .transform(Utils.transformer(StatusModel.fromJson));
     } catch (e) {
