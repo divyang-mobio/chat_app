@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:chat_app/utils/shared_data.dart';
-import 'package:chat_app/utils/firebase_auth.dart';
-import 'package:chat_app/utils/firestore_service.dart';
+import '../../utils/shared_data.dart';
+import '../../utils/firebase_auth.dart';
+import '../../utils/firestore_service.dart';
 
 part 'login_event.dart';
 

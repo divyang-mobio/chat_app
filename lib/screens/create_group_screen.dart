@@ -1,5 +1,5 @@
-import 'package:chat_app/controllers/bottom_nav_bloc/bottom_navigation_bloc.dart';
-import 'package:chat_app/controllers/group_bloc/send_group_data_bloc.dart';
+import '../controllers/bottom_nav_bloc/bottom_navigation_bloc.dart';
+import '../controllers/group_bloc/send_group_data_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../controllers/upload_user_image_bloc/image_bloc.dart';
 import '../models/user_model.dart';

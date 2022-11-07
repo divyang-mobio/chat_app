@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:chat_app/utils/firestore_service.dart';
+import '../../utils/firestore_service.dart';
 
 import '../../models/group_model.dart';
 import '../../utils/shared_data.dart';

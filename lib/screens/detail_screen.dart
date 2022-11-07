@@ -1,6 +1,6 @@
-import 'package:chat_app/controllers/group_bloc/user_detail_bloc.dart';
-import 'package:chat_app/models/group_model.dart';
-import 'package:chat_app/utils/shared_data.dart';
+import '../controllers/group_bloc/user_detail_bloc.dart';
+import '../models/group_model.dart';
+import '../utils/shared_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../resources/resource.dart';

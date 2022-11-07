@@ -1,5 +1,5 @@
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:chat_app/widgets/text_to_speech_widget.dart';
+import 'text_to_speech_widget.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import '../controllers/reply_bloc/reply_bloc.dart';

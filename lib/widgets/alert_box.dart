@@ -1,9 +1,6 @@
-
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../resources/resource.dart';
 
 alertDialog(context, String title) {

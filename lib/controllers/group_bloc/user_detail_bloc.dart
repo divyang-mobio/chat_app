@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:chat_app/models/group_model.dart';
-import 'package:chat_app/utils/firestore_service.dart';
-import 'package:chat_app/utils/shared_data.dart';
+import '../../models/group_model.dart';
+import '../../utils/firestore_service.dart';
+import '../../utils/shared_data.dart';
 import '../../models/user_model.dart';
 
 part 'user_detail_event.dart';

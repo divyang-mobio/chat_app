@@ -40,4 +40,6 @@ class ColorResources {
   final Color createGroupButtonIcon = Colors.black;
   final Color exitGroupButton = Colors.red;
   final Color bottomNavBarUnSelectedItem = Colors.grey;
+  final Color uploadStatusButtonIcon = Colors.white;
+  final Color uploadStatusButtonBg = Colors.grey;
 }

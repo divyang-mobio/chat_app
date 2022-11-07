@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:chat_app/utils/shared_data.dart';
-import 'package:chat_app/utils/firestore_service.dart';
+import '../../utils/shared_data.dart';
+import '../../utils/firestore_service.dart';
 
 part 'update_profile_event.dart';
 

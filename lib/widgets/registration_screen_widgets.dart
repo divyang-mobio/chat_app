@@ -1,7 +1,4 @@
-
-
 import 'package:flutter/material.dart';
-
 import '../resources/resource.dart';
 
 GestureDetector showProfilePic(

@@ -1,4 +1,4 @@
-import 'package:chat_app/controllers/update_profile_bloc/update_profile_bloc.dart';
+import '../controllers/update_profile_bloc/update_profile_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../controllers/upload_user_image_bloc/image_bloc.dart';
 import '../widgets/login_screens_widget.dart';

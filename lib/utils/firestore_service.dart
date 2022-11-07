@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:chat_app/models/chat_room_model.dart';
-import 'package:chat_app/models/message_model.dart';
-import 'package:chat_app/models/status_model.dart';
-import 'package:chat_app/models/user_model.dart';
-import 'package:chat_app/utils/shared_data.dart';
+import '../models/chat_room_model.dart';
+import '../models/message_model.dart';
+import '../models/status_model.dart';
+import '../models/user_model.dart';
+import 'shared_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/group_model.dart';
@@ -303,11 +303,9 @@ class DatabaseService {
       final data = await statusCollection.where('id', isEqualTo: uid).get();
       if (data.docs.isNotEmpty) {
         await statusCollection.doc(uid).set({
-          'image': FieldValue.arrayUnion(
-            [
-              {'url': url, 'date': DateTime.now()}
-            ],
-          ),
+          'image': FieldValue.arrayUnion([
+            {'url': url, 'date': DateTime.now()}
+          ]),
           'date': DateTime.now()
         }, SetOptions(merge: true));
       } else {
@@ -330,8 +328,9 @@ class DatabaseService {
     try {
       return statusCollection
           .where('data',
-              isGreaterThanOrEqualTo:
-              DateTime.now().subtract(const Duration(days: 1)).millisecondsSinceEpoch)
+              isGreaterThanOrEqualTo: DateTime.now()
+                  .subtract(const Duration(days: 1))
+                  .millisecondsSinceEpoch)
           .snapshots()
           .transform(Utils.transformer(StatusModel.fromJson));
     } catch (e) {

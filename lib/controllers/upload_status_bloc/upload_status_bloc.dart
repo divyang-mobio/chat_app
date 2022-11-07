@@ -1,9 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:chat_app/resources/resource.dart';
-import 'package:chat_app/utils/firestore_service.dart';
+import '../../resources/resource.dart';
+import '../../utils/firestore_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../utils/shared_data.dart';
 import '../../widgets/upload_image.dart';
 

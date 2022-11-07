@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:chat_app/models/status_model.dart';
-import 'package:chat_app/utils/firestore_service.dart';
+import "../../models/status_model.dart";
+import '../../utils/firestore_service.dart';
 
 part 'get_status_event.dart';
 

@@ -1,6 +1,6 @@
-import 'package:chat_app/screens/status_screen.dart';
+import 'status_screen.dart';
 import '../controllers/bottom_nav_bloc/bottom_navigation_bloc.dart';
-import 'package:chat_app/screens/main_screen.dart';
+import 'main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../controllers/login_Bloc/login_bloc.dart';

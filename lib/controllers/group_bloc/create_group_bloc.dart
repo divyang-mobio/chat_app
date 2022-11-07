@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:chat_app/models/user_model.dart';
-import 'package:chat_app/utils/firestore_service.dart';
+import '../../models/user_model.dart';
+import '../../utils/firestore_service.dart';
 
 part 'create_group_event.dart';
 

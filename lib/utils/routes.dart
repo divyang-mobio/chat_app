@@ -1,10 +1,10 @@
-import 'package:chat_app/controllers/group_bloc/user_detail_bloc.dart';
-import 'package:chat_app/models/group_model.dart';
-import 'package:chat_app/models/status_model.dart';
-import 'package:chat_app/models/user_model.dart';
-import 'package:chat_app/screens/chat_screen.dart';
-import 'package:chat_app/screens/create_group_screen.dart';
-import 'package:chat_app/screens/main_screen.dart';
+import '../controllers/group_bloc/user_detail_bloc.dart';
+import '../models/group_model.dart';
+import '../models/status_model.dart';
+import '../models/user_model.dart';
+import '../screens/chat_screen.dart';
+import '../screens/create_group_screen.dart';
+import '../screens/main_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../controllers/group_bloc/add_data_group_bloc.dart';
 import '../controllers/group_bloc/send_group_data_bloc.dart';

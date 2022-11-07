@@ -1,4 +1,4 @@
-import 'package:chat_app/screens/bottom_navigation_bar_screen.dart';
+import '../screens/bottom_navigation_bar_screen.dart';
 import 'shared_data.dart';
 import '../screens/signIn_screen.dart';
 import 'package:flutter/material.dart';

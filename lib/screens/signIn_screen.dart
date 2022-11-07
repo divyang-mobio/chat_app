@@ -1,4 +1,4 @@
-import 'package:chat_app/controllers/login_Bloc/set_otp_field_bloc.dart';
+import '../controllers/login_Bloc/set_otp_field_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';

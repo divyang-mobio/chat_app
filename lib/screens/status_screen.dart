@@ -1,12 +1,10 @@
-import 'package:chat_app/resources/resource.dart';
-
+import '../resources/resource.dart';
 import '../controllers/get_status_bloc/get_status_bloc.dart';
-import 'package:chat_app/models/status_model.dart';
+import '../models/status_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../controllers/upload_status_bloc/upload_status_bloc.dart';
 import '../widgets/common_widgets_of_chat_screen.dart';
-import '../widgets/listview.dart';
 import '../widgets/network_image.dart';
 
 class StatusScreen extends StatefulWidget {
@@ -36,16 +34,17 @@ class _StatusScreenState extends State<StatusScreen> {
             onPressed: () {
               BlocProvider.of<UploadStatusBloc>(context).add(UploadStatus());
             },
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: ListTile(
                 leading: CircleAvatar(
-                    backgroundColor: Colors.grey,
+                    backgroundColor: ColorResources().uploadStatusButtonBg,
                     radius: 30,
-                    child: Icon(Icons.data_saver_off, color: Colors.white)),
-                title: Text('Upload Status',
-                    style:
-                        TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+                    child: Icon(IconResources().uploadStatusButton,
+                        color: Colors.white)),
+                title: Text(TextResources().uploadStatusButton,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w700, fontSize: 20)),
               ),
             ),
           ),
@@ -82,8 +81,8 @@ class _StatusScreenState extends State<StatusScreen> {
                                       child: SizedBox.fromSize(
                                           size: const Size.fromRadius(40),
                                           child: networkImages(
-                                              link: (snapshot
-                                                      .data?[index].image[0].url)
+                                              link: (snapshot.data?[index]
+                                                      .image[0].url)
                                                   .toString())),
                                     ),
                                   ),

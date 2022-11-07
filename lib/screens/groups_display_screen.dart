@@ -1,8 +1,7 @@
-import 'package:chat_app/controllers/group_bloc/get_group_bloc.dart';
+import '../controllers/group_bloc/get_group_bloc.dart';
 import 'package:chat_app/widgets/listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../models/group_model.dart';
 import '../resources/resource.dart';
 import '../widgets/common_widgets_of_chat_screen.dart';

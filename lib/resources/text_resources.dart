@@ -75,4 +75,5 @@ class TextResources {
   final String participantsNumber = 'participants';
   final String exitGroupButton = 'Exit Group';
   final String deleteMessageButton = 'Delete';
+  final String uploadStatusButton = 'Upload Status';
 }
