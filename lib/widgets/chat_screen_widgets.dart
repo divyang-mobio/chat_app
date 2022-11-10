@@ -107,10 +107,18 @@ chatBubble(context,
     {required MessageModel message,
     required bool isMe,
     required bool isGroup}) {
-  return Column(
-      crossAxisAlignment:
-          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-      children: [
+  return
+      // SwipeTo(
+      //   onRightSwipe: () {
+      //     print(message.message);
+      //     BlocProvider.of<ReplyBloc>(context).add(ReplyMessage(
+      //         messageModel: message));
+      //   },
+      // child:
+      Column(
+          crossAxisAlignment:
+              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
         Container(
           padding: EdgeInsets.all((message.type == SendDataType.text) ? 10 : 4),
           margin: const EdgeInsets.only(right: 10, left: 10, top: 10),
@@ -152,6 +160,7 @@ chatBubble(context,
               style: TextStyle(color: ColorResources().chatScreenDate)),
         ),
       ]);
+  // );
 }
 
 Text textMessage({required String text, required bool isMe}) {

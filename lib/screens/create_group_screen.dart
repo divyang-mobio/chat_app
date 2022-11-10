@@ -149,17 +149,15 @@ class _RegistrationGroupScreenState extends State<RegistrationGroupScreen> {
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: SingleChildScrollView(
-            child: Stack(
-              children: [
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Center(child: uploadImage()),
-                  const SizedBox(height: 20),
-                  textField(),
-                  const SizedBox(height: 20),
-                  uploadDataButton()
-                ])
-              ],
-            ),
+            child: Stack(children: [
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Center(child: uploadImage()),
+                const SizedBox(height: 20),
+                textField(),
+                const SizedBox(height: 20),
+                uploadDataButton()
+              ])
+            ]),
           ),
         ),
       ),

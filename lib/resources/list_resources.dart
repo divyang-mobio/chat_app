@@ -41,6 +41,25 @@ List<GroupBottomSheet> getGroupBottomSheet = [
   GroupBottomSheet(title: 'remove from group', type: NavigatorType.remove)
 ];
 
+List<StatusBottomSheetModel> statusBottomSheetData = [
+  StatusBottomSheetModel(
+      title: 'Open Camera',
+      type: SendDataType.image,
+      imageSource: ImageSource.camera),
+  StatusBottomSheetModel(
+      title: 'Upload Video',
+      type: SendDataType.video,
+      imageSource: ImageSource.gallery),
+  StatusBottomSheetModel(
+      title: 'Open Video',
+      type: SendDataType.video,
+      imageSource: ImageSource.camera),
+  StatusBottomSheetModel(
+      title: 'Upload Image',
+      type: SendDataType.image,
+      imageSource: ImageSource.gallery),
+];
+
 List<BottomNavModel> bottomNav = [
   BottomNavModel(
       label: TextResources().bottomNavMessage,

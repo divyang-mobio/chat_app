@@ -36,7 +36,9 @@ ListView listView(
                   leading: const CircleAvatar(radius: 30, child: SizedBox()),
                   title: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Container(height: 10, color: Colors.grey)))
+                      child: Container(
+                          height: 10,
+                          color: ColorResources().shimmerContainer)))
               : listTile(context,
                   userData: userData[index],
                   isAdmin: adminList.contains(userData[index].uid))),
@@ -79,7 +81,7 @@ CheckboxListTile groupListTile(context,
       Flexible(
         child: Text((userData.name == '') ? userData.phone : userData.name,
             style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
-      ),
+      )
     ]),
     value: values,
     onChanged: (value) {
@@ -100,7 +102,7 @@ ListTile listTile(context,
     leading: circleAvatar(userData: userData),
     title: Text((userData.name == '') ? userData.phone : userData.name,
         style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
-    trailing: isAdmin ? const Text('~Admin') : null,
+    trailing: isAdmin ? Text(TextResources().admin) : null,
   );
 }
 
@@ -133,31 +135,29 @@ CircleAvatar circleAvatar(
   return CircleAvatar(
       backgroundColor: Colors.transparent,
       radius: 30,
-      child: Stack(
-        children: [
-          if (userData.profilePic == '')
-            ClipOval(child: Image.asset(ImagePath().noImageImagePath))
-          else
-            ClipOval(
-              child: SizedBox.fromSize(
-                size: const Size.fromRadius(40),
-                child: networkImages(link: userData.profilePic),
+      child: Stack(children: [
+        if (userData.profilePic == '')
+          ClipOval(child: Image.asset(ImagePath().noImageImagePath))
+        else
+          ClipOval(
+            child: SizedBox.fromSize(
+              size: const Size.fromRadius(40),
+              child: networkImages(link: userData.profilePic),
+            ),
+          ),
+        if (!isGroupScreen)
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: CircleAvatar(
+                    backgroundColor: userData.status
+                        ? ColorResources().statusOnlineColor
+                        : ColorResources().statusOfflineColor,
+                    radius: 5),
               ),
             ),
-          if (!isGroupScreen)
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: CircleAvatar(
-                      backgroundColor: userData.status
-                          ? ColorResources().statusOnlineColor
-                          : ColorResources().statusOfflineColor,
-                      radius: 5),
-                ),
-              ),
-            ),
-        ],
-      ));
+          )
+      ]));
 }

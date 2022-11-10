@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../resources/resource.dart';
+
 part 'status_model.g.dart';
 
 @JsonSerializable()
@@ -19,12 +21,23 @@ class StatusImageModel {
   String url;
   @JsonKey(fromJson: _fromJson)
   DateTime date;
+  @JsonKey(fromJson: _typeFromJson)
+  SendDataType type;
 
-  StatusImageModel({required this.url, required this.date});
+  StatusImageModel({required this.url, required this.date, required this.type});
 
   static DateTime _fromJson(Timestamp date) {
     DateTime dataTime = DateTime.parse(date.toDate().toString());
     return dataTime;
+  }
+
+  static _typeFromJson(String data) {
+    SendDataType type = (data == 'text')
+        ? SendDataType.text
+        : (data == 'image')
+        ? SendDataType.image
+        : SendDataType.video;
+    return type;
   }
 
 

@@ -21,3 +21,12 @@ class GroupBottomSheet {
 
   GroupBottomSheet({required this.title, required this.type});
 }
+
+class StatusBottomSheetModel {
+  String title;
+  SendDataType type;
+  ImageSource imageSource;
+
+  StatusBottomSheetModel(
+      {required this.title, required this.type, required this.imageSource});
+}

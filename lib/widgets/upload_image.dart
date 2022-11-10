@@ -20,7 +20,8 @@ void uploadImage(context,
   var permissionStatus = await Permission.photos.status;
   if (permissionStatus.isGranted) {
     if (isVideo) {
-      image = await imagePicker.pickVideo(source: imageSource);
+      image =
+          await getVideo(imagePicker: imagePicker, imageSource: imageSource);
     } else {
       image =
           await getImage(imageSource: imageSource, imagePicker: imagePicker);
@@ -42,6 +43,12 @@ Future<XFile?> getImage(
     {required ImagePicker imagePicker,
     required ImageSource imageSource}) async {
   return await imagePicker.pickImage(source: imageSource, imageQuality: 30);
+}
+
+Future<XFile?> getVideo(
+    {required ImagePicker imagePicker,
+    required ImageSource imageSource}) async {
+  return await imagePicker.pickVideo(source: imageSource);
 }
 
 void uploadToFireStore(context,

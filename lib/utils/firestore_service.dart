@@ -298,13 +298,24 @@ class DatabaseService {
             .transform(Utils.transformer(MessageModel.fromJson));
   }
 
-  uploadStatus({required String name, required String url}) async {
+  uploadStatus(
+      {required String name,
+      required String url,
+      required SendDataType type}) async {
     try {
       final data = await statusCollection.where('id', isEqualTo: uid).get();
       if (data.docs.isNotEmpty) {
         await statusCollection.doc(uid).set({
           'image': FieldValue.arrayUnion([
-            {'url': url, 'date': DateTime.now()}
+            {
+              'url': url,
+              'date': DateTime.now(),
+              'type': (type == SendDataType.text)
+                  ? 'text'
+                  : (type == SendDataType.image)
+                      ? 'image'
+                      : 'video'
+            }
           ]),
           'date': DateTime.now()
         }, SetOptions(merge: true));
@@ -312,7 +323,15 @@ class DatabaseService {
         await statusCollection.doc(uid).set({
           'person': name,
           'image': [
-            {'url': url, 'date': DateTime.now()}
+            {
+              'url': url,
+              'date': DateTime.now(),
+              'type': (type == SendDataType.text)
+                  ? 'text'
+                  : (type == SendDataType.image)
+                      ? 'image'
+                      : 'video'
+            }
           ],
           'date': DateTime.now(),
           'id': uid,
@@ -327,10 +346,9 @@ class DatabaseService {
   Stream<List<StatusModel>> getStatus() {
     try {
       return statusCollection
-          .where('data',
-              isGreaterThanOrEqualTo: DateTime.now()
-                  .subtract(const Duration(days: 1))
-                  .millisecondsSinceEpoch)
+          .where('date',
+              isGreaterThanOrEqualTo: (DateTime.utc(DateTime.now().year,
+                  DateTime.now().month, DateTime.now().day - 1)))
           .snapshots()
           .transform(Utils.transformer(StatusModel.fromJson));
     } catch (e) {

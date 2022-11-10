@@ -73,6 +73,51 @@ bottomSheet(contexts,
   }
 }
 
+statusBottomSheet(contexts) {
+  if (Platform.isIOS) {
+    return showModalBottomSheet(
+        context: contexts,
+        builder: (BuildContext context) {
+          return CupertinoPageScaffold(
+            child: CupertinoActionSheet(
+                actions: statusBottomSheetData
+                    .map(
+                      (data) => CupertinoActionSheetAction(
+                        onPressed: () {
+                          Navigator.pop(context, [data.imageSource, data.type]);
+                        },
+                        child: Text(data.title),
+                      ),
+                    )
+                    .toList()),
+          );
+        });
+  } else {
+    return showModalBottomSheet(
+      context: contexts,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 200,
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: statusBottomSheetData
+                      .map((e) => MaterialButton(
+                          onPressed: () {
+                            Navigator.pop(context, [e.imageSource, e.type]);
+                          },
+                          child: Text(e.title)))
+                      .toList()),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 groupBottomSheet(contexts,
     {required UserModel userModel, required String groupId}) {
   if (Platform.isIOS) {
@@ -94,8 +139,7 @@ groupBottomSheet(contexts,
                             } else if (data.type == NavigatorType.remove) {
                               BlocProvider.of<UserDetailBloc>(contexts).add(
                                   RemoveExitGroup(
-                                      userId: userModel.uid,
-                                      groupId: groupId));
+                                      userId: userModel.uid, groupId: groupId));
                             }
                           },
                           child: Text(data.title),
@@ -124,7 +168,8 @@ groupBottomSheet(contexts,
                               } else if (e.type == NavigatorType.admin) {
                                 BlocProvider.of<UserDetailBloc>(contexts).add(
                                     MakeAdmin(
-                                        userId: userModel.uid, groupId: groupId));
+                                        userId: userModel.uid,
+                                        groupId: groupId));
                               } else if (e.type == NavigatorType.remove) {
                                 BlocProvider.of<UserDetailBloc>(contexts).add(
                                     RemoveExitGroup(

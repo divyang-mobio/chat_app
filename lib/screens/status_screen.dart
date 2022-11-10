@@ -4,6 +4,7 @@ import '../models/status_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../controllers/upload_status_bloc/upload_status_bloc.dart';
+import '../widgets/bottom_sheet.dart';
 import '../widgets/common_widgets_of_chat_screen.dart';
 import '../widgets/network_image.dart';
 
@@ -31,8 +32,14 @@ class _StatusScreenState extends State<StatusScreen> {
       child: SingleChildScrollView(
         child: Column(children: [
           TextButton(
-            onPressed: () {
-              BlocProvider.of<UploadStatusBloc>(context).add(UploadStatus());
+            onPressed: () async {
+              final data = await statusBottomSheet(context);
+              if (data != null) {
+                BlocProvider.of<UploadStatusBloc>(context).add(UploadStatus(
+                  imageSource: data[0],
+                  sendDataType: data[1],
+                ));
+              }
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -41,7 +48,7 @@ class _StatusScreenState extends State<StatusScreen> {
                     backgroundColor: ColorResources().uploadStatusButtonBg,
                     radius: 30,
                     child: Icon(IconResources().uploadStatusButton,
-                        color: Colors.white)),
+                        color: ColorResources().uploadStatusButtonIcon)),
                 title: Text(TextResources().uploadStatusButton,
                     style: const TextStyle(
                         fontWeight: FontWeight.w700, fontSize: 20)),

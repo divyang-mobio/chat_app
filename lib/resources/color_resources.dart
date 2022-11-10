@@ -42,4 +42,5 @@ class ColorResources {
   final Color bottomNavBarUnSelectedItem = Colors.grey;
   final Color uploadStatusButtonIcon = Colors.white;
   final Color uploadStatusButtonBg = Colors.grey;
+  final Color shimmerContainer = Colors.grey;
 }

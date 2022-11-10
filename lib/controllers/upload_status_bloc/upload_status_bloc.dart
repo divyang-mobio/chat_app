@@ -14,8 +14,11 @@ class UploadStatusBloc extends Bloc<UploadStatusEvent, UploadStatusState> {
   UploadStatusBloc() : super(UploadStatusInitial()) {
     on<UploadStatus>((event, emit) async {
       try {
-        final file = await getImage(
-            imagePicker: ImagePicker(), imageSource: ImageSource.camera);
+        final file = event.sendDataType == SendDataType.image
+            ? await getImage(
+                imagePicker: ImagePicker(), imageSource: event.imageSource)
+            : await getVideo(
+                imagePicker: ImagePicker(), imageSource: event.imageSource);
         if (file != null) {
           final url = await uploadImageToFirebase(
               firebaseStorage: FirebaseStorage.instance,
@@ -25,7 +28,10 @@ class UploadStatusBloc extends Bloc<UploadStatusEvent, UploadStatusState> {
           final name = await PreferenceServices().getAdmin();
           final data =
               await DatabaseService(uid: await PreferenceServices().getUid())
-                  .uploadStatus(name: name == '' ? phone : name, url: url);
+                  .uploadStatus(
+                      name: name == '' ? phone : name,
+                      url: url,
+                      type: event.sendDataType);
           if (data) {
             emit(UploadStatusSuccess());
             emit(UploadStatusInitial());

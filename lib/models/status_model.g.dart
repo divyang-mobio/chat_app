@@ -25,10 +25,19 @@ StatusImageModel _$StatusImageModelFromJson(Map<String, dynamic> json) =>
     StatusImageModel(
       url: json['url'] as String,
       date: StatusImageModel._fromJson(json['date'] as Timestamp),
+      type: StatusImageModel._typeFromJson(json['type'] as String),
     );
 
 Map<String, dynamic> _$StatusImageModelToJson(StatusImageModel instance) =>
     <String, dynamic>{
       'url': instance.url,
       'date': instance.date.toIso8601String(),
+      'type': _$SendDataTypeEnumMap[instance.type]!,
     };
+
+const _$SendDataTypeEnumMap = {
+  SendDataType.image: 'image',
+  SendDataType.text: 'text',
+  SendDataType.file: 'file',
+  SendDataType.video: 'video',
+};

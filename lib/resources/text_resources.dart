@@ -76,4 +76,5 @@ class TextResources {
   final String exitGroupButton = 'Exit Group';
   final String deleteMessageButton = 'Delete';
   final String uploadStatusButton = 'Upload Status';
+  final String admin = '~Admin';
 }
