@@ -24,5 +24,6 @@ class IconResources {
   final bottomNavContact = Icons.people_alt_outlined;
   final createGroupButton = Icons.groups;
   final deleteMessageButton = Icons.delete;
+  final editMessageButton = Icons.edit;
   final uploadStatusButton = Icons.data_saver_off;
 }

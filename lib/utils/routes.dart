@@ -1,4 +1,6 @@
+import '../controllers/edit_text_bloc/edit_text_bloc.dart';
 import '../controllers/group_bloc/user_detail_bloc.dart';
+import '../controllers/reply_bloc/reply_bloc.dart';
 import '../models/group_model.dart';
 import '../models/status_model.dart';
 import '../models/user_model.dart';
@@ -77,11 +79,31 @@ class RouteGenerator {
       case '/chat':
         final args = settings.arguments as UserModel;
         return MaterialPageRoute(
-            builder: (context) => ChatScreen(userModel: args));
+            builder: (context) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider<ReplyBloc>(
+                      create: (context) => ReplyBloc(),
+                    ),
+                    BlocProvider<EditTextBloc>(
+                      create: (context) => EditTextBloc(),
+                    )
+                  ],
+                  child: ChatScreen(userModel: args),
+                ));
       case '/chatGroup':
         final args = settings.arguments as GroupModel;
         return MaterialPageRoute(
-            builder: (context) => GroupChatScreen(groupModel: args));
+            builder: (context) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider<ReplyBloc>(
+                      create: (context) => ReplyBloc(),
+                    ),
+                    BlocProvider<EditTextBloc>(
+                      create: (context) => EditTextBloc(),
+                    )
+                  ],
+                  child: GroupChatScreen(groupModel: args),
+                ));
       case '/groupInfo':
         final args = settings.arguments as GroupModel;
         return MaterialPageRoute(

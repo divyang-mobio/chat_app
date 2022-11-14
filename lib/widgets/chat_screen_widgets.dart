@@ -1,4 +1,5 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:chat_app/controllers/edit_text_bloc/edit_text_bloc.dart';
 import 'text_to_speech_widget.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -64,7 +65,15 @@ FocusedMenuHolder showPopUpForDelete(context,
             onPressed: () {
               DatabaseService()
                   .deleteMessage(isGroup: isGroup, otherId: message.id, id: id);
-            })
+            }),
+        if (message.type == SendDataType.text)
+          FocusedMenuItem(
+              trailingIcon: Icon(IconResources().editMessageButton),
+              title: Text(TextResources().editMessageButton),
+              onPressed: () {
+                BlocProvider.of<EditTextBloc>(context)
+                    .add(EditText(messageModel: message, id: id));
+              })
       ],
       child:
           chatBubble(context, message: message, isMe: isMe, isGroup: isGroup));
@@ -347,21 +356,63 @@ class _NewMessageSendState extends State<NewMessageSend> {
     );
   }
 
-  Row textFieldBody(bool isReply, MessageModel? messageModel) {
-    return Row(children: [
-      Expanded(
-          child: Column(
-        children: [
-          if (isReply)
-            replyCard(context,
-                messageModel: messageModel as MessageModel,
-                isChatBubble: false),
-          textField(isReplay: isReply),
-        ],
-      )),
-      const SizedBox(width: 10),
-      sendButton(isReply: isReply, messageModel: messageModel)
-    ]);
+  GestureDetector editTextButton(
+      {required IconData iconData,
+      required GestureTapCallback onTap,
+      required Color bgColor}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: CircleAvatar(
+        backgroundColor: bgColor,
+        radius: 25,
+        child: Icon(iconData, color: ColorResources().sendMessageIcon),
+      ),
+    );
+  }
+
+  BlocBuilder textFieldBody(bool isReply, MessageModel? messageModel) {
+    return BlocBuilder<EditTextBloc, EditTextState>(builder: (context, state) {
+      if (state is EnterText) {
+        _controller.text = state.messageModel.message;
+        return Row(children: [
+          editTextButton(
+              iconData: Icons.cancel_outlined,
+              onTap: () {
+                BlocProvider.of<EditTextBloc>(context).add(CancelEditText());
+              },
+              bgColor: Colors.red),
+          const SizedBox(width: 10),
+          Expanded(child: textField(isReplay: isReply)),
+          const SizedBox(width: 10),
+          editTextButton(
+              iconData: IconResources().sendMessage,
+              onTap: () {
+                BlocProvider.of<EditTextBloc>(context).add(SendEditText(
+                    id: state.id,
+                    message: _controller.text,
+                    isGroup: widget.isGroup,
+                    otherId: state.messageModel.id));
+              },
+              bgColor: Theme.of(context).primaryColor)
+        ]);
+      } else {
+        _controller.text = '';
+        return Row(children: [
+          Expanded(
+              child: Column(
+            children: [
+              if (isReply)
+                replyCard(context,
+                    messageModel: messageModel as MessageModel,
+                    isChatBubble: false),
+              textField(isReplay: isReply),
+            ],
+          )),
+          const SizedBox(width: 10),
+          sendButton(isReply: isReply, messageModel: messageModel)
+        ]);
+      }
+    });
   }
 
   @override

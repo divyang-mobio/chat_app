@@ -62,7 +62,6 @@ class BlocClass extends StatelessWidget {
       BlocProvider<BottomNavigationBloc>(
           create: (context) =>
               BottomNavigationBloc()..add(OnChangeBar(index: 0))),
-      BlocProvider<ReplyBloc>(create: (context) => ReplyBloc()),
       BlocProvider<VisibleContainerBloc>(
           create: (context) =>
               VisibleContainerBloc()..add(ShowContainer(isVis: true)))

@@ -192,6 +192,26 @@ class DatabaseService {
         .transform(Utils.transformer(UserModel.fromJson));
   }
 
+  editMessage(
+      {required String id,
+      required String otherId,
+      required bool isGroup,
+      required String editMessage}) {
+    if (isGroup) {
+      groupCollection
+          .doc(id)
+          .collection('message')
+          .doc(otherId)
+          .update({'message': editMessage});
+    } else {
+      chatsCollection
+          .doc(id)
+          .collection('message')
+          .doc(otherId)
+          .update({'message': editMessage});
+    }
+  }
+
   deleteMessage(
       {required String id, required String otherId, required bool isGroup}) {
     if (isGroup) {
