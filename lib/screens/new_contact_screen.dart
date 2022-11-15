@@ -17,7 +17,7 @@ class _SelectContactScreenState extends State<SelectContactScreen> {
     return BlocBuilder<NewContactBloc, NewContactState>(
       builder: (context, state) {
         if (state is NewContactInitial) {
-          return shimmerLoading();
+          return shimmerLoading(context);
         } else if (state is NewContactLoaded) {
           return userModelStream(context,
               data: state.newContactData, isChatScreen: false);

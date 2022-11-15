@@ -25,7 +25,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     return BlocBuilder<GetUserDataBloc, GetUserDataState>(
       builder: (context, state) {
         if (state is GetUserDataInitial) {
-          return shimmerLoading();
+          return shimmerLoading(context);
         } else if (state is GetUserDataLoaded) {
           return userModelStream(context,
               data: state.chatData, isChatScreen: true);
@@ -40,13 +40,13 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     return BlocBuilder<ChatListBloc, ChatListState>(
       builder: (context, state) {
         if (state is ChatListInitial) {
-          return shimmerLoading();
+          return shimmerLoading(context);
         } else if (state is ChatListLoaded) {
           return StreamBuilder<List<MessageDetailModel>>(
               stream: state.chatData,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return shimmerLoading();
+                  return shimmerLoading(context);
                 } else {
                   if (snapshot.data != null) {
                     List<String>? data = snapshot.data

@@ -58,8 +58,7 @@ class _StatusScreenState extends State<StatusScreen> {
           BlocBuilder<GetStatusBloc, GetStatusState>(
             builder: (context, state) {
               if (state is GetStatusInitial) {
-                return MediaQuery.removePadding(
-                    removeTop: true, context: context, child: shimmerLoading());
+                return shimmerLoading(context);
               } else if (state is GetStatusLoaded) {
                 return MediaQuery.removePadding(
                   removeTop: true,
@@ -103,13 +102,12 @@ class _StatusScreenState extends State<StatusScreen> {
                             ),
                           );
                         } else {
-                          return shimmerLoading();
+                          return shimmerLoading(context);
                         }
                       }),
                 );
               } else {
-                return MediaQuery.removePadding(
-                    removeTop: true, context: context, child: shimmerLoading());
+                return shimmerLoading(context);
               }
             },
           )

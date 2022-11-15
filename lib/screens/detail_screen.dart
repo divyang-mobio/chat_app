@@ -45,7 +45,7 @@ class _DetailScreenState extends State<DetailScreen> {
             BlocBuilder<UserDetailBloc, UserDetailState>(
                 builder: (context, state) {
                   if (state is UserDetailInitial) {
-                    return shimmerLoading(length: 4);
+                    return shimmerLoading(context, length: 4);
                   } else if (state is UserDetailLoaded) {
                     return userModelStream(context,
                         data: state.userDetail,

@@ -65,7 +65,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
         body: BlocBuilder<CreateGroupBloc, CreateGroupState>(
           builder: (context, state) {
             if (state is CreateGroupInitial) {
-              return shimmerLoading();
+              return shimmerLoading(context);
             } else if (state is CreateGroupLoaded) {
               return userModelStream(context,
                   data: state.data, isChatScreen: true, isGroupScreen: true);

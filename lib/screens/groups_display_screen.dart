@@ -19,7 +19,7 @@ class _GroupDisplayScreenState extends State<GroupDisplayScreen> {
     return BlocBuilder<GetGroupBloc, GetGroupState>(
       builder: (context, state) {
         if (state is GetGroupInitial) {
-          return shimmerLoading();
+          return shimmerLoading(context);
         } else if (state is GetGroupLoaded) {
           return MediaQuery.removePadding(
             removeTop: true,
@@ -37,7 +37,7 @@ class _GroupDisplayScreenState extends State<GroupDisplayScreen> {
                                       snapshot.data?[index] as GroupModel),
                             ));
                   } else {
-                    return shimmerLoading();
+                    return shimmerLoading(context);
                   }
                 }),
           );

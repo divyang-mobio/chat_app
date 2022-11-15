@@ -51,7 +51,7 @@ groupListViewListView(context,
   return BlocBuilder<AddDataGroupBloc, AddDataGroupState>(
     builder: (context, state) {
       if (state is AddDataGroupInitial) {
-        return shimmerLoading();
+        return shimmerLoading(context);
       } else if (state is AddDataGroupLoading) {
         return ListView.builder(
           physics: const NeverScrollableScrollPhysics(),

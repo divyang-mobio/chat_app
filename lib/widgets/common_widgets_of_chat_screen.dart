@@ -35,7 +35,7 @@ MediaQuery userModelStream(context,
                 isAdmin: isAdmin,
                 isGroupScreen: isGroupScreen);
           } else {
-            return shimmerLoading();
+            return shimmerLoading(context);
           }
         }),
   );
@@ -82,9 +82,13 @@ SingleChildScrollView contactBody(context,
   );
 }
 
-Shimmer shimmerLoading({int length = 20}) {
-  return Shimmer.fromColors(
-      baseColor: ColorResources().shimmerBase,
-      highlightColor: ColorResources().shimmerHighlight,
-      child: listView(userData: [], isLoading: true, length: length));
+MediaQuery shimmerLoading(context, {int length = 20}) {
+  return MediaQuery.removePadding(
+    removeTop: true,
+    context: context,
+    child: Shimmer.fromColors(
+        baseColor: ColorResources().shimmerBase,
+        highlightColor: ColorResources().shimmerHighlight,
+        child: listView(userData: [], isLoading: true, length: length)),
+  );
 }
