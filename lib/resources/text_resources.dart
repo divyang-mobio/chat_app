@@ -78,4 +78,5 @@ class TextResources {
   final String editMessageButton = 'Edit Text';
   final String uploadStatusButton = 'Upload Status';
   final String admin = '~Admin';
+  final String todayMessageHeader = 'Today';
 }

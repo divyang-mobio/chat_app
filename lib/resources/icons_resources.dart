@@ -26,4 +26,5 @@ class IconResources {
   final deleteMessageButton = Icons.delete;
   final editMessageButton = Icons.edit;
   final uploadStatusButton = Icons.data_saver_off;
+  final cancelEditTextField = Icons.cancel_outlined;
 }

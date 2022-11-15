@@ -1,4 +1,3 @@
-import 'package:chat_app/controllers/chat_bloc/chat_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -33,12 +32,12 @@ class MessageModel {
 
   static String _fromJson(Timestamp date) {
     DateTime dataTime = DateTime.parse(date.toDate().toString());
-    String yourDateTime = DateFormat('MM/dd hh:mm').format(dataTime);
+    String yourDateTime = DateFormat('MM/ddTkk:mm').format(dataTime);
     return yourDateTime;
   }
 
-  static DateTime _toJson(String date) {
-    final timeStamp = DateTime.now();
+  static int _toJson(String date) {
+    final timeStamp = DateTime.now().millisecondsSinceEpoch;
     return timeStamp;
   }
 

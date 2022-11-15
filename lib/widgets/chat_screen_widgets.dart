@@ -1,5 +1,6 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:chat_app/controllers/edit_text_bloc/edit_text_bloc.dart';
+import 'package:grouped_list/grouped_list.dart';
 import 'text_to_speech_widget.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -26,22 +27,52 @@ showMessage({String? id, required bool isGroup}) {
             final message = snapshot.data;
             return message == null
                 ? Container()
-                : ListView.builder(
+                : GroupedListView<dynamic, String>(
                     reverse: true,
-                    itemCount: message.length,
-                    itemBuilder: (context, index) {
-                      return (message[index].uid ==
+                    elements: message,
+                    groupBy: (element) {
+                      return element.data
+                          .substring(0, element.data.indexOf('T'));
+                    },
+                    itemComparator: (item1, item2) =>
+                        item1.data.compareTo(item2.data),
+                    order: GroupedListOrder.DESC,
+                    useStickyGroupSeparators: false,
+                    groupSeparatorBuilder: (String value) => Container(
+                      color: Colors.transparent,
+                      height: 40,
+                      child: Align(
+                        child: Container(
+                          width: 120,
+                          decoration: BoxDecoration(
+                              color: ColorResources().messageHeaderBubbleBG,
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(10.0))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                                (value ==
+                                        "${DateTime.now().month}/${DateTime.now().day}")
+                                    ? TextResources().todayMessageHeader
+                                    : value,
+                                textAlign: TextAlign.center),
+                          ),
+                        ),
+                      ),
+                    ),
+                    itemBuilder: (c, element) {
+                      return (element.uid ==
                               (RepositoryProvider.of<FirebaseAuth>(context)
                                       .currentUser
                                       ?.uid)
                                   .toString())
                           ? showMessageWidget(context,
-                              message: message[index],
+                              message: element,
                               id: id,
                               isMe: true,
                               isGroup: isGroup)
                           : showMessageWidget(context,
-                              message: message[index],
+                              message: element,
                               id: id,
                               isMe: false,
                               isGroup: isGroup);
@@ -165,7 +196,7 @@ chatBubble(context,
         ),
         Padding(
           padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Text(message.data,
+          child: Text(message.data.split('T').last,
               style: TextStyle(color: ColorResources().chatScreenDate)),
         ),
       ]);
@@ -376,11 +407,11 @@ class _NewMessageSendState extends State<NewMessageSend> {
         _controller.text = state.messageModel.message;
         return Row(children: [
           editTextButton(
-              iconData: Icons.cancel_outlined,
+              iconData: IconResources().cancelEditTextField,
               onTap: () {
                 BlocProvider.of<EditTextBloc>(context).add(CancelEditText());
               },
-              bgColor: Colors.red),
+              bgColor: ColorResources().cancelEditTextFieldBG),
           const SizedBox(width: 10),
           Expanded(child: textField(isReplay: isReply)),
           const SizedBox(width: 10),

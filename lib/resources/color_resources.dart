@@ -43,4 +43,6 @@ class ColorResources {
   final Color uploadStatusButtonIcon = Colors.white;
   final Color uploadStatusButtonBg = Colors.grey;
   final Color shimmerContainer = Colors.grey;
+  final Color cancelEditTextFieldBG = Colors.red;
+  final Color messageHeaderBubbleBG =  Colors.yellow.shade100;
 }
