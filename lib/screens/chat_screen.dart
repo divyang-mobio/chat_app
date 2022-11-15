@@ -1,4 +1,5 @@
 import '../controllers/chat_bloc/chat_bloc.dart';
+import '../controllers/get_message_bloc/get_message_bloc.dart';
 import '../models/group_model.dart';
 import '../resources/resource.dart';
 import 'package:flutter/material.dart';
@@ -53,22 +54,6 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Column showBody({String? id}) {
-    return Column(
-      children: [
-        Expanded(
-            child: Container(
-          child: showMessage(id: id, isGroup: false),
-        )),
-        NewMessageSend(
-          otherId: widget.userModel.uid,
-          id: id,
-          isGroup: false,
-        )
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,9 +80,11 @@ class _ChatScreenState extends State<ChatScreen> {
         body: BlocBuilder<ChatBloc, ChatState>(
           builder: (context, state) {
             if (state is ChatInitial) {
-              return showBody();
+              return showBody(isGroup: false);
             } else if (state is HaveID) {
-              return showBody(id: state.id);
+              BlocProvider.of<GetMessageBloc>(context)
+                  .add(MessageId(id: state.id, isGroup: false));
+              return showBody(id: state.id, isGroup: false);
             } else {
               return Center(child: Text(TextResources().blocError));
             }
@@ -116,22 +103,14 @@ class GroupChatScreen extends StatefulWidget {
 }
 
 class _GroupChatScreenState extends State<GroupChatScreen> {
-  Column showBody({String? id}) {
-    return Column(
-      children: [
-        Expanded(
-            child: Container(
-          child: showMessage(id: id, isGroup: true),
-        )),
-        NewMessageSend(
-          otherId: '',
-          id: id,
-          isGroup: true,
-        )
-      ],
-    );
-  }
 
+  @override
+  void initState() {
+    super.initState();
+
+    BlocProvider.of<GetMessageBloc>(context)
+        .add(MessageId(id: widget.groupModel.id, isGroup: true));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,6 +134,22 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                       style: const TextStyle(fontWeight: FontWeight.w600)),
                   textColor: ColorResources().appBarIconTextColor),
             )),
-        body: showBody(id: widget.groupModel.id));
+        body: showBody(id: widget.groupModel.id, isGroup: true));
   }
+}
+
+Column showBody({String? id, required bool isGroup}) {
+  return Column(
+    children: [
+      Expanded(
+          child: Container(
+        child: showMessage(id: id, isGroup: isGroup),
+      )),
+      NewMessageSend(
+        otherId: '',
+        id: id,
+        isGroup: isGroup,
+      )
+    ],
+  );
 }

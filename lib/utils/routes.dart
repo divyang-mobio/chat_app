@@ -1,4 +1,5 @@
 import '../controllers/edit_text_bloc/edit_text_bloc.dart';
+import '../controllers/get_message_bloc/get_message_bloc.dart';
 import '../controllers/group_bloc/user_detail_bloc.dart';
 import '../controllers/reply_bloc/reply_bloc.dart';
 import '../models/group_model.dart';
@@ -84,6 +85,9 @@ class RouteGenerator {
                     BlocProvider<ReplyBloc>(
                       create: (context) => ReplyBloc(),
                     ),
+                    BlocProvider<GetMessageBloc>(
+                      create: (context) => GetMessageBloc(),
+                    ),
                     BlocProvider<EditTextBloc>(
                       create: (context) => EditTextBloc(),
                     )
@@ -97,6 +101,9 @@ class RouteGenerator {
                   providers: [
                     BlocProvider<ReplyBloc>(
                       create: (context) => ReplyBloc(),
+                    ),
+                    BlocProvider<GetMessageBloc>(
+                      create: (context) => GetMessageBloc(),
                     ),
                     BlocProvider<EditTextBloc>(
                       create: (context) => EditTextBloc(),

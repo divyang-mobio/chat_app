@@ -35,8 +35,8 @@ class MessageModel {
     return yourDateTime;
   }
 
-  static int _toJson(String date) {
-    final timeStamp = DateTime.now().millisecondsSinceEpoch;
+  static DateTime _toJson(String date) {
+    final timeStamp = DateTime.now();
     return timeStamp;
   }
 
