@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/appbar_model.dart';
 import '../models/bottom_sheet_model.dart';
 import '../models/popup_menu_item_model.dart';
+import '../models/reaction_model.dart';
 import '../widgets/pop_up_menu.dart';
 
 part 'text_resources.dart';

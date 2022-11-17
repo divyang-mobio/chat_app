@@ -9,6 +9,7 @@ part 'message_model.g.dart';
 class MessageModel {
   String message, name, uid, id;
   MessageModel? reply;
+  List<LikeModel>? like;
   @JsonKey(fromJson: _fromJson, toJson: _toJson, name: 'time')
   String data;
   @JsonKey(fromJson: _typeFromJson, toJson: _typeToJson)
@@ -56,6 +57,54 @@ class MessageModel {
             ? 'image'
             : 'video';
     return type;
+  }
+}
+
+@JsonSerializable()
+class LikeModel {
+  String id;
+  @JsonKey(toJson: _typeToJson, fromJson: _typeFromJson)
+  ReactionType type;
+
+  LikeModel({required this.id, required this.type});
+
+  factory LikeModel.fromJson(Map<String, dynamic> json) =>
+      _$LikeModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LikeModelToJson(this);
+
+  static _typeFromJson(String data) {
+    switch (data) {
+      case 'thumbUp':
+        return ReactionType.thumbUp;
+      case 'pray':
+        return ReactionType.pray;
+      case 'sad':
+        return ReactionType.sad;
+      case 'wow':
+        return ReactionType.wow;
+      case 'love':
+        return ReactionType.love;
+      case 'happy':
+        return ReactionType.happy;
+    }
+  }
+
+  static _typeToJson(ReactionType data) {
+    switch (data) {
+      case ReactionType.thumbUp:
+        return 'thumbUp';
+      case ReactionType.pray:
+        return 'pray';
+      case ReactionType.sad:
+        return 'sad';
+      case ReactionType.wow:
+        return 'wow';
+      case ReactionType.love:
+        return 'love';
+      case ReactionType.happy:
+        return 'happy';
+    }
   }
 }
 

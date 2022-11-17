@@ -87,6 +87,15 @@ List<AppBarModel> appbarModel = [
   ])
 ];
 
+List<ReactionModel> reactionList = [
+  ReactionModel(reaction: '\u{1F44D}', type: ReactionType.thumbUp),
+  ReactionModel(reaction: '\u{2764}', type: ReactionType.love),
+  ReactionModel(reaction: '\u{1F923}', type: ReactionType.happy),
+  ReactionModel(reaction: '\u{1F62E}', type: ReactionType.wow),
+  ReactionModel(reaction: '\u{1F622}', type: ReactionType.sad),
+  ReactionModel(reaction: '\u{1F64F}', type: ReactionType.pray)
+];
+
 enum SendDataType {
   image,
   text,
@@ -95,3 +104,5 @@ enum SendDataType {
 }
 
 enum NavigatorType { info, admin, remove }
+
+enum ReactionType { thumbUp, love, happy, wow, sad, pray }

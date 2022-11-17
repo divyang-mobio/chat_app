@@ -212,6 +212,48 @@ class DatabaseService {
     }
   }
 
+  likeMessage(
+      {required String id,
+      required String otherId,
+      required MessageModel messageModel,
+      required String uid,
+      required int index,
+      required ReactionType type,
+      required bool isGroup}) {
+    if (index != -1) {
+      if (isGroup) {
+        groupCollection.doc(id).collection('message').doc(otherId).update({
+          'like': FieldValue.arrayRemove([
+            LikeModel(
+                    id: (messageModel.like?[index].id).toString(),
+                    type: messageModel.like?[index].type as ReactionType)
+                .toJson()
+          ]),
+        });
+      } else {
+        chatsCollection.doc(id).collection('message').doc(otherId).update({
+          'like': FieldValue.arrayRemove([
+            LikeModel(
+                    id: (messageModel.like?[index].id).toString(),
+                    type: messageModel.like?[index].type as ReactionType)
+                .toJson()
+          ]),
+        });
+      }
+    }
+    if (isGroup) {
+      groupCollection.doc(id).collection('message').doc(otherId).set({
+        'like':
+            FieldValue.arrayUnion([LikeModel(id: uid, type: type).toJson()]),
+      }, SetOptions(merge: true));
+    } else {
+      chatsCollection.doc(id).collection('message').doc(otherId).set({
+        'like':
+            FieldValue.arrayUnion([LikeModel(id: uid, type: type).toJson()]),
+      }, SetOptions(merge: true));
+    }
+  }
+
   deleteMessage(
       {required String id, required String otherId, required bool isGroup}) {
     if (isGroup) {
@@ -219,13 +261,13 @@ class DatabaseService {
           .doc(id)
           .collection('message')
           .doc(otherId)
-          .update({'message': "This Message is Deleted"});
+          .update({'message': "This Message is Deleted", 'type': 'text'});
     } else {
       chatsCollection
           .doc(id)
           .collection('message')
           .doc(otherId)
-          .update({'message': "This Message is Deleted"});
+          .update({'message': "This Message is Deleted", 'type': 'text'});
     }
   }
 
@@ -241,6 +283,7 @@ class DatabaseService {
       'message': message,
       'uid': uid,
       'id': '',
+      'like': null,
       'reply': (messageModel == null) ? null : messageModel.toJson(),
       'type': (type == SendDataType.text)
           ? 'text'
@@ -264,6 +307,7 @@ class DatabaseService {
       'message': message,
       'uid': uid,
       'id': '',
+      'like': null,
       'reply': (messageModel == null) ? null : messageModel.toJson(),
       'type': (type == SendDataType.text)
           ? 'text'

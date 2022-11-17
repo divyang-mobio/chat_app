@@ -138,7 +138,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   }
 }
 
-Column showBody({String? id, required bool isGroup}) {
+ showBody({String? id, required bool isGroup}) {
   return Column(
     children: [
       Expanded(

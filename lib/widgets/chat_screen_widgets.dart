@@ -2,15 +2,15 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:chat_app/controllers/edit_text_bloc/edit_text_bloc.dart';
 import 'package:grouped_list/grouped_list.dart';
 import '../controllers/get_message_bloc/get_message_bloc.dart';
+import '../controllers/like_message_bloc/like_message_bloc.dart';
+import '../utils/chat_menu.dart';
 import 'text_to_speech_widget.dart';
-import 'package:focused_menu/focused_menu.dart';
-import 'package:focused_menu/modals.dart';
+import 'package:flutter/material.dart';
 import '../controllers/reply_bloc/reply_bloc.dart';
 import '../controllers/speech_to_text_bloc/speech_to_text_bloc.dart';
 import '../controllers/video_thumbnail_bloc/video_thumbnail_bloc.dart';
 import 'bottom_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../controllers/chat_bloc/chat_bloc.dart';
 import '../models/message_model.dart';
@@ -93,61 +93,77 @@ SizedBox messageTimeContainer({required String value}) {
   );
 }
 
-FocusedMenuHolder showPopUpForDelete(context,
+DeepMenus showPopUpForDelete(context,
     {required MessageModel message,
     required String id,
     required bool isMe,
     required bool isGroup}) {
-  return FocusedMenuHolder(
-      onPressed: () {},
-      menuItems: isMe
-          ? [
-              FocusedMenuItem(
-                  trailingIcon: Icon(IconResources().deleteMessageButton),
-                  title: Text(TextResources().deleteMessageButton),
-                  onPressed: () {
-                    DatabaseService().deleteMessage(
-                        isGroup: isGroup, otherId: message.id, id: id);
-                  }),
-              FocusedMenuItem(
-                    trailingIcon: Icon(IconResources().replyMessageButton),
-                  title: Text(TextResources().replyMessageButton),
-                  onPressed: () {
-                    BlocProvider.of<ReplyBloc>(context).add(ReplyMessage(
-                        messageModel: MessageModel(
-                            message: message.message,
-                            name: message.name,
-                            uid: message.uid,
-                            id: message.id,
-                            data: message.data,
-                            type: message.type)));
-                  }),
-              if (message.type == SendDataType.text)
-                FocusedMenuItem(
-                    trailingIcon: Icon(IconResources().editMessageButton),
-                    title: Text(TextResources().editMessageButton),
-                    onPressed: () {
-                      BlocProvider.of<EditTextBloc>(context)
-                          .add(EditText(messageModel: message, id: id));
-                    })
-            ]
-          : [
-              FocusedMenuItem(
-                    trailingIcon: Icon(IconResources().replyMessageButton),
-                  title: Text(TextResources().replyMessageButton),
-                  onPressed: () {
-                    BlocProvider.of<ReplyBloc>(context).add(ReplyMessage(
-                        messageModel: MessageModel(
-                            message: message.message,
-                            name: message.name,
-                            uid: message.uid,
-                            id: message.id,
-                            data: message.data,
-                            type: message.type)));
-                  }),
-            ],
-      child:
-          chatBubble(context, message: message, isMe: isMe, isGroup: isGroup));
+  return DeepMenus(
+      headMenu: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30), color: Colors.white),
+        height: 50,
+        child: Material(
+          color: Colors.transparent,
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            scrollDirection: Axis.horizontal,
+            children: reactionList
+                .map(
+                  (e) => TextButton(
+                      onPressed: () {
+                        BlocProvider.of<LikeMessageBloc>(context).add(
+                            LikeMessageData(
+                                messageModel: message,
+                                type: e.type,
+                                id: id,
+                                isGroup: isGroup));
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        e.reaction,
+                        style: const TextStyle(fontSize: 30),
+                      )),
+                )
+                .toList(),
+          ),
+        ),
+      ),
+      bodyMenu: DeepMenuList(items: [
+        if (isMe)
+          DeepMenuItem(
+              icon: Icon(IconResources().deleteMessageButton),
+              label: Text(TextResources().deleteMessageButton),
+              onTap: () {
+                DatabaseService().deleteMessage(
+                    isGroup: isGroup, otherId: message.id, id: id);
+              }),
+        DeepMenuItem(
+            icon: Icon(IconResources().replyMessageButton),
+            label: Text(TextResources().replyMessageButton),
+            onTap: () {
+              BlocProvider.of<ReplyBloc>(context).add(ReplyMessage(
+                  messageModel: MessageModel(
+                      message: message.message,
+                      name: message.name,
+                      uid: message.uid,
+                      id: message.id,
+                      data: message.data,
+                      type: message.type)));
+            }),
+        if (message.type == SendDataType.text && isMe)
+          DeepMenuItem(
+              icon: Icon(IconResources().editMessageButton),
+              label: Text(TextResources().editMessageButton),
+              onTap: () {
+                BlocProvider.of<EditTextBloc>(context)
+                    .add(EditText(messageModel: message, id: id));
+              })
+      ]),
+      child: SingleChildScrollView(
+        child:
+            chatBubble(context, message: message, isMe: isMe, isGroup: isGroup),
+      ));
 }
 
 showMessageWidget(context,
@@ -165,7 +181,10 @@ showMessageWidget(context,
                 ? showPopUpForDelete(context,
                     message: messageModel, isMe: isMe, isGroup: isGroup, id: id)
                 : showPopUpForDelete(context,
-                    message: messageModel, isMe: isMe, isGroup: isGroup, id: id)),
+                    message: messageModel,
+                    isMe: isMe,
+                    isGroup: isGroup,
+                    id: id)),
         if (!isMe) const Flexible(flex: 1, child: SizedBox()),
       ]);
 }
@@ -174,64 +193,51 @@ chatBubble(context,
     {required MessageModel message,
     required bool isMe,
     required bool isGroup}) {
-  return GestureDetector(
-    onTap: () {
-      BlocProvider.of<ReplyBloc>(context).add(ReplyMessage(
-          messageModel: MessageModel(
-              message: message.message,
-              name: message.name,
-              uid: message.uid,
-              id: message.id,
-              data: message.data,
-              type: message.type)));
-    },
-    child: Column(
-        crossAxisAlignment:
-            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding:
-                EdgeInsets.all((message.type == SendDataType.text) ? 10 : 4),
-            margin: const EdgeInsets.only(right: 10, left: 10, top: 10),
-            decoration: BoxDecoration(
-                color: isMe
-                    ? ColorResources().chatBubbleYourSideBG
-                    : Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(10),
-                    topRight: const Radius.circular(10),
-                    bottomLeft: Radius.circular(isMe ? 10 : 0),
-                    bottomRight: Radius.circular(isMe ? 0 : 10))),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              if (isGroup && !isMe)
-                Text(message.name,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        color: ColorResources().chatBubbleSenderName)),
-              if (message.reply != null)
-                Column(children: [
-                  replyCard(context,
-                      messageModel: message.reply as MessageModel,
-                      isChatBubble: true),
-                  const SizedBox(height: 10),
-                ]),
-              (message.type == SendDataType.text)
-                  ? textMessage(isMe: isMe, text: message.message)
-                  : (message.type == SendDataType.image)
-                      ? networkImages(link: message.message)
-                      : BlocProvider<VideoThumbnailBloc>(
-                          create: (context) => VideoThumbnailBloc(),
-                          child: VideoThumbNail(link: message.message))
-            ]),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: Text(message.data.split('T').last,
-                style: TextStyle(color: ColorResources().chatScreenDate)),
-          ),
-        ]),
-  );
+  return Column(
+      crossAxisAlignment:
+          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.all((message.type == SendDataType.text) ? 10 : 4),
+          margin: const EdgeInsets.only(right: 10, left: 10, top: 10),
+          decoration: BoxDecoration(
+              color: isMe
+                  ? ColorResources().chatBubbleYourSideBG
+                  : Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(10),
+                  topRight: const Radius.circular(10),
+                  bottomLeft: Radius.circular(isMe ? 10 : 0),
+                  bottomRight: Radius.circular(isMe ? 0 : 10))),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            if (isGroup && !isMe)
+              Text(message.name,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      color: ColorResources().chatBubbleSenderName)),
+            if (message.reply != null)
+              Column(children: [
+                replyCard(context,
+                    messageModel: message.reply as MessageModel,
+                    isChatBubble: true),
+                const SizedBox(height: 10),
+              ]),
+            (message.type == SendDataType.text)
+                ? textMessage(isMe: isMe, text: message.message)
+                : (message.type == SendDataType.image)
+                    ? networkImages(link: message.message)
+                    : BlocProvider<VideoThumbnailBloc>(
+                        create: (context) => VideoThumbnailBloc(),
+                        child: VideoThumbNail(link: message.message))
+          ]),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10),
+          child: Text(message.data.split('T').last,
+              style: TextStyle(color: ColorResources().chatScreenDate)),
+        ),
+      ]);
 }
 
 Text textMessage({required String text, required bool isMe}) {
@@ -242,7 +248,7 @@ Text textMessage({required String text, required bool isMe}) {
               : ColorResources().chatBubbleOtherSideText));
 }
 
-Container replyCard(context,
+replyCard(context,
     {required MessageModel messageModel, required bool isChatBubble}) {
   return Container(
     decoration: BoxDecoration(
@@ -258,8 +264,7 @@ Container replyCard(context,
             bottomLeft:
                 isChatBubble ? const Radius.circular(10) : Radius.zero)),
     child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      SingleChildScrollView(
-          child: Padding(
+      Padding(
         padding: EdgeInsets.only(
             left: isChatBubble ? 8 : 18,
             right: 8,
@@ -267,9 +272,10 @@ Container replyCard(context,
             bottom: isChatBubble ? 8 : 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(messageModel.name,
-              style: const TextStyle(fontWeight: FontWeight.bold)),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              overflow: TextOverflow.clip),
           (messageModel.type == SendDataType.text)
-              ? Text(messageModel.message, overflow: TextOverflow.ellipsis)
+              ? Text(messageModel.message, overflow: TextOverflow.clip)
               : (messageModel.type == SendDataType.image)
                   ? SizedBox(
                       height: 100,
@@ -282,7 +288,7 @@ Container replyCard(context,
                           width: 100,
                           child: VideoThumbNail(link: messageModel.message)))
         ]),
-      )),
+      ),
       if (!isChatBubble)
         IconButton(
             onPressed: () {

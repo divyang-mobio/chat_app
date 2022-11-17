@@ -5,8 +5,8 @@ import '../controllers/chat_list/chat_list_bloc.dart';
 import '../controllers/chat_list/get_user_data_bloc.dart';
 import '../controllers/group_bloc/create_group_bloc.dart';
 import '../controllers/group_bloc/get_group_bloc.dart';
+import '../controllers/like_message_bloc/like_message_bloc.dart';
 import '../controllers/login_Bloc/set_otp_field_bloc.dart';
-import '../controllers/reply_bloc/reply_bloc.dart';
 import '../controllers/show_Status_bloc/show_status_bloc.dart';
 import '../controllers/speech_to_text_bloc/speech_to_text_bloc.dart';
 import '../controllers/upload_status_bloc/upload_status_bloc.dart';
@@ -56,6 +56,8 @@ class BlocClass extends StatelessWidget {
       BlocProvider<GetUserDataBloc>(create: (context) => GetUserDataBloc()),
       BlocProvider<GetGroupBloc>(
           create: (context) => GetGroupBloc()..add(GetGroupsId())),
+      BlocProvider<LikeMessageBloc>(
+          create: (context) => LikeMessageBloc()),
       BlocProvider<SpeechToTextBloc>(
           create: (context) =>
               SpeechToTextBloc()..add(IsListening(isListening: false))),
