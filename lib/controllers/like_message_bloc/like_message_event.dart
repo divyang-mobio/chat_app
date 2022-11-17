@@ -14,3 +14,14 @@ class LikeMessageData extends LikeMessageEvent {
       required this.id,
       required this.isGroup});
 }
+
+class DeleteLikeMessageData extends LikeMessageEvent {
+  MessageModel messageModel;
+  String id;
+  bool isGroup;
+
+  DeleteLikeMessageData(
+      {required this.messageModel,
+      required this.id,
+      required this.isGroup});
+}

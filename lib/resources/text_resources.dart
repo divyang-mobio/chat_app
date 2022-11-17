@@ -80,4 +80,10 @@ class TextResources {
   final String uploadStatusButton = 'Upload Status';
   final String admin = '~Admin';
   final String todayMessageHeader = 'Today';
+  final String thumbUpReaction = '\u{1F44D}';
+  final String loveReaction = '\u{2764}';
+  final String happyReaction = '\u{1F923}';
+  final String wowReaction = '\u{1F62E}';
+  final String sadReaction = '\u{1F622}';
+  final String prayReaction = '\u{1F64F}';
 }

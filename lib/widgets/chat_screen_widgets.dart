@@ -93,7 +93,7 @@ SizedBox messageTimeContainer({required String value}) {
   );
 }
 
-DeepMenus showPopUpForDelete(context,
+DeepMenus showPopUpForMenu(context,
     {required MessageModel message,
     required String id,
     required bool isMe,
@@ -101,7 +101,8 @@ DeepMenus showPopUpForDelete(context,
   return DeepMenus(
       headMenu: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30), color: Colors.white),
+            borderRadius: BorderRadius.circular(30),
+            color: ColorResources().messageReactionBubbleBG),
         height: 50,
         child: Material(
           color: Colors.transparent,
@@ -160,10 +161,8 @@ DeepMenus showPopUpForDelete(context,
                     .add(EditText(messageModel: message, id: id));
               })
       ]),
-      child: SingleChildScrollView(
-        child:
-            chatBubble(context, message: message, isMe: isMe, isGroup: isGroup),
-      ));
+      child: chatBubble(context,
+          message: message, isMe: isMe, isGroup: isGroup, id: id));
 }
 
 showMessageWidget(context,
@@ -178,9 +177,9 @@ showMessageWidget(context,
         Flexible(
             flex: 2,
             child: isMe
-                ? showPopUpForDelete(context,
+                ? showPopUpForMenu(context,
                     message: messageModel, isMe: isMe, isGroup: isGroup, id: id)
-                : showPopUpForDelete(context,
+                : showPopUpForMenu(context,
                     message: messageModel,
                     isMe: isMe,
                     isGroup: isGroup,
@@ -192,52 +191,98 @@ showMessageWidget(context,
 chatBubble(context,
     {required MessageModel message,
     required bool isMe,
+    required String id,
     required bool isGroup}) {
-  return Column(
-      crossAxisAlignment:
-          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.all((message.type == SendDataType.text) ? 10 : 4),
-          margin: const EdgeInsets.only(right: 10, left: 10, top: 10),
-          decoration: BoxDecoration(
-              color: isMe
-                  ? ColorResources().chatBubbleYourSideBG
-                  : Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(10),
-                  topRight: const Radius.circular(10),
-                  bottomLeft: Radius.circular(isMe ? 10 : 0),
-                  bottomRight: Radius.circular(isMe ? 0 : 10))),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            if (isGroup && !isMe)
-              Text(message.name,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      color: ColorResources().chatBubbleSenderName)),
-            if (message.reply != null)
-              Column(children: [
-                replyCard(context,
-                    messageModel: message.reply as MessageModel,
-                    isChatBubble: true),
-                const SizedBox(height: 10),
-              ]),
-            (message.type == SendDataType.text)
-                ? textMessage(isMe: isMe, text: message.message)
-                : (message.type == SendDataType.image)
-                    ? networkImages(link: message.message)
-                    : BlocProvider<VideoThumbnailBloc>(
-                        create: (context) => VideoThumbnailBloc(),
-                        child: VideoThumbNail(link: message.message))
+  return Stack(
+    alignment: isMe
+        ? AlignmentDirectional.bottomEnd
+        : AlignmentDirectional.bottomStart,
+    children: [
+      Column(
+          crossAxisAlignment:
+              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding:
+                  EdgeInsets.all((message.type == SendDataType.text) ? 10 : 4),
+              margin: const EdgeInsets.only(right: 10, left: 10, top: 10),
+              decoration: BoxDecoration(
+                  color: isMe
+                      ? ColorResources().chatBubbleYourSideBG
+                      : Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(10),
+                      topRight: const Radius.circular(10),
+                      bottomLeft: Radius.circular(isMe ? 10 : 0),
+                      bottomRight: Radius.circular(isMe ? 0 : 10))),
+              child: Wrap(
+                  alignment: isMe ? WrapAlignment.end : WrapAlignment.start,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (isGroup && !isMe)
+                      Text(message.name,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              color: ColorResources().chatBubbleSenderName)),
+                    if (message.reply != null)
+                      Column(children: [
+                        replyCard(context,
+                            messageModel: message.reply as MessageModel,
+                            isChatBubble: true),
+                        const SizedBox(height: 10),
+                      ]),
+                    (message.type == SendDataType.text)
+                        ? textMessage(isMe: isMe, text: message.message)
+                        : (message.type == SendDataType.image)
+                            ? networkImages(link: message.message)
+                            : BlocProvider<VideoThumbnailBloc>(
+                                create: (context) => VideoThumbnailBloc(),
+                                child: VideoThumbNail(link: message.message)),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      child: Text(message.data.split('T').last,
+                          style: TextStyle(
+                              color: ColorResources().chatScreenDate)),
+                    ),
+                  ]),
+            ),
+            if (message.like != null && message.like!.isNotEmpty)
+              const SizedBox(height: 15)
           ]),
-        ),
+      if (message.like != null && message.like!.isNotEmpty)
         Padding(
           padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Text(message.data.split('T').last,
-              style: TextStyle(color: ColorResources().chatScreenDate)),
+          child: GestureDetector(
+            onTap: () {
+              BlocProvider.of<LikeMessageBloc>(context).add(
+                  DeleteLikeMessageData(
+                      messageModel: message, id: id, isGroup: isGroup));
+            },
+            child: Text(
+              reactionDisplay(message.like?[0].type as ReactionType),
+              style: const TextStyle(fontSize: 20),
+            ),
+          ),
         ),
-      ]);
+    ],
+  );
+}
+
+reactionDisplay(ReactionType type) {
+  switch (type) {
+    case ReactionType.thumbUp:
+      return TextResources().thumbUpReaction;
+    case ReactionType.pray:
+      return TextResources().prayReaction;
+    case ReactionType.sad:
+      return TextResources().sadReaction;
+    case ReactionType.wow:
+      return TextResources().wowReaction;
+    case ReactionType.love:
+      return TextResources().loveReaction;
+    case ReactionType.happy:
+      return TextResources().happyReaction;
+  }
 }
 
 Text textMessage({required String text, required bool isMe}) {

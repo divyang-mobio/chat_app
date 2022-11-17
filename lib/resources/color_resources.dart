@@ -45,4 +45,5 @@ class ColorResources {
   final Color shimmerContainer = Colors.grey;
   final Color cancelEditTextFieldBG = Colors.red;
   final Color messageHeaderBubbleBG =  Colors.yellow.shade100;
+  final Color messageReactionBubbleBG =  Colors.white;
 }

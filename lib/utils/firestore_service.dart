@@ -216,6 +216,7 @@ class DatabaseService {
       {required String id,
       required String otherId,
       required MessageModel messageModel,
+      required isDelete,
       required String uid,
       required int index,
       required ReactionType type,
@@ -241,16 +242,18 @@ class DatabaseService {
         });
       }
     }
-    if (isGroup) {
-      groupCollection.doc(id).collection('message').doc(otherId).set({
-        'like':
-            FieldValue.arrayUnion([LikeModel(id: uid, type: type).toJson()]),
-      }, SetOptions(merge: true));
-    } else {
-      chatsCollection.doc(id).collection('message').doc(otherId).set({
-        'like':
-            FieldValue.arrayUnion([LikeModel(id: uid, type: type).toJson()]),
-      }, SetOptions(merge: true));
+    if (!isDelete) {
+      if (isGroup) {
+        groupCollection.doc(id).collection('message').doc(otherId).set({
+          'like':
+              FieldValue.arrayUnion([LikeModel(id: uid, type: type).toJson()]),
+        }, SetOptions(merge: true));
+      } else {
+        chatsCollection.doc(id).collection('message').doc(otherId).set({
+          'like':
+              FieldValue.arrayUnion([LikeModel(id: uid, type: type).toJson()]),
+        }, SetOptions(merge: true));
+      }
     }
   }
 
