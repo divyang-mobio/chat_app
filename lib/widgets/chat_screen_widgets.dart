@@ -217,7 +217,6 @@ chatBubble(context,
                       bottomRight: Radius.circular(isMe ? 0 : 10))),
               child: Wrap(
                   alignment: isMe ? WrapAlignment.end : WrapAlignment.start,
-                  // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (isGroup && !isMe)
                       Text(message.name,
@@ -258,13 +257,24 @@ chatBubble(context,
                   DeleteLikeMessageData(
                       messageModel: message, id: id, isGroup: isGroup));
             },
-            child: Text(
-              reactionDisplay(message.like?[0].type as ReactionType),
-              style: const TextStyle(fontSize: 20),
-            ),
+            child: reactionShowText(context,
+                isGroup: isGroup, type: message.like as List<LikeModel>),
           ),
         ),
     ],
+  );
+}
+
+reactionShowText(context,
+    {required bool isGroup, required List<LikeModel> type}) {
+  int index = type.indexWhere(
+      (element) =>
+          element.id ==
+          '${RepositoryProvider.of<FirebaseAuth>(context).currentUser?.uid}',
+      0);
+  return Text(
+    reactionDisplay((index != -1) ? type[index].type : type[0].type),
+    style: const TextStyle(fontSize: 20),
   );
 }
 

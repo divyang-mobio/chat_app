@@ -12,20 +12,15 @@ class LikeMessageBloc extends Bloc<LikeMessageEvent, LikeMessageState> {
   LikeMessageBloc() : super(LikeMessageInitial()) {
     on<LikeMessageData>((event, emit) async {
       String uid = await PreferenceServices().getUid();
-      String name = await PreferenceServices().getAdmin();
-      String phone = await PreferenceServices().getPhone();
-      if (name == '') {
-        name = phone;
-      }
       int? index = event.messageModel.like
-          ?.indexWhere((element) => element.id == '${uid}_$name', 0);
+          ?.indexWhere((element) => element.id == uid, 0);
 
       DatabaseService().likeMessage(
           messageModel: event.messageModel,
           index: index ?? -1,
           id: event.id,
           otherId: event.messageModel.id,
-          uid: '${uid}_$name',
+          uid: uid,
           type: event.type,
           isGroup: event.isGroup,
           isDelete: false);
@@ -33,13 +28,8 @@ class LikeMessageBloc extends Bloc<LikeMessageEvent, LikeMessageState> {
 
     on<DeleteLikeMessageData>((event, emit) async {
       String uid = await PreferenceServices().getUid();
-      String name = await PreferenceServices().getAdmin();
-      String phone = await PreferenceServices().getPhone();
-      if (name == '') {
-        name = phone;
-      }
       int? index = event.messageModel.like
-          ?.indexWhere((element) => element.id == '${uid}_$name', 0);
+          ?.indexWhere((element) => element.id == uid, 0);
 
       DatabaseService().likeMessage(
           isDelete: true,
@@ -47,7 +37,7 @@ class LikeMessageBloc extends Bloc<LikeMessageEvent, LikeMessageState> {
           index: index ?? -1,
           id: event.id,
           otherId: event.messageModel.id,
-          uid: '${uid}_$name',
+          uid: uid,
           type: ReactionType.happy,
           isGroup: event.isGroup);
     });
